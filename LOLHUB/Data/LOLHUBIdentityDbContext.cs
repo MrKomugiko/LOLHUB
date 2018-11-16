@@ -8,9 +8,9 @@ using LOLHUB.Models;
 
 namespace LOLHUB.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class LOLHUBIdentityDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public LOLHUBIdentityDbContext(DbContextOptions<LOLHUBIdentityDbContext> options)
             : base(options)
         {
         }

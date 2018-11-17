@@ -54,6 +54,28 @@ namespace LOLHUB.Controllers
         }
 
         [HttpPost]
+        public IActionResult TimeOut(int tournamentId)
+        {
+            DateTime Today = DateTime.Now;
+            Tournament expiredTournament = _repository.TimeOut(tournamentId);
+            if (expiredTournament != null)
+            {
+                if (expiredTournament.IsExpired == true && expiredTournament.EndDate < Today)
+                {
+                    TempData["message"] = $"{expiredTournament.Name} Zakończył się.";
+                }
+                else if (expiredTournament.IsExpired == false && expiredTournament.EndDate > Today)
+                {
+                    TempData["message"] = $"{expiredTournament.Name} Jeszcze się odbywa, nie można zmienic jego statusu przed końcem terminu.";
+                }
+
+
+
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
         public IActionResult SeedDatabase()
         {
             TournamentSeedData.TournamentEnsurePopulated(HttpContext.RequestServices);

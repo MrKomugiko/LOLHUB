@@ -37,16 +37,38 @@ namespace LOLHUB.Models
             _context.SaveChanges();
         }
 
-        public Tournament DeleteTournament(int tournamentID)
+        public Tournament DeleteTournament(int tournamentId)
         {
             Tournament dbEntry = _context.Tournaments
-                .FirstOrDefault(t => t.TournamentId == tournamentID);
+                .FirstOrDefault(t => t.TournamentId == tournamentId);
 
             if (dbEntry != null)
             {
                 _context.Tournaments.Remove(dbEntry);
                 _context.SaveChanges();
             }
+            return dbEntry;
+        }
+
+        public Tournament TimeOut(int tournamentId)
+        {
+            DateTime Today = DateTime.Now;
+
+            Tournament dbEntry = _context.Tournaments
+            .FirstOrDefault(t => t.TournamentId == tournamentId);
+            if (dbEntry != null)
+            {
+                if (Today > dbEntry.EndDate && dbEntry.IsExpired == false)
+                {
+                    dbEntry.IsExpired = true;
+                    _context.Tournaments.Update(dbEntry);
+                }
+                else if (Today > dbEntry.EndDate && dbEntry.IsExpired == true) //jeżeli wszystko sie zgadza nie rób nic 
+                {
+                    return dbEntry;
+                }
+            }
+            _context.SaveChanges();
             return dbEntry;
         }
     }

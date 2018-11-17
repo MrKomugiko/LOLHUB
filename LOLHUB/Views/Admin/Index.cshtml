@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Tournament>
+@{
+    var elementy = Model.Count().ToString();
+}
+
+
+<table class=" table table-hover">
+    <tr>
+        <th class="text-center">
+            @if (Model.Count() == 0)
+            {
+                <text>Baza nie zawiera żadnych turniejów.</text>
+            }
+            else
+            {
+                <text>Liczba turniejów w bazie = @elementy.</text>
+            }
+        </th>
+    </tr>
+</table>
+    <table class="table table-striped table-bordered table-lg">
+        <tr>
+            <th class="text-right">ID</th>
+            <th>Tournament</th>
+            <th class="text-left">Data rozpoczęcia</th>
+            <th class="text-left">Data zakończenia</th>
+            <th class="text-center">Akcje</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-right">@item.TournamentId</td>
+                <td>@item.Name</td>
+                <td class="text-left">@item.StartDate.ToString("D")</td>
+                <td class="text-left">@item.EndDate.ToString("D")</td>
+                <td class="text-center">
+                    <form asp-action="Delete" method="post">
+                        <a asp-action="Edit" class="btn btn-sm btn-warning"
+                           asp-route-productId="@item.TournamentId">
+                            Edytuj
+                        </a>
+                        <input type="hidden" name="ProductID" value="@item.TournamentId" />
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            Usuń
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </table>
+    <div class="text-center">
+        <a asp-action="Create" class="btn btn-primary left">Dodaj Turniej</a>
+    </div>
+    <div class="text-center">
+        @if (Model.Count() == 0)
+        {
+            <form asp-action="SeedDatabase" method="post">
+                <button type="submit" class="btn btn-danger right">Zainicjuj bazę danych</button>
+            </form>
+        }
+    </div>

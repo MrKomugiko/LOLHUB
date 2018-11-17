@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace LOLHUB.Models
 {
-    public class EFTournamentRepository : ITournamentRepository
+    public class TournamentRepository : ITournamentRepository
     {
         private LOLHUBApplicationDbContext _context;
-        public EFTournamentRepository(LOLHUBApplicationDbContext context)
+        public TournamentRepository(LOLHUBApplicationDbContext context)
         {
             _context = context;
         }

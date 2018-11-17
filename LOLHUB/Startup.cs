@@ -38,7 +38,7 @@ namespace LOLHUB
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddTransient<ITournamentRepository, EFTournamentRepository>();
+            services.AddTransient<ITournamentRepository, TournamentRepository>();
 
             services.AddMvc();
         }

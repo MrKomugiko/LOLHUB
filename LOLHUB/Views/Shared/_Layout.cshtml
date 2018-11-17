@@ -41,6 +41,11 @@
         </div>
     </nav>
     <div class="container body-content">
+
+        @if (TempData["message"] != null)
+        {
+            <div class="alert alert-success mt-1">@TempData["message"]</div>
+        }
         @RenderBody()
         <hr />
         <footer>

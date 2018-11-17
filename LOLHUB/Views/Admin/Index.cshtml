@@ -18,44 +18,47 @@
         </th>
     </tr>
 </table>
-    <table class="table table-striped table-bordered table-lg">
+<table class="table table-striped table-bordered table-lg">
+    <tr>
+        <th class="text-right">ID</th>
+        <th>Tournament</th>
+        <th class="text-left">Data rozpoczęcia</th>
+        <th class="text-left">Data zakończenia</th>
+        <th class="text-center">Akcje</th>
+    </tr>
+    @foreach (var item in Model)
+    {
         <tr>
-            <th class="text-right">ID</th>
-            <th>Tournament</th>
-            <th class="text-left">Data rozpoczęcia</th>
-            <th class="text-left">Data zakończenia</th>
-            <th class="text-center">Akcje</th>
-        </tr>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td class="text-right">@item.TournamentId</td>
-                <td>@item.Name</td>
-                <td class="text-left">@item.StartDate.ToString("D")</td>
-                <td class="text-left">@item.EndDate.ToString("D")</td>
-                <td class="text-center">
-                    <form asp-action="Delete" method="post">
-                        <a asp-action="Edit" class="btn btn-sm btn-warning"
-                           asp-route-productId="@item.TournamentId">
-                            Edytuj
-                        </a>
-                        <input type="hidden" name="ProductID" value="@item.TournamentId" />
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            Usuń
-                        </button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </table>
-    <div class="text-center">
-        <a asp-action="Create" class="btn btn-primary left">Dodaj Turniej</a>
-    </div>
-    <div class="text-center">
-        @if (Model.Count() == 0)
-        {
-            <form asp-action="SeedDatabase" method="post">
-                <button type="submit" class="btn btn-danger right">Zainicjuj bazę danych</button>
-            </form>
-        }
-    </div>
+            <td class="text-right">@item.TournamentId</td>
+            <td>@item.Name</td>
+            <td class="text-left">@item.StartDate.ToString("D")</td>
+            <td class="text-left">@item.EndDate.ToString("D")</td>
+            <td class="text-center">
+                <form asp-action="Delete" method="post">
+                    <a asp-action="Edit" class="btn btn-sm btn-warning"
+                       asp-route-tournamentId="@item.TournamentId">
+                        Edytuj
+                    </a>
+                    <input type="hidden" name="TournamentId" value="@item.TournamentId" />
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        Usuń
+                    </button>
+                </form>
+            </td>
+        </tr>}
+</table>
+
+
+<dir class="btn-group-justified">  <a asp-action="Create" class="btn btn-primary">Dodaj Turniej</a></dir>
+          
+
+    @if (Model.Count() == 0)
+    {<dir class="btn-group-justified">
+    <form asp-action="SeedDatabase" method="post">
+        <button type="submit" class="btn btn-danger">Zainicjuj bazę danych</button>
+    </form>
+</dir>
+    }
+
+         
+

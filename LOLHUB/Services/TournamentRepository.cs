@@ -32,8 +32,9 @@ namespace LOLHUB.Models
                     dbEntry.StartDate = tournament.StartDate;
                     dbEntry.EndDate = tournament.EndDate;
                 }
-                _context.SaveChanges();
+               
             }
+            _context.SaveChanges();
         }
 
         public Tournament DeleteTournament(int tournamentID)

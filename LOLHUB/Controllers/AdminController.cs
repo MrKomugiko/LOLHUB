@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LOLHUB.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private ITournamentRepository _repository;

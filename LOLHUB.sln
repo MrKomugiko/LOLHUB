@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2047
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LOLHUB", "LOLHUB\LOLHUB.csproj", "{518D3985-4AF3-4D05-83A3-2CBC0EB02972}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiotApi", "RiotApi\RiotApi.csproj", "{89E270E4-BA52-44E1-B157-CA10EBE20674}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{518D3985-4AF3-4D05-83A3-2CBC0EB02972}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{518D3985-4AF3-4D05-83A3-2CBC0EB02972}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{518D3985-4AF3-4D05-83A3-2CBC0EB02972}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89E270E4-BA52-44E1-B157-CA10EBE20674}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89E270E4-BA52-44E1-B157-CA10EBE20674}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89E270E4-BA52-44E1-B157-CA10EBE20674}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89E270E4-BA52-44E1-B157-CA10EBE20674}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

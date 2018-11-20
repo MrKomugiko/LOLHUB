@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using LOLHUB.Data;
 using LOLHUB.Models;
 using LOLHUB.Services;
+using RiotApi.Services;
+using RiotApi.RiotApi;
 
 namespace LOLHUB
 {
@@ -35,12 +37,16 @@ namespace LOLHUB
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<LOLHUBIdentityDbContext>()
                 .AddDefaultTokenProviders();
-
+            
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<ITournamentRepository, TournamentRepository>();
-
+            
             services.AddMvc();
+
+            services.AddSingleton<IRiotApiService, RiotApiService>();
+            services.AddSingleton<IGetSummonerInfo, GetSummonerInfo>();
+
         }
 
 
@@ -69,6 +75,7 @@ namespace LOLHUB
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
         }
     }
 }

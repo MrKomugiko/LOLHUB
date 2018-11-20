@@ -1,0 +1,30 @@
+﻿@model IEnumerable<LOLHUB.Models.AdminViewModels.UserAndRolesViewModel>
+
+<table class="table table-hover">
+    <tr>
+        <th class="text-center">
+            W bazie zarejestrowanych jest : @Model.Count() użytkowników
+        </th>
+    </tr>
+</table>
+        <table class="table table-hover table-striped table-lg">
+            <thead>
+                <tr>
+                    <td><b>UserId</b></td>
+                    <td><b>Username</b></td>
+                    <td><b>Email</b></td>
+                    <td><b>RoleId</b></td>
+                    <td><b>Rolename</b></td>
+                </tr>
+            </thead>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <td><b>@u.UserId</b></td>
+                    <td><b>@u.Username</b></td>
+                    <td><b>@u.Email</b></td>
+                    <td><b>@u.RoleId</b></td>
+                    <td><b>@u.Rolename</b></td>
+                </tr>
+            }
+        </table>

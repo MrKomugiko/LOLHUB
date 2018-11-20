@@ -29,19 +29,38 @@
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">LOLHUB</a>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav navbar-header">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Summoner" asp-action="Index">Summoners</a></li>
+
                     <!--    Tylko admin: Zakładka [Aministracja]    -->
-                    <li>
-                        @if (User.Identity.IsAuthenticated)
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (User.IsInRole("Admin"))
                         {
-                            if (User.IsInRole("Admin"))
-                            {
-                                <a asp-area="" asp-controller="Admin" asp-action="Index"><b>Administracja</b></a>
-                            }
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Administracja
+                                </a>
+
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+
+                                    <a class="dropdown-item" href="#">
+                                        <a asp-area="" asp-controller="Admin" asp-action="Index"><b>Administracja</b></a> <br />
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+                                        <a asp-area="" asp-controller="Admin" asp-action="UserList"><b>Lista Uzytkownikow</b></a><br />
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+                                        [W.I.P]
+                                    </a>
+                                </div>
+                            </li>
                         }
-                    </li>
+                    }
+
+                    <!--    Tylko admin: Zakładka [Aministracja]    -->
+
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                 </ul>

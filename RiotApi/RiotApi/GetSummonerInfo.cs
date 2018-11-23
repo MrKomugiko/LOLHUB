@@ -10,7 +10,7 @@ namespace RiotApi.RiotApi
 {
     public class GetSummonerInfo : IGetSummonerInfo
     {
-        private const string api_key = "RGAPI-1e84f01c-3cb3-43a7-a3fd-c3db1dea00d1";
+        private const string api_key = "RGAPI-f0077242-35f9-4fbd-b7ab-1f6f91e71c01";
 
         public async Task<SummonerInfoModel> ReturnSummonerInfo(string nickname)
         {
@@ -27,6 +27,24 @@ namespace RiotApi.RiotApi
                 }
 
                 return JsonConvert.DeserializeObject<SummonerInfoModel>(json);
+            }
+        }
+
+        public async Task<string> ReturnVerificationCode(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                var url = new Uri($"https://eun1.api.riotgames.com/lol/platform/v3/third-party-code/by-summoner/{id}?api_key={api_key}");
+
+                var response = await client.GetAsync(url);
+
+                string json;
+                using (var content = response.Content)
+                {
+                    json = await content.ReadAsStringAsync();
+                }
+
+                return json;
             }
         }
     }

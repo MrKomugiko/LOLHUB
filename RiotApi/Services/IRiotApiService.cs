@@ -6,5 +6,7 @@ namespace RiotApi.Services
     public interface IRiotApiService
     {
         Task<SummonerInfoModel> GetSummonerInfoBasedOnNickname(string nickname);
+
+        Task<string> GetVerificationCodeBasedOnId(int id);
     }
 }

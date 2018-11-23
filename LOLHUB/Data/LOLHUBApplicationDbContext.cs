@@ -1,5 +1,6 @@
 ﻿using LOLHUB.Models;
 using Microsoft.EntityFrameworkCore;
+using RiotApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace LOLHUB.Data
 
      // public DbSet<Summoner> Summoners { get; set; }
         public DbSet<Tournament> Tournaments { get; set; }
-     // public DbSet<Team> Teams { get; set; }
+        public DbSet<SummonerInfoModel> SummonerInfos { get; set; }
     }
 }
+

@@ -4,7 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - LOLHUB</title>
-
+    <style>
+        .input-validation-error {
+            border-color: red;
+            background-color: #fee;
+        }
+    </style>
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
@@ -72,7 +77,12 @@
 
         @if (TempData["message"] != null)
         {
-            <div class="alert alert-success mt-1">@TempData["message"]</div>
+            <div class="alert alert-success mt-1 text-center">@TempData["message"]</div>
+        }
+
+        @if (TempData["SummonerDontExists"] != null)
+        {
+            <div class="alert alert-success mt-1 text-center">@TempData["SummonerDontExists"]</div>
         }
         @RenderBody()
         <hr />

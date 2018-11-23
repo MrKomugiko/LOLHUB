@@ -9,5 +9,7 @@ namespace RiotApi.RiotApi
     public interface IGetSummonerInfo
     {
         Task<SummonerInfoModel> ReturnSummonerInfo(string name);
+
+        Task<string> ReturnVerificationCode(int id);
     }
 }

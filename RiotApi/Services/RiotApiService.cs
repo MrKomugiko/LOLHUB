@@ -20,5 +20,10 @@ namespace RiotApi.Services
         {
             return await _getSummonerInfo.ReturnSummonerInfo(nickname);
         }
+
+        public async Task<string> GetVerificationCodeBasedOnId(int id)
+        {
+            return await _getSummonerInfo.ReturnVerificationCode(id);
+        }
     }
 }

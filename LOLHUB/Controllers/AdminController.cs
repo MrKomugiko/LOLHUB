@@ -49,7 +49,6 @@ namespace LOLHUB.Controllers
             return View(usersWithRoles);
         }
 
-
         public ViewResult Edit(int tournamentId)
             => View(_repository.Tournaments
             .FirstOrDefault(t => t.TournamentId == tournamentId));

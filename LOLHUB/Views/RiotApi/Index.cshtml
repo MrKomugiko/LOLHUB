@@ -1,0 +1,23 @@
+﻿@model IEnumerable<RiotApi.Models.SummonerInfoModel>;
+
+<h3>@TempData["SummonerDontExists"]</h3>
+@if(TempData["SummonerDontExists"]==null){
+<table class="table table-striped table-bordered table-lg">
+    <tr>
+        <th class="text-left">SummonerInfoID</th>
+        <th class="text-left">Name</th>
+        <th class="text-left">summonerLevel</th>
+        <th class="text-left">accountId</th>
+        <th class="text-left">Id</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td class="text-left">@item.SummonerInfoID</td>
+        <td class="text-left">@item.name</td>
+        <td class="text-left">@item.summonerLevel</td>
+        <td class="text-left">@item.accountId</td>
+        <td class="text-left">@item.id</td>
+    </tr>}
+</table>
+    }

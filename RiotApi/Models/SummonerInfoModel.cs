@@ -21,6 +21,8 @@ namespace RiotApi.Models
         public string ConectedAccount { get; set; } // email konta ktory polaczyl sie
         public DateTime AddTime { get; set; }       // data dodania
         public DateTime ConnectedTime { get; set; } // data połączenia z LOLHUB
+
+        public string Code { get; set; }            // przypisanie kodu weryfikacyjnego do parowania konta
     }
 }
 

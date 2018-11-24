@@ -10,7 +10,7 @@
                 <th class="text-left">ID</th>
                 <th class="text-left">Poziom Przywoływacza</th>
                 <td class="text-left">Konto Zweryfikowane ?</td>
-                <td class="text-left">Username</td>
+                <td class="text-left">Właściciel</td>
             </tr>
             <tr>
                 <td class="text-left">@item.name</td>
@@ -24,21 +24,17 @@
         <div class="btn-toolbar mb-4" role="toolbar" aria-label="Toolbar with button groups">
             <div class="btn-group">
                 <form asp-controller="riotapi" asp-action="generateCode" method="get">
-                    <button type="submit" class="btn btn-primary">Generuj Kod Weryfikacyjny</button>
+                    <button type="submit" class="btn btn-danger">Generuj Nowy Kod Weryfikacyjny</button>
                 </form>
             </div>
-            <div class="btn-group">
-                <form asp-controller="riotapi" asp-action="generateCode" method="get">
-                    <button type="submit" class="btn btn-danger">Nowy kod</button>
-                </form>
-            </div>
+ 
             <div class="input-group">
-                <input runat="server" readonly="readonly" id="id" type="text" class="form-control text-center" style="font-size:larger; font-weight:500;" Value=@TempData["code"] aria-describedby="btnGroupAddon" maxlength="20" size="22" />
+                <input runat="server" readonly="readonly" id="id" type="text" class="form-control text-center" style="font-size:larger; font-weight:500;" Value=@item.Code aria-describedby="btnGroupAddon" maxlength="20" size="22" />
             </div>
             <div class="btn-group" style="margin-right:20px">
                 <form asp-controller="riotapi" asp-action="Check" method="post">
                     <input type="hidden" id="id" name="id" value="@item.id" />
-                    <input type="hidden" id="code" name="code" value=@TempData["code"] />
+                    <input type="hidden" id="code" name="code" value=@item.Code />
                     <button type="submit" class="btn btn-warning">Weryfikuj</button>
                 </form>
             </div>

@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using LOLHUB.Models;
+using LOLHUB.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,14 +18,17 @@ namespace LOLHUB.Controllers
     [Authorize]
     public class RiotApiController : Controller
     {
-        public RiotApiController(IRiotApiService riotApiService, ISummonerInfoRepository repository)
+        public RiotApiController(IRiotApiService riotApiService, ISummonerInfoRepository repository, IGenerateCode code)
         {
             _riotApiService = riotApiService;
             _repository = repository;
+            _code = code;
         }
         private readonly IRiotApiService _riotApiService;
 
         private ISummonerInfoRepository _repository;
+
+        private IGenerateCode _code;
 
         [Authorize(Roles = "Member, Admin")]
         [Route("v1/riotapi/profile")]
@@ -84,8 +88,10 @@ namespace LOLHUB.Controllers
 
                     IsVerified = result.IsVerified,
                     ConectedAccount = null,
-                    AddTime = DateTime.Now
-            };
+                    AddTime = DateTime.Now,
+
+                    Code = _code.generateCode()
+                };
 
                 var RecentID = newSummoner.id;
                 if (User.IsInRole("Admin"))
@@ -104,16 +110,18 @@ namespace LOLHUB.Controllers
  }
         [HttpPost]
         [Authorize(Roles = "Member, Admin")]
-        public async Task<IActionResult> Check(int id, string code)
+        public async Task<IActionResult> Check(int id)
         {
-            string _code = code;
+            SummonerInfoModel dbEntry = _repository.SummonerInfos
+                .FirstOrDefault(s => s.id == id);
+            string _code = dbEntry.Code;
             string usercode = await _riotApiService.GetVerificationCodeBasedOnId(id);
             string _usercode = usercode.Replace("\"", "").Trim();
 
             if (_code == _usercode)
             {
                 _repository.UpdateVerificationStatus(id);
-                TempData["result"] = "Grtulacje, udało się potwierdzić twoje konto League of Legends :)";
+                TempData["result"] = "Gratulacje, udało się sparować twoje konto League of Legends :)";
                 return RedirectToAction("Index");
             }
             else
@@ -121,26 +129,6 @@ namespace LOLHUB.Controllers
                 TempData["result"] = "Nie udało się zweryfikować konta, powodem może być:\n * zbyt mały odstęp czasu między wysłaniem kodu w aplikacji a weryfikacją na stronie \n * błędnie wpisany kod autoryzacyjny \n W przypadku dalszego występowania tego błędu należy skontaktować się z administratorem <b>Mr.Komugiko@gmail.com</b> \n za powstałe problemy przepraszamy. ";
                 return RedirectToAction("Index");
             }
-        }
-
-        [HttpGet]
-        [Authorize(Roles = "Member, Admin")]
-        public ActionResult generateCode()
-        {
-            char[] chars ="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
-            byte[] data = new byte[20];
-            using (RNGCryptoServiceProvider crypto = new RNGCryptoServiceProvider())
-            {
-                crypto.GetBytes(data);
-            }
-            StringBuilder result = new StringBuilder(20);
-            foreach (byte b in data)
-            {
-                result.Append(chars[b % (chars.Length)]);
-            }
-
-            TempData["code"] = result.ToString();
-            return RedirectToAction("Index");
         }
 
         [HttpGet]

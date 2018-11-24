@@ -2,7 +2,7 @@
 
 <table class="table table-striped table-bordered table-lg">
     <tr>
-        <th class="text-left">SummonerInfoID</th>
+        <th class="text-left">ID</th>
         <th class="text-left">Name</th>
         <th class="text-left">summonerLevel</th>
         <th class="text-left">accountId</th>
@@ -12,6 +12,7 @@
         <th class="text-left">ConnectedAccount</th>
         <th class="text-left">AddTime</th>
         <th class="text-left">ConnectedTime</th>
+        <th class="text-left">Code</th>
 
     </tr>
     @foreach (var item in Model)
@@ -27,5 +28,6 @@
         <td class="text-left">@item.ConectedAccount</td>
         <td class="text-left">@item.AddTime</td>
         <td class="text-left">@item.ConnectedTime</td>
+        <td class="text-left">@item.Code</td>
     </tr>}
 </table>

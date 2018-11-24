@@ -21,7 +21,8 @@
         <div><span asp-validation-for="EndDate" class="text-danger"></span></div>
         <input asp-for="EndDate" class="form-control" />
     </div>
-    <div class="form-group">Status zakończenia</label>
+    <div class="form-group">
+        <label asp-for="IsExpired">Status zakończenia</label>
         <div><span asp-validation-for="IsExpired" class="text-danger"></span></div>
         <input asp-for="IsExpired" class="form-control" />
     </div>

@@ -22,8 +22,8 @@ namespace LOLHUB.Controllers
 
         private ISummonerInfoRepository _repository;
 
-        [Authorize(Roles = "Member")]
-        [Route("v1/Profile")]
+        [Authorize(Roles = "Member, Admin")]
+        [Route("v1/riotapi/profile")]
         public ViewResult Index()
         {
             if (TempData["SummonerDontExists"] != null) { return View(); }
@@ -35,7 +35,7 @@ namespace LOLHUB.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [Route("v1/ListOfSummonerInfos")]
+        [Route("v1/riotapi/listOfSummonerInfos")]
         public ViewResult ListOfSummonerInfos() => View(_repository.SummonerInfos); // lista zarejestrowanych summonerow
 
         [Authorize(Roles = "Member, Admin")]
@@ -57,7 +57,7 @@ namespace LOLHUB.Controllers
 
                 if (result.name == null)
                 {
-                    TempData["SummonerDontExists"] = $"Nazwa przywoływacza:<b>{nickname}</b> jest błędna, lub nie istnieje na serwerze EUNE";
+                    TempData["SummonerDontExists"] = $"Nazwa przywoływacza:{nickname} jest błędna, lub nie istnieje na serwerze EUNE";
 
                     if (User.IsInRole("Admin")) {
                         return RedirectToAction("ListOfSummonerInfos"); }
@@ -89,11 +89,10 @@ namespace LOLHUB.Controllers
             }
  }
 
-
         [HttpGet]
         [Authorize(Roles = "Member, Admin")]
-        [Route("v1/riotapi/getsverificationcode/{id}")]
-        public async Task<IActionResult> GetVerificationCodeo(int id)
+        [Route("v1/riotapi/getverificationcode/{id}")]
+        public async Task<IActionResult> GetVerificationCode(int id)
         {
             var result = await _riotApiService.GetVerificationCodeBasedOnId(id);
             var verifycode = result.Replace("\"", "").Trim();

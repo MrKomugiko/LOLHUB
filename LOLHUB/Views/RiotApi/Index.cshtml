@@ -1,23 +1,40 @@
 ﻿@model IEnumerable<RiotApi.Models.SummonerInfoModel>;
 
-<h3>@TempData["SummonerDontExists"]</h3>
-@if(TempData["SummonerDontExists"]==null){
-<table class="table table-striped table-bordered table-lg">
-    <tr>
-        <th class="text-left">SummonerInfoID</th>
-        <th class="text-left">Name</th>
-        <th class="text-left">summonerLevel</th>
-        <th class="text-left">accountId</th>
-        <th class="text-left">Id</th>
-    </tr>
-    @foreach (var item in Model)
-    {
-    <tr>
-        <td class="text-left">@item.SummonerInfoID</td>
-        <td class="text-left">@item.name</td>
-        <td class="text-left">@item.summonerLevel</td>
-        <td class="text-left">@item.accountId</td>
-        <td class="text-left">@item.id</td>
-    </tr>}
-</table>
-    }
+@if (TempData["SummonerDontExists"] == null)
+{
+
+
+    <table class="table table-striped table-bordered table-lg">
+        <tr>
+            <th class="text-left">Nick</th>
+            <th class="text-left">Poziom Przywoływacza</th>
+            <th class="text-center">Akcje</th>
+            <th class="text-center"></th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-left">@item.name</td>
+                <td class="text-left">@item.summonerLevel</td>
+                <td class="text-center">
+
+                    <form asp-action="Delete" method="post">
+                        <a asp-action="Edit" class="btn btn-sm btn-warning">
+                            Generuj Kod Weryfikacyjny
+                        </a>
+                    </form>
+                </td>
+
+                <td>
+                    <form action="/v1/riotapi/getverificationcode/@item.id.ToString()" method="get">
+                        <input type="submit" value="WERYFIKUJ" class="btn btn-sm btn-info"/>
+                    </form>
+                </td>
+            </tr>}
+    </table>
+
+}
+<!--
+%7B37015280%7D
+%7B37015271%7D
+-->

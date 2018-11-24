@@ -37,7 +37,7 @@
                 <ul class="nav navbar-nav navbar-header">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Summoner" asp-action="Index">Summoners</a></li>
-
+                    <
                     <!--    Tylko admin: Zakładka [Aministracja]    -->
                     @if (User.Identity.IsAuthenticated)
                     {
@@ -54,11 +54,13 @@
                                         <a asp-area="" asp-controller="Admin" asp-action="Index"><b>Administracja</b></a> <br />
                                     </a>
                                     <a class="dropdown-item" href="#">
-                                        <a asp-area="" asp-controller="Admin" asp-action="UserList"><b>Lista Uzytkownikow</b></a><br />
+                                        <a asp-area="" asp-controller="Admin" asp-action="UserList"><b>Lista Uzytkownikow-rol</b></a><br />
                                     </a>
-                                    <a class="dropdown-item" href="#">
-                                        <b>v1/riotapi/getsummoner/{nickname}</b>
-                                    </a>
+                                    <a class="dropdown-item" href="https://localhost:44330/v1/riotApi/getSummoner/Mąka"><b>v1/riotapi/getSummoner/{nickname}</b></a><br />
+                                    <a class="dropdown-item" href="https://localhost:44330/v1/riotApi/getVerificationCode/37015271"><b>v1/riotapi/getVerificationCode/{id}</b></a><br />
+                                    <a class="dropdown-item" href="https://localhost:44330/v1/riotApi/listOfSummonerInfos"><b>v1/riotapi/listOfSummonerInfos</b></a>
+                                    <a class="dropdown-item" href="https://localhost:44330/v1/riotApi/profile"><b>v1/riotapi/profile</b></a>
+
                                 </div>
                             </li>
                         }

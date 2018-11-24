@@ -7,6 +7,12 @@
         <th class="text-left">summonerLevel</th>
         <th class="text-left">accountId</th>
         <th class="text-left">Id</th>
+        <th class="text-left">RevisionDate</th>
+        <th class="text-left">IsVerified</th>
+        <th class="text-left">ConnectedAccount</th>
+        <th class="text-left">AddTime</th>
+        <th class="text-left">ConnectedTime</th>
+
     </tr>
     @foreach (var item in Model)
     {
@@ -16,5 +22,10 @@
         <td class="text-left">@item.summonerLevel</td>
         <td class="text-left">@item.accountId</td>
         <td class="text-left">@item.id</td>
+        <td class="text-left">@item.revisionDate</td>
+        <td class="text-left">@item.IsVerified</td>
+        <td class="text-left">@item.ConectedAccount</td>
+        <td class="text-left">@item.AddTime</td>
+        <td class="text-left">@item.ConnectedTime</td>
     </tr>}
 </table>

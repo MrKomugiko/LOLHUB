@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using LOLHUB.Data;
+using Microsoft.AspNetCore.Http;
 using RiotApi.Models;
 
 namespace LOLHUB.Models
 {
     public class SummonerInfoRepository : ISummonerInfoRepository
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private LOLHUBApplicationDbContext _context;
-        public SummonerInfoRepository(LOLHUBApplicationDbContext context)
+        public SummonerInfoRepository(LOLHUBApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
         public IQueryable<SummonerInfoModel> SummonerInfos => _context.SummonerInfos;
 
@@ -23,7 +27,8 @@ namespace LOLHUB.Models
             if (summonerInfo.SummonerInfoID == 0)
             {
                 _context.SummonerInfos.Add(summonerInfo);
-            } else
+            }
+            else
             {
                 SummonerInfoModel dbEntry = _context.SummonerInfos
                     .FirstOrDefault(s => s.id == summonerInfo.id);
@@ -38,12 +43,12 @@ namespace LOLHUB.Models
                 }
             }
             _context.SaveChanges();
-        }
+        } // zapisywanie,dodawanie danych summonera
 
-    public SummonerInfoModel DeleteSummonerId(int summonerId)
-    {
+        public SummonerInfoModel DeleteSummonerId(int summonerId)
+        {
             SummonerInfoModel dbEntry = _context.SummonerInfos
-         .FirstOrDefault(t => t.id == summonerId);
+                .FirstOrDefault(t => t.id == summonerId);
 
             if (dbEntry != null)
             {
@@ -51,6 +56,20 @@ namespace LOLHUB.Models
                 _context.SaveChanges();
             }
             return dbEntry;
+        } // nie uzywane jeszcze
+
+        public SummonerInfoModel UpdateVerificationStatus(int id) // sprawdzanie zgodnosci kodow autoryzacyjnych
+        {
+            SummonerInfoModel dbEntry = _context.SummonerInfos
+                                .FirstOrDefault(s => s.id == id);
+            if (dbEntry != null)
+            {
+                dbEntry.IsVerified = true;
+                dbEntry.ConectedAccount = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value; // will give the user's userName
+                dbEntry.ConnectedTime = DateTime.Now;
+                _context.SaveChanges();
+            }
+            return dbEntry;
         }
-}
+    }
 }

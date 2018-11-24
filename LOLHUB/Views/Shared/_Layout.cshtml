@@ -36,7 +36,7 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-header">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Summoner" asp-action="Index">Summoners</a></li>
+                    <li><a asp-area="" asp-controller="/v1/riotapi/Profile">Summoner Profile</a></li>
                     <
                     <!--    Tylko admin: Zakładka [Aministracja]    -->
                     @if (User.Identity.IsAuthenticated)
@@ -77,6 +77,10 @@
     </nav>
     <div class="container body-content">
 
+        @if (TempData["result"] != null)
+        {
+            <div class="alert alert-success mt-1">@TempData["result"]</div>
+        }
         @if (TempData["message"] != null)
         {
             <div class="alert alert-success mt-1 text-center">@TempData["message"]</div>

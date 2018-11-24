@@ -12,6 +12,8 @@ namespace LOLHUB.Models
 
         void SaveSummonerInfo(SummonerInfoModel summonerInfo);
 
+        SummonerInfoModel UpdateVerificationStatus(int id);
+
         SummonerInfoModel DeleteSummonerId(int summonerId);
 
     }

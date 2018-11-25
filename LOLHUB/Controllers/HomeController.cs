@@ -5,11 +5,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using LOLHUB.Models;
+using LOLHUB.Models.HomeViewModel;
 
 namespace LOLHUB.Controllers
 {
     public class HomeController : Controller
     {
+
+        //public HomeController(ITournamentRepository tournamentRepository)
+        //{
+        //    _tournamentRepository = tournamentRepository;
+        //}
+        //private ITournamentRepository _tournamentRepository;
+
         public IActionResult Index()
         {
             return View();

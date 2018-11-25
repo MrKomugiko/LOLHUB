@@ -108,6 +108,7 @@ namespace LOLHUB.Controllers
                 return RedirectToAction("Index");
             }
  }
+
         [HttpPost]
         [Authorize(Roles = "Member, Admin")]
         public async Task<IActionResult> Check(int id)
@@ -131,6 +132,17 @@ namespace LOLHUB.Controllers
             }
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Member, Admin")]
+        public IActionResult RegenerateCode(int id)
+        {
+           string newCode = _code.generateCode();
+
+            _repository.RegenerateCode(id,newCode);
+
+            return RedirectToAction("Index");
+        }
+
         [HttpGet]
         [Authorize(Roles = "Member, Admin")]
         [Route("v1/riotapi/getverificationcode/{id}")]
@@ -139,6 +151,6 @@ namespace LOLHUB.Controllers
             var result = await _riotApiService.GetVerificationCodeBasedOnId(id);
             var verifycode = result.Replace("\"", "").Trim();
             return Ok(verifycode);
-        }
+        }//tylko dla testu 
     }
 }

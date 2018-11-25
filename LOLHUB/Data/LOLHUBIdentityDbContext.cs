@@ -22,5 +22,9 @@ namespace LOLHUB.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
+
+        public DbSet<LOLHUB.Models.Tournament> Tournament { get; set; }
+
+        public DbSet<LOLHUB.Models.Player> Player { get; set; }
     }
 }

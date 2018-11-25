@@ -1,0 +1,27 @@
+﻿@model IList<LOLHUB.Models.Player>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Players & Tournaments</h1>
+
+<table class="table table-hover table-striped">
+    <tr>
+        <th>Player ID</th>
+        <th>Player Name</th>
+        <th>Tournament ID</th>
+        <th>Tournament Name</th>
+        <th>Tournament Zajęte miejsca</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Id</td>
+            <td>@item.FirstName</td>
+            <td>@item.Tournament.TournamentId</td>
+            <td>@item.Tournament.Name</td>
+            <td>@item.Tournament.Players.Count()/16</td>
+        </tr>
+    }
+</table>

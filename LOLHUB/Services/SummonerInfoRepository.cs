@@ -71,5 +71,17 @@ namespace LOLHUB.Models
             }
             return dbEntry;
         }
+
+        public SummonerInfoModel RegenerateCode(int id,string newCode) // na proźbe uzytkownika zmienia kod validacyjny
+        {
+            SummonerInfoModel dbEntry = _context.SummonerInfos
+                                .FirstOrDefault(s => s.id == id);
+            if (dbEntry != null)
+            {
+                dbEntry.Code = newCode;
+                _context.SaveChanges();
+            }
+            return dbEntry;
+        }
     }
 }

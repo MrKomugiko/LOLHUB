@@ -13,9 +13,10 @@ namespace LOLHUB.Data
         public LOLHUBApplicationDbContext(
             DbContextOptions<LOLHUBApplicationDbContext> options) : base(options) { }
 
-     // public DbSet<Summoner> Summoners { get; set; }
         public DbSet<Tournament> Tournaments { get; set; }
         public DbSet<SummonerInfoModel> SummonerInfos { get; set; }
+        public DbSet<Player> Players { get; set; }
+
     }
 }
 

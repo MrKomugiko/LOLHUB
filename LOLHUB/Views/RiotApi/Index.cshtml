@@ -23,7 +23,8 @@
 
         <div class="btn-toolbar mb-4" role="toolbar" aria-label="Toolbar with button groups">
             <div class="btn-group">
-                <form asp-controller="riotapi" asp-action="generateCode" method="get">
+                <form asp-controller="riotapi" asp-action="regenerateCode" method="get">
+                    <input type="hidden" id="id" name="id" value="@item.id" />
                     <button type="submit" class="btn btn-danger">Generuj Nowy Kod Weryfikacyjny</button>
                 </form>
             </div>

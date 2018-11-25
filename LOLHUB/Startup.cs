@@ -42,6 +42,7 @@ namespace LOLHUB
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<ITournamentRepository, TournamentRepository>();
             services.AddTransient<ISummonerInfoRepository, SummonerInfoRepository>();
+           // services.AddTransient<IPlayerRepository, PlayerRepository>();
 
             services.AddMvc();
             services.AddDistributedMemoryCache();

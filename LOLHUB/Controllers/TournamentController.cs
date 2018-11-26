@@ -20,7 +20,14 @@ namespace LOLHUB.Controllers
 
         public IActionResult Index()
         {
-            IList<Player> players = _tournamtCtx.Players.Include(p => p.Tournament).ToList();
+            IList<Tournament> tournaments = _tournamtCtx.Tournaments.Include(p => p.Players).ToList();
+            return View(tournaments);
+        }
+
+        public ViewResult Detail(int id)
+        {
+            ViewBag.TournamentId = id;
+            IList<Player> players = _tournamtCtx.Players.Include(p => p.Tournament).Where(p=> p.TournamentId == id).ToList();
             return View(players);
         }
     }

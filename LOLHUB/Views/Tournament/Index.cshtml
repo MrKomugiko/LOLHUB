@@ -1,27 +1,39 @@
-﻿@model IList<LOLHUB.Models.Player>
+﻿@model IList<LOLHUB.Models.Tournament>
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Players & Tournaments</h1>
-
+<h1>Tournaments</h1>
+<h3>List of every tournaments</h3>
 <table class="table table-hover table-striped">
     <tr>
-        <th>Player ID</th>
-        <th>Player Name</th>
         <th>Tournament ID</th>
-        <th>Tournament Name</th>
-        <th>Tournament Zajęte miejsca</th>
+        <th>Nazwa Turnieju</th>
+        <th>Liczba zajętych miejsc</th>
+        <th>Status</th>
+        <th>Detale</th>
     </tr>
 
     @foreach (var item in Model)
     {
         <tr>
-            <td>@item.Id</td>
-            <td>@item.FirstName</td>
-            <td>@item.Tournament.TournamentId</td>
-            <td>@item.Tournament.Name</td>
-            <td>@item.Tournament.Players.Count()/16</td>
+            <td>@item.TournamentId</td>
+            <td>@item.Name</td>
+            <td>@item.Players.Count()/16</td>
+            <td>
+                @{ if (item.IsExpired == false)
+                    { <text>Aktywny</text> }
+                    else
+                    {<text>Zakończony</text>} 
+                 }
+            </td>
+
+            <td>
+               <form asp-controller="Tournament" asp-action="Detail" method="get">
+                    <input type="hidden" id="id" name="id" value="@item.TournamentId" />
+                    <button type="submit" class="btn btn-danger">About tournament, list of participatiens</button>
+                </form>
+            </td>
         </tr>
     }
 </table>

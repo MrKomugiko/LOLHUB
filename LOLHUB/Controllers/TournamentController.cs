@@ -24,6 +24,11 @@ namespace LOLHUB.Controllers
             return View(tournaments);
         }
 
+        public IActionResult JoinToTournament(int id)
+        {
+            return RedirectToAction($"Detail/{id}");
+        }
+
         public ViewResult Detail(int id)
         {
             ViewBag.TournamentId = id;

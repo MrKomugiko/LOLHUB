@@ -18,6 +18,6 @@ namespace LOLHUB.Models
 
         public int TournamentId { get; set; }
         public Tournament Tournament { get; set; }
-        //public SummonerInfoModel SummonerInfo { get; set; }
+        public SummonerInfoModel ConectedSummoner { get; set; }
     }
 }

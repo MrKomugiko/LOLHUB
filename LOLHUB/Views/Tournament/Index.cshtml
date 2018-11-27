@@ -12,6 +12,7 @@
         <th>Liczba zajętych miejsc</th>
         <th>Status</th>
         <th>Detale</th>
+        <th></th>
     </tr>
 
     @foreach (var item in Model)
@@ -32,6 +33,12 @@
                <form asp-controller="Tournament" asp-action="Detail" method="get">
                     <input type="hidden" id="id" name="id" value="@item.TournamentId" />
                     <button type="submit" class="btn btn-danger">About tournament, list of participatiens</button>
+                </form>
+            </td>
+            <td>
+                <form asp-controller="Tournament" asp-action="JoinToTournament" method="post">
+                    <input type="hidden" id="id" name="id" value="@item.TournamentId" />
+                    <button type="submit" class="btn btn-danger">Join in Tournamnet</button>
                 </form>
             </td>
         </tr>

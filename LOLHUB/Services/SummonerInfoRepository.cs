@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using LOLHUB.Data;
+using LOLHUB.Services;
 using Microsoft.AspNetCore.Http;
 using RiotApi.Models;
 
@@ -13,10 +14,12 @@ namespace LOLHUB.Models
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private LOLHUBApplicationDbContext _context;
-        public SummonerInfoRepository(LOLHUBApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
+        private IPlayerRepository _playerRepository;
+        public SummonerInfoRepository(LOLHUBApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IPlayerRepository playerRepository)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
+            _playerRepository = playerRepository;
         }
         public IQueryable<SummonerInfoModel> SummonerInfos => _context.SummonerInfos;
 
@@ -62,14 +65,27 @@ namespace LOLHUB.Models
         {
             SummonerInfoModel dbEntry = _context.SummonerInfos
                                 .FirstOrDefault(s => s.id == id);
-            if (dbEntry != null)
+
+            if (dbEntry != null && dbEntry.LockedToAssign == false)
             {
                 dbEntry.IsVerified = true;
                 dbEntry.ConectedAccount = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value; // will give the user's userName
                 dbEntry.ConnectedTime = DateTime.Now;
+                dbEntry.LockedToAssign = true;
                 _context.SaveChanges();
+
+                Player dbPlayer = _playerRepository.Players
+                    .FirstOrDefault(p => p.ConnectedSummonerEmail == dbEntry.ConectedAccount);
+                dbPlayer.ConectedSummoners = dbEntry;
+                _playerRepository.SavePlayer(dbPlayer);
+
+                return dbEntry;
             }
-            return dbEntry;
+            else
+            {
+                return dbEntry;
+            }
+
         }
 
         public SummonerInfoModel RegenerateCode(int id,string newCode) // na proźbe uzytkownika zmienia kod validacyjny

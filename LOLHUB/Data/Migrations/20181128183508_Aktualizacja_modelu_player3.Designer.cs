@@ -11,9 +11,10 @@ using System;
 namespace LOLHUB.Data.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181128183508_Aktualizacja_modelu_player3")]
+    partial class Aktualizacja_modelu_player3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,23 +26,13 @@ namespace LOLHUB.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Address");
-
                     b.Property<int?>("ConectedSummonersSummonerInfoID");
 
                     b.Property<string>("ConnectedSummonerEmail");
 
-                    b.Property<DateTime>("Created");
-
-                    b.Property<DateTime>("DateOfBirth");
-
                     b.Property<string>("FirstName");
 
-                    b.Property<string>("LastName");
-
-                    b.Property<string>("Telephone");
-
-                    b.Property<int?>("TournamentId");
+                    b.Property<int>("TournamentId");
 
                     b.HasKey("Id");
 
@@ -85,8 +76,6 @@ namespace LOLHUB.Data.Migrations
 
                     b.Property<bool>("IsVerified");
 
-                    b.Property<bool>("LockedToAssign");
-
                     b.Property<long>("accountId");
 
                     b.Property<long>("id");
@@ -112,7 +101,8 @@ namespace LOLHUB.Data.Migrations
 
                     b.HasOne("LOLHUB.Models.Tournament", "Tournament")
                         .WithMany("Players")
-                        .HasForeignKey("TournamentId");
+                        .HasForeignKey("TournamentId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

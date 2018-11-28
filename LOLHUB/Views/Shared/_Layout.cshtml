@@ -85,7 +85,10 @@
         {
             <div class="alert alert-success mt-1 text-center">@TempData["message"]</div>
         }
-
+        @if (TempData["SummonnerIsAlreadyAssigned"] != null)
+        {
+            <div class="alert alert-danger mt-1 text-center">@TempData["SummonnerIsAlreadyAssigned"]</div>
+        }
         @if (TempData["SummonerDontExists"] != null)
         {
             <div class="alert alert-success mt-1 text-center">@TempData["SummonerDontExists"]</div>

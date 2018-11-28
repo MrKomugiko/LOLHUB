@@ -10,14 +10,15 @@ namespace LOLHUB.Models
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
-        //public string LastName { get; set; }
-        //public string Address { get; set; }
-        //public DateTime DateOfBirth { get; set; }
-        //public string Telephone { get; set; }
-        //public string Email { get; set; }
+        public string ConnectedSummonerEmail { get; set; } // Email
+        public string LastName { get; set; }
+        public string Address { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string Telephone { get; set; }
+        public DateTime Created { get; set; }
 
-        public int TournamentId { get; set; }
-        public Tournament Tournament { get; set; }
-        public SummonerInfoModel ConectedSummoner { get; set; }
+        public int? TournamentId { get; set; }
+        public virtual Tournament Tournament { get; set; }
+        public virtual SummonerInfoModel ConectedSummoners { get; set; }
     }
 }

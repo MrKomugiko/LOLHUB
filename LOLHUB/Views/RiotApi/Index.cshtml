@@ -1,61 +1,64 @@
 ﻿@model IEnumerable<RiotApi.Models.SummonerInfoModel>;
 
-@if (TempData["SummonerDontExists"] == null)
-{
-    @foreach (var item in Model)
+
+<h2>@ViewBag.SummonnerIsAlreadyAssigned</h2>
+
+    @if (TempData["SummonerDontExists"] == null)
     {
-        <table class="table table-striped table-bordered table-lg">
-            <tr>
-                <th class="text-left">Nickname</th>
-                <th class="text-left">ID</th>
-                <th class="text-left">Poziom Przywoływacza</th>
-                <td class="text-left">Konto Zweryfikowane ?</td>
-                <td class="text-left">Właściciel</td>
-            </tr>
-            <tr>
-                <td class="text-left">@item.name</td>
-                <td class="text-left">@item.id</td>
-                <td class="text-left">@item.summonerLevel</td>
-                <td class="text-left">@item.IsVerified</td>
-                <td class="text-left">@item.ConectedAccount</td>
-            </tr>
-        </table>
+        @foreach (var item in Model)
+        {
+            <table class="table table-striped table-bordered table-lg">
+                <tr>
+                    <th class="text-left">Nickname</th>
+                    <th class="text-left">ID</th>
+                    <th class="text-left">Poziom Przywoływacza</th>
+                    <td class="text-left">Konto Zweryfikowane ?</td>
+                    <td class="text-left">Właściciel</td>
+                </tr>
+                <tr>
+                    <td class="text-left">@item.name</td>
+                    <td class="text-left">@item.id</td>
+                    <td class="text-left">@item.summonerLevel</td>
+                    <td class="text-left">@item.IsVerified</td>
+                    <td class="text-left">@item.ConectedAccount</td>
+                </tr>
+            </table>
 
-        <div class="btn-toolbar mb-4" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-toolbar mb-4" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group">
+                    <form asp-controller="riotapi" asp-action="regenerateCode" method="post">
+                        <input type="hidden" id="id" name="id" value="@item.id" />
+                        <button type="submit" class="btn btn-danger">Generuj Nowy Kod Weryfikacyjny</button>
+                    </form>
+                </div>
+
+                <div class="input-group">
+                    <input runat="server" readonly="readonly" id="id" type="text" class="form-control text-center" style="font-size:larger; font-weight:500;" Value=@item.Code aria-describedby="btnGroupAddon" maxlength="20" size="22" />
+                </div>
+                <div class="btn-group" style="margin-right:20px">
+                    <form asp-controller="riotapi" asp-action="Check" method="post">
+                        <input type="hidden" id="id" name="id" value="@item.id" />
+                        <input type="hidden" id="code" name="code" value=@item.Code />
+                        <button type="submit" class="btn btn-warning">Weryfikuj</button>
+                    </form>
+                </div>
+            </div>
+        }}
+
+    <h3>@ViewBag.Success</h3>
+
+    <h3>@ViewBag.Failed</h3>
+
+
+    <div class="btn-toolbar mb-4" style="margin-top:25px" role="toolbar" aria-label="Toolbar with button groups">
+        <form action="/v1/riotapi/getsummoner/{nickname}" method="post">
             <div class="btn-group">
-                <form asp-controller="riotapi" asp-action="regenerateCode" method="get">
-                    <input type="hidden" id="id" name="id" value="@item.id" />
-                    <button type="submit" class="btn btn-danger">Generuj Nowy Kod Weryfikacyjny</button>
-                </form>
+                <button type="submit" class="btn btn-warning" name="submit">Wprowadź</button>
             </div>
- 
             <div class="input-group">
-                <input runat="server" readonly="readonly" id="id" type="text" class="form-control text-center" style="font-size:larger; font-weight:500;" Value=@item.Code aria-describedby="btnGroupAddon" maxlength="20" size="22" />
+                <input type="text" name="nickname" class="form-control" placeholder="Wprowadz nazwę przywoływacza" aria-describedby="btnGroupAddon" size="30" maxlength="30" />
             </div>
-            <div class="btn-group" style="margin-right:20px">
-                <form asp-controller="riotapi" asp-action="Check" method="post">
-                    <input type="hidden" id="id" name="id" value="@item.id" />
-                    <input type="hidden" id="code" name="code" value=@item.Code />
-                    <button type="submit" class="btn btn-warning">Weryfikuj</button>
-                </form>
-            </div>
-        </div>
-    }}
-
-<h3>@ViewBag.Success</h3>
-
-<h3>@ViewBag.Failed</h3>
-
-
-<div class="btn-toolbar mb-4" style="margin-top:25px" role="toolbar" aria-label="Toolbar with button groups">
-    <form action="/v1/riotapi/getsummoner/{nickname}" method="post">
-        <div class="btn-group">
-            <button type="submit" class="btn btn-warning" name="submit">Wprowadź</button>
-        </div>
-        <div class="input-group">
-            <input type="text" name="nickname" class="form-control" placeholder="Wprowadz nazwę przywoływacza" aria-describedby="btnGroupAddon" size="30" maxlength="30" />
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
 
 

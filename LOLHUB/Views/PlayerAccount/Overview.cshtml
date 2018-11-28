@@ -1,0 +1,29 @@
+﻿@model LOLHUB.Models.Player
+
+@{
+    ViewData["Title"] = "PlayerAccountOverview";
+}
+
+<h2>PlayerAccount Overview</h2>
+
+<h3>Detail info about your player account</h3>
+<table class="table table-hover table-striped">
+    <tr>
+        <th>Player ID</th>
+        <th>Nazwa gracza</th>
+        <th>in tournament #</th>
+        <th>email</th>
+        <th>summoner acc</th>
+        <th>nickname</th>
+    </tr>
+
+        <tr>
+            <td>@Model.Id</td>
+            <td>@Model.FirstName</td>
+            <td>@Model.TournamentId</td>
+            <td>@Model.ConnectedSummonerEmail</td>
+            @*<td>@item.ConectedSummoner.ConectedAccount</td>  
+            <td>@item.ConectedSummoner.name</td>*@
+        </tr>
+   
+</table>

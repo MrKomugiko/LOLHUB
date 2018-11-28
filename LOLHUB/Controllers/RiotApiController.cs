@@ -121,9 +121,17 @@ namespace LOLHUB.Controllers
 
             if (_code == _usercode)
             {
-                _repository.UpdateVerificationStatus(id);
-                TempData["result"] = "Gratulacje, udało się sparować twoje konto League of Legends :)";
-                return RedirectToAction("Index");
+                if (dbEntry.LockedToAssign == true)
+                {
+                    TempData["SummonnerIsAlreadyAssigned"] = "Ten przywoływacz jest już przypisany do konta, jeżeli to jest twoje konto, skontaktuj się z administracją ";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    _repository.UpdateVerificationStatus(id);
+                    TempData["result"] = "Gratulacje, udało się sparować twoje konto League of Legends :)";
+                    return RedirectToAction("Index");
+                }
             }
             else
             {

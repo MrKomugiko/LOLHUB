@@ -22,6 +22,8 @@ namespace RiotApi.Models
         public DateTime AddTime { get; set; }       // data dodania
         public DateTime ConnectedTime { get; set; } // data połączenia z LOLHUB
 
+        public bool LockedToAssign { get; set; }    // po udanym parowaniu i dopisania "connectedAccoutn" blokuje się dla próby kolejnych zmian?
+
         public string Code { get; set; }            // przypisanie kodu weryfikacyjnego do parowania konta
     }
 }

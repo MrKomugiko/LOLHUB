@@ -11,9 +11,10 @@ using System;
 namespace LOLHUB.Data.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181128204152_Aktualizacja_modelu_player4_nullableFK")]
+    partial class Aktualizacja_modelu_player4_nullableFK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,8 +31,6 @@ namespace LOLHUB.Data.Migrations
                     b.Property<int?>("ConectedSummonersSummonerInfoID");
 
                     b.Property<string>("ConnectedSummonerEmail");
-
-                    b.Property<DateTime>("Created");
 
                     b.Property<DateTime>("DateOfBirth");
 
@@ -84,8 +83,6 @@ namespace LOLHUB.Data.Migrations
                     b.Property<DateTime>("ConnectedTime");
 
                     b.Property<bool>("IsVerified");
-
-                    b.Property<bool>("LockedToAssign");
 
                     b.Property<long>("accountId");
 

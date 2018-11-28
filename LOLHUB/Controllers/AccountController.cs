@@ -24,17 +24,20 @@ namespace LOLHUB.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
+        private readonly IPlayerRepository _playerRepository;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
+            IPlayerRepository playerRepository,
             ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
+            _playerRepository = playerRepository;
         }
 
         [TempData]
@@ -229,11 +232,19 @@ namespace LOLHUB.Controllers
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
                     await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-
                     await _userManager.AddToRoleAsync(user, "Member");
-
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation("User created a new account with password.");
+
+                    //nowo zarejestrowany użytkownik zostanie przypisany modelowi Player z przypisanym emailem
+                    Player player = new Player
+                    {
+                        ConectedSummoners = null,
+                        FirstName = null,
+                        ConnectedSummonerEmail = user.Email
+                    };
+
+                    _playerRepository.CreateBasicPlayer(player); 
 
                     return RedirectToLocal(returnUrl);
                 }

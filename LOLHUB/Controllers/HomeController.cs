@@ -9,15 +9,8 @@ using LOLHUB.Models.HomeViewModel;
 
 namespace LOLHUB.Controllers
 {
-    public class HomeController : Controller
-    {
-
-        //public HomeController(ITournamentRepository tournamentRepository)
-        //{
-        //    _tournamentRepository = tournamentRepository;
-        //}
-        //private ITournamentRepository _tournamentRepository;
-
+    public class HomeController : Controller { 
+    
         public IActionResult Index()
         {
             return View();

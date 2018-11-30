@@ -14,5 +14,7 @@ namespace LOLHUB.Models
         Tournament DeleteTournament(int tournamentId);
 
         Tournament TimeOut(int tournamentId);
+
+        void JoinToTournament(int tournamentId);
     }
 }

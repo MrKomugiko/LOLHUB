@@ -1,17 +1,24 @@
 ﻿using LOLHUB.Data;
+using LOLHUB.Services;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace LOLHUB.Models
 {
     public class TournamentRepository : ITournamentRepository
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private LOLHUBApplicationDbContext _context;
-        public TournamentRepository(LOLHUBApplicationDbContext context)
+        private IPlayerRepository _playerCtx;
+        public TournamentRepository(LOLHUBApplicationDbContext context, IPlayerRepository playerCtx, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _playerCtx = playerCtx;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public IQueryable<Tournament> Tournaments => _context.Tournaments;
@@ -32,7 +39,7 @@ namespace LOLHUB.Models
                     dbEntry.StartDate = tournament.StartDate;
                     dbEntry.EndDate = tournament.EndDate;
                 }
-               
+
             }
             _context.SaveChanges();
         }
@@ -70,6 +77,20 @@ namespace LOLHUB.Models
             }
             _context.SaveChanges();
             return dbEntry;
+        }
+
+        public void JoinToTournament(int tournamentId)
+        {
+            var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            Player playerData = _playerCtx.Players.FirstOrDefault(p => p.ConnectedSummonerEmail == playerName);
+
+            if (playerData.TournamentId == null || playerData.TournamentId  != tournamentId) { //dołączenie po raz pierwszy albo zmiana turnieju jezeli juz do jakeigos dolaczyl
+
+                playerData.TournamentId = tournamentId;
+
+                _context.Players.Update(playerData);
+             }
+            _context.SaveChanges();
         }
     }
 }

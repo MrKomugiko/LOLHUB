@@ -12,27 +12,34 @@ namespace LOLHUB.Controllers
     public class TournamentController : Controller
     {
 
-        private readonly LOLHUBApplicationDbContext _tournamtCtx;
-        public TournamentController(LOLHUBApplicationDbContext tournamtCtx)
+        private readonly LOLHUBApplicationDbContext _context;
+        private ITournamentRepository _tournamentCtx;
+        public TournamentController(LOLHUBApplicationDbContext context, ITournamentRepository tournamentCtx)
         {
-            _tournamtCtx = tournamtCtx;
+            _context = context;
+            _tournamentCtx = tournamentCtx;
         }
 
         public IActionResult Index()
         {
-            IList<Tournament> tournaments = _tournamtCtx.Tournaments.Include(p => p.Players).ToList();
+            IList<Tournament> tournaments = _context.Tournaments.Include(p => p.Players).ToList();
             return View(tournaments);
         }
 
-        public IActionResult JoinToTournament(int id)
+        public IActionResult JoinToTournament(int tournamentId)
         {
-            return RedirectToAction($"Detail/{id}");
+            _tournamentCtx.JoinToTournament(tournamentId);
+            return RedirectToAction("Index");
         }
 
         public ViewResult Detail(int id)
         {
             ViewBag.TournamentId = id;
-            IList<Player> players = _tournamtCtx.Players.Include(p => p.Tournament).Include(s=>s.ConectedSummoners).Where(p=> p.TournamentId == id).Where(s=>s.ConnectedSummonerEmail==s.ConectedSummoners.ConectedAccount).ToList();
+            IList<Player> players = _context.Players
+                .Include(t => t.Tournament)
+                .Where(t => t.TournamentId == id)
+                .Include(s=>s.ConectedSummoners)
+                .ToList();
             return View(players);
         }
     }

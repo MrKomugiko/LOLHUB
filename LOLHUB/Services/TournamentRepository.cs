@@ -79,18 +79,31 @@ namespace LOLHUB.Models
             return dbEntry;
         }
 
-        public void JoinToTournament(int tournamentId)
+        public int JoinToTournament(int tournamentId)
         {
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             Player playerData = _playerCtx.Players.FirstOrDefault(p => p.ConnectedSummonerEmail == playerName);
 
-            if (playerData.TournamentId == null || playerData.TournamentId  != tournamentId) { //dołączenie po raz pierwszy albo zmiana turnieju jezeli juz do jakeigos dolaczyl
+            bool TournamentStatus = _context.Tournaments.Where(t => t.TournamentId == tournamentId).First().IsExpired;
+            if (TournamentStatus != true)
+            {
+                if (playerData.TournamentId == null)
+                { //dołączenie po raz pierwszy albo zmiana turnieju jezeli juz do jakeigos dolaczyl
 
-                playerData.TournamentId = tournamentId;
-
-                _context.Players.Update(playerData);
-             }
-            _context.SaveChanges();
+                    playerData.TournamentId = tournamentId;
+                    _context.Players.Update(playerData);
+                    _context.SaveChanges();
+                    return 11;
+                }
+                else if (playerData.TournamentId != tournamentId)
+                {
+                    playerData.TournamentId = tournamentId;
+                    _context.Players.Update(playerData);
+                    _context.SaveChanges();
+                    return 10;
+                }
+            }
+            return 00;
         }
     }
 }

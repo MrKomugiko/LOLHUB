@@ -10,20 +10,28 @@
 <table class="table table-hover table-striped">
     <tr>
         <th>Player ID</th>
-        <th>Nazwa gracza</th>
-        <th>in tournament #</th>
+        <th>Player Name</th>
+        <th>Rok urodzenia</th>
+        <th>Data Dołączenia</th>
+        <th>Nr Telefonu</th>
         <th>email</th>
-        <th>summoner acc</th>
         <th>nickname</th>
+        <th>Summoner level</th>
+        <th>In Tournament #</th>
+        <th>Tournament Name</th>
     </tr>
 
-        <tr>
-            <td>@Model.Id</td>
-            <td>@Model.FirstName</td>
-            <td>@Model.TournamentId</td>
-            <td>@Model.ConnectedSummonerEmail</td>
-            @*<td>@item.ConectedSummoner.ConectedAccount</td>  
-            <td>@item.ConectedSummoner.name</td>*@
-        </tr>
+    <tr>
+        <td>@Model.Id</td>
+        <td>@Model.FirstName</td>
+        <td>@Model.Created</td>
+        <td>@Model.DateOfBirth</td>
+        <td>@Model.Telephone</td>
+        <td>@Model.ConectedSummoners.ConectedAccount</td>
+        <td>@Model.ConectedSummoners.name</td>
+        <td>@Model.ConectedSummoners.summonerLevel</td>
+        <td>@Model.TournamentId</td>
+        <td>@Model.Tournament.Name</td>
+    </tr>
    
 </table>

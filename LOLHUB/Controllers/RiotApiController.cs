@@ -10,6 +10,7 @@ using LOLHUB.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RiotApi.Models;
 using RiotApi.Services;
 
@@ -18,28 +19,53 @@ namespace LOLHUB.Controllers
     [Authorize]
     public class RiotApiController : Controller
     {
-        public RiotApiController(IRiotApiService riotApiService, ISummonerInfoRepository repository, IGenerateCode code)
+        public RiotApiController(IRiotApiService riotApiService, ISummonerInfoRepository repository, IPlayerRepository playerRepository, IGenerateCode code)
         {
             _riotApiService = riotApiService;
             _repository = repository;
+            _playerRepository = playerRepository;
             _code = code;
         }
         private readonly IRiotApiService _riotApiService;
 
         private ISummonerInfoRepository _repository;
+        private IPlayerRepository _playerRepository;
 
         private IGenerateCode _code;
 
         [Authorize(Roles = "Member, Admin")]
         [Route("v1/riotapi/profile")]
-        public ViewResult Index()
+        public ActionResult Index()
         {
-            if (TempData["SummonerDontExists"] != null) { return View(); }
-            else
+            //wyszukanie id gracza według emailu zalogowanego konta 
+            string LoggedUserEmail = User.FindFirst(ClaimTypes.Name).Value;
+
+            Player checkPlayer = _playerRepository.Players
+                    .Include(p => p.ConectedSummoners)
+                    .Where(p=> p.ConnectedSummonerEmail == LoggedUserEmail)
+                    .FirstOrDefault();
+
+            if (checkPlayer.ConectedSummoners == null)
             {
-                // var RecentID = Convert.ToInt32(TempData["RecentID"]);
-                var RecentID = HttpContext.Session.GetInt32("RecentID");
-                return View(_repository.SummonerInfos.Where(s => s.id == RecentID));
+                if (TempData["SummonerDontExists"] != null)
+                {
+                    return View();
+                }
+                else
+                {
+                    // var RecentID = Convert.ToInt32(TempData["RecentID"]);
+                    var RecentID = HttpContext.Session.GetInt32("RecentID");
+                    if(RecentID == null)
+                    {
+                        return RedirectToAction("Index","Home");
+                    }
+                    var SummonerReturnModel = _repository.SummonerInfos.Where(s => s.id == RecentID).FirstOrDefault();
+                    return View(SummonerReturnModel);
+                }
+            } else// ("jezeli do konta jest już przypisane konto")
+            {
+                var SummonerReturnModel = _repository.SummonerInfos.Where(p => p.ConectedAccount == LoggedUserEmail).FirstOrDefault();
+                return View(SummonerReturnModel);
             }
         }
 

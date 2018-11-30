@@ -32,7 +32,7 @@ namespace LOLHUB.Controllers
         public ViewResult Detail(int id)
         {
             ViewBag.TournamentId = id;
-            IList<Player> players = _tournamtCtx.Players.Include(p => p.Tournament).Where(p=> p.TournamentId == id).ToList();
+            IList<Player> players = _tournamtCtx.Players.Include(p => p.Tournament).Include(s=>s.ConectedSummoners).Where(p=> p.TournamentId == id).Where(s=>s.ConnectedSummonerEmail==s.ConectedSummoners.ConectedAccount).ToList();
             return View(players);
         }
     }

@@ -12,7 +12,11 @@
         <th>Liczba zajętych miejsc</th>
         <th>Status</th>
         <th>Detale</th>
-        <th></th>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <th>Dołącz</th>
+        }
     </tr>
 
     @foreach (var item in Model)
@@ -36,10 +40,14 @@
                 </form>
             </td>
             <td>
-                <form asp-controller="Tournament" asp-action="JoinToTournament" method="post">
-                    <input type="hidden" id="tournamentId" name="tournamentId" value="@item.TournamentId" />
-                    <button type="submit" class="btn btn-default">Join in Tournamnet</button>
-                </form>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form asp-controller="Tournament" asp-action="JoinToTournament" method="post" class="text-center">
+                        <input type="hidden" id="tournamentId" name="tournamentId" value="@item.TournamentId" />
+                        <button type="submit" class="btn btn-info"><b>+</b></button>
+                    </form>
+
+                }
             </td>
         </tr>
     }

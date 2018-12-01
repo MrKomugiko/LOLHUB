@@ -31,6 +31,7 @@ namespace LOLHUB.Controllers
             int result = _tournamentCtx.JoinToTournament(tournamentId);
             if (result == 00) { TempData["joiningResult"] = "Nie udało się dołączyć do turnieju. Turniej już się zakończył."; }
             if (result == 10) { TempData["joiningResult"] = "Z Powodzeniem zmieniłeś uczestnictwo w turnieju na inny."; }
+            if (result == 01) { TempData["joiningResult"] = "Już jesteś przypisany do tego turnieju."; }
             if (result == 11) { TempData["joiningResult"] = "Poprawnie dołączyłeś do turnieju, gratulacje :)"; }
             return RedirectToAction("Index");
         }

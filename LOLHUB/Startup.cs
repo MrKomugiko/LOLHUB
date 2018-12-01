@@ -50,6 +50,7 @@ namespace LOLHUB
 
             services.AddSingleton<IRiotApiService, RiotApiService>();
             services.AddSingleton<IGetSummonerInfo, GetSummonerInfo>();
+            services.AddSingleton<IGetMatchData, GetMatchData>();
             services.AddSingleton<IGenerateCode, GenerateCode>();
 
         }

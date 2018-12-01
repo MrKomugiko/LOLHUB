@@ -133,7 +133,18 @@ namespace LOLHUB.Controllers
                 }
                 return RedirectToAction("Index");
             }
- }
+        }
+
+        [Authorize(Roles = "Member, Admin")]
+        [Route("/v1/riotapi/getMatchData/{matchId}")] 
+        public async Task<IActionResult> GetMatchData(int matchId)
+        {
+            var result = await _riotApiService.GetMatchDataBasedOnId(matchId);
+
+            return Ok(result);
+            return RedirectToAction("Index");
+        }
+
 
         [HttpPost]
         [Authorize(Roles = "Member, Admin")]

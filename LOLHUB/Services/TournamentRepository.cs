@@ -101,6 +101,9 @@ namespace LOLHUB.Models
                     _context.Players.Update(playerData);
                     _context.SaveChanges();
                     return 10;
+                }else if (playerData.TournamentId == tournamentId)
+                {
+                    return 01;
                 }
             }
             return 00;

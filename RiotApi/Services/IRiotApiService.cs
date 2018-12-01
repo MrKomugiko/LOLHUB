@@ -7,6 +7,8 @@ namespace RiotApi.Services
     {
         Task<SummonerInfoModel> GetSummonerInfoBasedOnNickname(string nickname);
 
+        Task<MatchDto> GetMatchDataBasedOnId(int matchId);
+
         Task<string> GetVerificationCodeBasedOnId(int id);
     }
 }

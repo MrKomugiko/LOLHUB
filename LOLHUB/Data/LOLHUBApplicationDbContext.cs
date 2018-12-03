@@ -18,6 +18,7 @@ namespace LOLHUB.Data
         public DbSet<SummonerInfoModel> SummonerInfos { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<MatchSelectedData> Matches { get; set; }
+        public DbSet<GameStatistic> GameStats { get; set; }
     }
 }
 

@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using LOLHUB.Data;
 using LOLHUB.Models;
 using LOLHUB.Models.Match;
 using LOLHUB.Services;
@@ -20,20 +21,23 @@ namespace LOLHUB.Controllers
     [Authorize]
     public class RiotApiController : Controller
     {
-        public RiotApiController(IRiotApiService riotApiService, ISummonerInfoRepository repository, IPlayerRepository playerRepository, IGenerateCode code, IMatchRepository matchRepository)
+        public RiotApiController(LOLHUBApplicationDbContext context,IRiotApiService riotApiService, ISummonerInfoRepository repository, IPlayerRepository playerRepository, IGenerateCode code, IMatchRepository matchRepository, ITournamentRepository tournamentRepository)
         {
+            _context = context;
             _riotApiService = riotApiService;
             _repository = repository;
             _playerRepository = playerRepository;
             _matchRepository = matchRepository;
+            _tournamentRepository = tournamentRepository;
             _code = code;
         }
+        private LOLHUBApplicationDbContext _context;
         private readonly IRiotApiService _riotApiService;
 
         private ISummonerInfoRepository _repository;
         private IPlayerRepository _playerRepository;
         private IMatchRepository _matchRepository;
-
+        private ITournamentRepository _tournamentRepository;
         private IGenerateCode _code;
 
         [Authorize(Roles = "Member, Admin")]
@@ -139,55 +143,67 @@ namespace LOLHUB.Controllers
         }
 
         [Authorize(Roles = "Member, Admin")]
-        [Route("/v1/riotapi/getMatchData/{matchId}")] 
-        public async Task<IActionResult> GetMatchData(int matchId)
+        [Route("/v1/riotapi/getMatchData/{url}")] 
+        public async Task<IActionResult> GetMatchData(string url)
         {
-            var result = await _riotApiService.GetMatchDataBasedOnId(matchId);
+            var cuttedUrl = url.Substring(69,10);
+            var matchId = Int32.Parse(cuttedUrl);
+    
 
-            MatchSelectedData newMatch = new MatchSelectedData
+            if (_matchRepository.Matches.Where(m => m.gameid == matchId).Any())
             {
-                gameid = result.gameid,
-                seasonId = result.seasonId,
-                queueId = result.queueId,
-                gameType = result.gameType,
-                participantIdentities = result.participantIdentities
-                .Select(i => new ParticipantIdentity
-                {
-                    participantId = i.participantId,
-                    playerInfo = new PlayerInfo
-                    {
-                        summonerName = i.player.summonerName,
-                        platformId = i.player.platformId,
-                        currentAccountId = i.player.currentAccountId,
-                        summonerId = i.player.summonerId,
-                        accountId = i.player.accountId
-                    }
-                }).ToList(),
-                gameDuration = result.gameDuration,
-                gameMode = result.gameMode,
-                mapId = result.mapId,
-                participants = result.participants
-                .Select(p => new Participant
-                {
-                    participantId = p.participantId,
-                    teamId = p.teamId,
-                    highestAchievedSeasonTier = p.highestAchievedSeasonTier,
-                    championId = p.championId,
-                    spell1Id = p.spell1Id,
-                    spell2Id = p.spell2Id,
-                    stats = new Stats
-                    {
-                        ParticipantId = p.stats.ParticipantId,
-                        Kills = p.stats.Kills,
-                        Deaths = p.stats.Deaths,
-                        Assists = p.stats.Assists,
-                        Win = p.stats.Win
-                    }
-                }).ToList()
-            };
-            _matchRepository.SaveMatch(newMatch);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var result = await _riotApiService.GetMatchDataBasedOnId(Int32.Parse(cuttedUrl));
 
-            return RedirectToAction("Index");
+                MatchSelectedData newMatch5v5 = new MatchSelectedData
+                {
+                    gameid = result.gameid,
+                    seasonId = result.seasonId,
+                    queueId = result.queueId,
+                    gameType = result.gameType,
+                    participantIdentities = result.participantIdentities
+                    .Select(i => new ParticipantIdentity
+                    {
+                        participantId = i.participantId,
+                        playerInfo = new PlayerInfo
+                        {
+                            participantId = i.participantId,
+                            summonerName = i.player.summonerName,
+                            platformId = i.player.platformId,
+                            currentAccountId = i.player.currentAccountId,
+                            summonerId = i.player.summonerId,
+                            accountId = i.player.accountId
+                        }
+                    }).ToList(),
+                    gameDuration = result.gameDuration,
+                    gameMode = result.gameMode,
+                    mapId = result.mapId,
+                    participants = result.participants
+                    .Select(p => new Participant
+                    {
+                        participantId = p.participantId,
+                        teamId = p.teamId,
+                        highestAchievedSeasonTier = p.highestAchievedSeasonTier,
+                        championId = p.championId,
+                        spell1Id = p.spell1Id,
+                        spell2Id = p.spell2Id,
+                        stats = new Stats
+                        {
+                            ParticipantId = p.stats.ParticipantId,
+                            Kills = p.stats.Kills,
+                            Deaths = p.stats.Deaths,
+                            Assists = p.stats.Assists,
+                            Win = p.stats.Win
+                        }
+                    }).ToList()
+                };
+                _matchRepository.SaveMatch(newMatch5v5);
+
+                return Ok(newMatch5v5);
+            }
         }
 
         [HttpPost]

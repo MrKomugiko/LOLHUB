@@ -12,6 +12,5 @@ namespace LOLHUB.Models.Match
 
         public int participantId { get; set; }
         public PlayerInfo playerInfo { get; set; }  
-
     }
 }

@@ -1,4 +1,5 @@
-﻿using LOLHUB.Models.Match;
+﻿using LOLHUB.Models;
+using LOLHUB.Models.Match;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace LOLHUB.Services
         IQueryable<MatchSelectedData> Matches { get; }
 
         void SaveMatch(MatchSelectedData matchSelectedData);
-    
+
+        void AddStats(int gameId, int playerId);
     }
 }

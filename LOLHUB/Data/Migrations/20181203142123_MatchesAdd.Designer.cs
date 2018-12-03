@@ -11,9 +11,10 @@ using System;
 namespace LOLHUB.Data.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181203142123_MatchesAdd")]
+    partial class MatchesAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,6 +35,8 @@ namespace LOLHUB.Data.Migrations
                     b.Property<long>("gameid");
 
                     b.Property<int>("mapId");
+
+                    b.Property<int>("playersCount");
 
                     b.Property<int>("queueId");
 
@@ -135,26 +138,6 @@ namespace LOLHUB.Data.Migrations
                     b.ToTable("Stats");
                 });
 
-            modelBuilder.Entity("LOLHUB.Models.MatchViewModel.MatchStatsForTournamentAndPlayer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("Created");
-
-                    b.Property<int?>("MatchDataId");
-
-                    b.Property<int?>("TournamentId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MatchDataId");
-
-                    b.HasIndex("TournamentId");
-
-                    b.ToTable("MatchStats");
-                });
-
             modelBuilder.Entity("LOLHUB.Models.Player", b =>
                 {
                     b.Property<int>("Id")
@@ -174,8 +157,6 @@ namespace LOLHUB.Data.Migrations
 
                     b.Property<string>("LastName");
 
-                    b.Property<int?>("MatchStatsForTournamentAndPlayerId");
-
                     b.Property<string>("Telephone");
 
                     b.Property<int?>("TournamentId");
@@ -183,8 +164,6 @@ namespace LOLHUB.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ConectedSummonersSummonerInfoID");
-
-                    b.HasIndex("MatchStatsForTournamentAndPlayerId");
 
                     b.HasIndex("TournamentId");
 
@@ -269,26 +248,11 @@ namespace LOLHUB.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("LOLHUB.Models.MatchViewModel.MatchStatsForTournamentAndPlayer", b =>
-                {
-                    b.HasOne("LOLHUB.Models.Match.MatchSelectedData", "MatchData")
-                        .WithMany()
-                        .HasForeignKey("MatchDataId");
-
-                    b.HasOne("LOLHUB.Models.Tournament", "Tournament")
-                        .WithMany()
-                        .HasForeignKey("TournamentId");
-                });
-
             modelBuilder.Entity("LOLHUB.Models.Player", b =>
                 {
                     b.HasOne("RiotApi.Models.SummonerInfoModel", "ConectedSummoners")
                         .WithMany()
                         .HasForeignKey("ConectedSummonersSummonerInfoID");
-
-                    b.HasOne("LOLHUB.Models.MatchViewModel.MatchStatsForTournamentAndPlayer")
-                        .WithMany("Players")
-                        .HasForeignKey("MatchStatsForTournamentAndPlayerId");
 
                     b.HasOne("LOLHUB.Models.Tournament", "Tournament")
                         .WithMany("Players")

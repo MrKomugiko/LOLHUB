@@ -15,7 +15,6 @@ namespace LOLHUB.Models.Match
         public int seasonId { get; set; }
         public int queueId { get; set; }
         public long gameid { get; set; }
-        public int playersCount { get; set; }
         public string gameType { get; set; }
         public int mapId { get; set; }
         public string gameMode { get; set; }

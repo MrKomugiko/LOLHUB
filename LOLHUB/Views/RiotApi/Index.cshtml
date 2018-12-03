@@ -22,6 +22,7 @@
                     <td class="text-left">@Model.ConectedAccount</td>
                 </tr>
             </table>
+
         if (Model.IsVerified == false)
         {
             <div class="btn-toolbar mb-4" role="toolbar" aria-label="Toolbar with button groups">
@@ -50,21 +51,3 @@
 
         }
     }
-
-    @*<h3>@ViewBag.Success</h3>
-
-    <h3>@ViewBag.Failed</h3>
-
-
-    <div class="btn-toolbar mb-4" style="margin-top:25px" role="toolbar" aria-label="Toolbar with button groups">
-        <form action="/v1/riotapi/getsummoner/{nickname}" method="post">
-            <div class="btn-group">
-                <button type="submit" class="btn btn-warning" name="submit">Wprowadź</button>
-            </div>
-            <div class="input-group">
-                <input type="text" name="nickname" class="form-control" placeholder="Wprowadz nazwę przywoływacza" aria-describedby="btnGroupAddon" size="30" maxlength="30" />
-            </div>
-        </form>
-    </div>*@
-
-

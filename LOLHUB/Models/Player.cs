@@ -1,4 +1,5 @@
-﻿using RiotApi.Models;
+﻿using LOLHUB.Models.Match;
+using RiotApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,6 @@ namespace LOLHUB.Models
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
-        public string ConnectedSummonerEmail { get; set; } // Email
         public string LastName { get; set; }
         public string Address { get; set; }
         public DateTime DateOfBirth { get; set; }
@@ -19,6 +19,7 @@ namespace LOLHUB.Models
 
         public int? TournamentId { get; set; }
         public virtual Tournament Tournament { get; set; }
+        public string ConnectedSummonerEmail { get; set; } 
         public virtual SummonerInfoModel ConectedSummoners { get; set; }
     }
 }

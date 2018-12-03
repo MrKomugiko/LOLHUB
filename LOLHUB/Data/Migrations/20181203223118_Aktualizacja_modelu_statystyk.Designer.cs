@@ -11,9 +11,10 @@ using System;
 namespace LOLHUB.Data.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181203223118_Aktualizacja_modelu_statystyk")]
+    partial class Aktualizacja_modelu_statystyk
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -11,6 +11,7 @@ namespace LOLHUB.Models.Match
         [Key]
         public int Id { get; set; }
 
+        public int participantId { get; set; }
         public long currentAccountId { get; set; }
         public string summonerName { get; set; }
         public string platformId { get; set; }

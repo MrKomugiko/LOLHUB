@@ -17,8 +17,11 @@
         </form>
     </div>
     <br />
+
     <br />
-    <h3> ![TEST] Wyszukaj dane meczu o id:</h3>
+    <h3> ![TEST] Wyszukaj dane meczu wartośc z url </h3>
+    <p><b><i>https://matchhistory.eune.leagueoflegends.com/pl/#match-details/EUN1/2053306960/200792183</i></b></p>
+    <p>automatycznie wyciąga z url gameId,[...]/#match-details/EUN1/<b>2053306960</b></p>
 
     <div class="btn-toolbar mb-4" style="margin-top:25px" role="toolbar" aria-label="Toolbar with button groups">
         <form action="/v1/riotapi/getMatchData/{matchId}" method="post">
@@ -26,10 +29,35 @@
                 <button type="submit" class="btn btn-warning" name="submit">Wyszukaj</button>
             </div>
             <div class="input-group">
-                <input type="text" name="matchId" class="form-control" placeholder="wprowadź: matchId" aria-describedby="btnGroupAddon" size="30" maxlength="30" />
+                <input type="text" name="url" class="form-control" placeholder="wprowadź: adres rozegranego meczu" aria-describedby="btnGroupAddon" size="79" maxlength="79" />
             </div>
         </form>
     </div>
+    <div>
+        <br/>
+        <b>TODO:</b>
+        <ol>
+            <li><s>Pobieranie i mapowanie modelu meczu z api riotu</s></li>
+            <li><s>Dodawanie modelu z wybranymi danymi do bazy</s></li>
+            <li>Utworzenie tabeli zawierającej historie gier dla danego gracza ( account(summoner id) <=> game id )</li>
+            <li>Sprawdzanie kto jest online</li>
+            <li>Parowanie graczy </li>
+            <li>Zgłaszanie gotowosci</li>
+            <li>
+                Ogarnięcie uruchomienia zadania w tle, <br />
+                które doda wynik meczu dla tej konkretnej pary,<br />
+                lub gracze sami zakończą mecz guzikiem :P
+            </li>
+            <li>
+                Aktualizowanie profili o mecze wygrane/przegrane, <br />
+                albo tylko sme statystyki (KDA, champ, ?itemki)
+            </li>
+        </ol>
+    </div>
+    <div>
+        <p>w turnieju, z graczami, wpisanie url , przekonwertuje dane na stattystyki odbytego meczu , podział na druzyne czerwona i niebieska , ko wygrał etc ? </p>
+    </div>
+  
 }
 else
 {
@@ -45,4 +73,3 @@ else
             </div>
         </form>
     </div>}
-

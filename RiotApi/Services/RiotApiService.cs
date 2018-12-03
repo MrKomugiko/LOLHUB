@@ -22,12 +22,11 @@ namespace RiotApi.Services
         {
             return await _getSummonerInfo.ReturnSummonerInfo(nickname);
         }
+
         public async Task<MatchDto> GetMatchDataBasedOnId(int matchId)
         {
             return await _getMatchData.ReturnMatchData(matchId);
         }
-
-
 
         public async Task<string> GetVerificationCodeBasedOnId(int id)
         {

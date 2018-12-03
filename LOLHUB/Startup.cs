@@ -43,15 +43,18 @@ namespace LOLHUB
             services.AddTransient<ITournamentRepository, TournamentRepository>();
             services.AddTransient<ISummonerInfoRepository, SummonerInfoRepository>();
             services.AddTransient<IPlayerRepository, PlayerRepository>();
-
-            services.AddMvc();
-            services.AddDistributedMemoryCache();
-            services.AddSession();
+            services.AddTransient<IMatchRepository, MatchRepository>();
 
             services.AddSingleton<IRiotApiService, RiotApiService>();
             services.AddSingleton<IGetSummonerInfo, GetSummonerInfo>();
             services.AddSingleton<IGetMatchData, GetMatchData>();
             services.AddSingleton<IGenerateCode, GenerateCode>();
+
+            services.AddMvc();
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+
+
 
         }
 

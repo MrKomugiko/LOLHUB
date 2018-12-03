@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using LOLHUB.Models;
+using LOLHUB.Models.Match;
 using LOLHUB.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -19,17 +20,19 @@ namespace LOLHUB.Controllers
     [Authorize]
     public class RiotApiController : Controller
     {
-        public RiotApiController(IRiotApiService riotApiService, ISummonerInfoRepository repository, IPlayerRepository playerRepository, IGenerateCode code)
+        public RiotApiController(IRiotApiService riotApiService, ISummonerInfoRepository repository, IPlayerRepository playerRepository, IGenerateCode code, IMatchRepository matchRepository)
         {
             _riotApiService = riotApiService;
             _repository = repository;
             _playerRepository = playerRepository;
+            _matchRepository = matchRepository;
             _code = code;
         }
         private readonly IRiotApiService _riotApiService;
 
         private ISummonerInfoRepository _repository;
         private IPlayerRepository _playerRepository;
+        private IMatchRepository _matchRepository;
 
         private IGenerateCode _code;
 
@@ -141,10 +144,51 @@ namespace LOLHUB.Controllers
         {
             var result = await _riotApiService.GetMatchDataBasedOnId(matchId);
 
-            return Ok(result);
+            MatchSelectedData newMatch = new MatchSelectedData
+            {
+                gameid = result.gameid,
+                seasonId = result.seasonId,
+                queueId = result.queueId,
+                gameType = result.gameType,
+                participantIdentities = result.participantIdentities
+                .Select(i => new ParticipantIdentity
+                {
+                    participantId = i.participantId,
+                    playerInfo = new PlayerInfo
+                    {
+                        summonerName = i.player.summonerName,
+                        platformId = i.player.platformId,
+                        currentAccountId = i.player.currentAccountId,
+                        summonerId = i.player.summonerId,
+                        accountId = i.player.accountId
+                    }
+                }).ToList(),
+                gameDuration = result.gameDuration,
+                gameMode = result.gameMode,
+                mapId = result.mapId,
+                participants = result.participants
+                .Select(p => new Participant
+                {
+                    participantId = p.participantId,
+                    teamId = p.teamId,
+                    highestAchievedSeasonTier = p.highestAchievedSeasonTier,
+                    championId = p.championId,
+                    spell1Id = p.spell1Id,
+                    spell2Id = p.spell2Id,
+                    stats = new Stats
+                    {
+                        ParticipantId = p.stats.ParticipantId,
+                        Kills = p.stats.Kills,
+                        Deaths = p.stats.Deaths,
+                        Assists = p.stats.Assists,
+                        Win = p.stats.Win
+                    }
+                }).ToList()
+            };
+            _matchRepository.SaveMatch(newMatch);
+
             return RedirectToAction("Index");
         }
-
 
         [HttpPost]
         [Authorize(Roles = "Member, Admin")]

@@ -11,56 +11,15 @@ using System;
 namespace LOLHUB.Data.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181205000713_Aktualizacja_Modelu_dla_statystyki")]
+    partial class Aktualizacja_Modelu_dla_statystyki
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.3-rtm-10026")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("LOLHUB.Models.GameStatistic", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<long>("AccountId");
-
-                    b.Property<int>("Assists");
-
-                    b.Property<int>("ChampionId");
-
-                    b.Property<DateTime>("DatePlayed");
-
-                    b.Property<int>("Deaths");
-
-                    b.Property<long>("GameDuration");
-
-                    b.Property<long>("GameId");
-
-                    b.Property<string>("GameMode");
-
-                    b.Property<int>("Kills");
-
-                    b.Property<int>("MatchSelectedData");
-
-                    b.Property<long>("SummonerId");
-
-                    b.Property<int?>("SummonerInfoID");
-
-                    b.Property<string>("SummonerName");
-
-                    b.Property<int>("TeamId");
-
-                    b.Property<bool>("Win");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SummonerInfoID");
-
-                    b.ToTable("GameStatistics");
-                });
 
             modelBuilder.Entity("LOLHUB.Models.Match.MatchSelectedData", b =>
                 {
@@ -129,7 +88,7 @@ namespace LOLHUB.Data.Migrations
 
                     b.HasIndex("playerInfoId");
 
-                    b.ToTable("ParticipantIdentity");
+                    b.ToTable("Participants");
                 });
 
             modelBuilder.Entity("LOLHUB.Models.Match.PlayerInfo", b =>
@@ -259,13 +218,6 @@ namespace LOLHUB.Data.Migrations
                     b.HasKey("SummonerInfoID");
 
                     b.ToTable("SummonerInfos");
-                });
-
-            modelBuilder.Entity("LOLHUB.Models.GameStatistic", b =>
-                {
-                    b.HasOne("RiotApi.Models.SummonerInfoModel", "Summoner")
-                        .WithMany()
-                        .HasForeignKey("SummonerInfoID");
                 });
 
             modelBuilder.Entity("LOLHUB.Models.Match.Participant", b =>

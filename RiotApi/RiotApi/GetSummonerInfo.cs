@@ -10,7 +10,7 @@ namespace RiotApi.RiotApi
 {
     public class GetSummonerInfo : IGetSummonerInfo
     {
-        private const string api_key = "RGAPI-d3a7f236-93c1-4b0b-9969-a209b9c7986f";
+        private const string api_key = "RGAPI-5ae55a75-a933-46bb-ba0c-3f16235baaf3";
 
         public async Task<SummonerInfoModel> ReturnSummonerInfo(string nickname)
         {

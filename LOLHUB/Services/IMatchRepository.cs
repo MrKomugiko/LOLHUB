@@ -13,6 +13,8 @@ namespace LOLHUB.Services
 
         void SaveMatch(MatchSelectedData matchSelectedData);
 
-        void AddStats(int gameId, int playerId);
+        IQueryable<GameStatistic> GameStatistics { get; }
+
+        void AddStatsForEachPlayers(GameStatistic gameStatsData);
     }
 }

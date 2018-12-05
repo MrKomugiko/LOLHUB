@@ -24,23 +24,13 @@ namespace LOLHUB.Services
             _context.Matches.Add(matchSelectedData);
             _context.SaveChanges();
         }
+
         //-----------------------------------------------------------------------------------------
+        public IQueryable<GameStatistic> GameStatistics => _context.GameStatistics;
 
-        public void AddStats(int gameId, int playerId)
+        public void AddStatsForEachPlayers(GameStatistic gameStatsData)
         {
-            MatchSelectedData dbEntryMatch = _context.Matches
-                   .FirstOrDefault(s => s.Id == gameId);
-
-            Player dbEntryPlayer = _context.Players
-                .FirstOrDefault(p => p.Id == playerId);
-
-            GameStatistic gameStats = new GameStatistic
-            {
-
-            };
-
-            _context.GameStats.Add(gameStats);
-
+            _context.GameStatistics.Add(gameStatsData);
             _context.SaveChanges();
         }
     }

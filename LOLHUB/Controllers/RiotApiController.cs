@@ -200,7 +200,80 @@ namespace LOLHUB.Controllers
                         }
                     }).ToList()
                 };
-                _matchRepository.SaveMatch(newMatch5v5);
+
+                 _matchRepository.SaveMatch(newMatch5v5); // nie wiem czy to mi jeszcze potrzebne skoro mam juz przemodelowane statystyki dla graczy 
+
+                // Pętla uaktualniająca base dla wszystkich 10 graczy biorących udział w grze
+
+                for (int INDEX = 1; INDEX <=10; INDEX++)
+                {
+                long SummonerId = newMatch5v5.participantIdentities.Where(p => p.participantId == INDEX)
+                                                                .Select(p => p.playerInfo.summonerId)
+                                                                .FirstOrDefault();
+
+                int ParticipantId = newMatch5v5.participantIdentities
+                                                                .Where(p => p.participantId == INDEX)
+                                                                .Where(p => p.playerInfo.summonerId == SummonerId)
+                                                                .Select(p=>p.participantId)
+                                                                .FirstOrDefault();
+
+                GameStatistic gameStatistic = new GameStatistic
+                {
+                    MatchSelectedData = newMatch5v5.Id,
+
+                    Win = newMatch5v5.participants
+                            .Where(p => p.participantId == ParticipantId)
+                                .Select(p => p.stats.Win).Any(),
+
+                    SummonerName = newMatch5v5.participantIdentities
+                            .Where(p => p.participantId == ParticipantId)
+                                .Select(p => p.playerInfo.summonerName).FirstOrDefault(),
+
+                    SummonerId = newMatch5v5.participantIdentities
+                            .Where(p => p.participantId == ParticipantId)
+                                .Select(p => p.playerInfo.summonerId).FirstOrDefault(),
+
+                    AccountId = newMatch5v5.participantIdentities
+                            .Where(p => p.participantId == ParticipantId)
+                                .Select(p => p.playerInfo.accountId).FirstOrDefault(),
+
+                    Summoner = _repository.SummonerInfos
+                            .Where(p => p.id == newMatch5v5.participantIdentities
+                                                    .Where(m => m.participantId == ParticipantId)
+                                                        .Select(s => s.playerInfo.summonerId).FirstOrDefault())
+                                                            .FirstOrDefault(),
+                                    
+                             
+                    Kills = newMatch5v5.participants
+                            .Where(p => p.participantId == ParticipantId)
+                                .Select(p => p.stats.Kills).FirstOrDefault(),
+
+                    Deaths = newMatch5v5.participants
+                            .Where(p => p.participantId == ParticipantId)
+                                .Select(p => p.stats.Deaths).FirstOrDefault(),
+
+                    Assists = newMatch5v5.participants
+                            .Where(p => p.participantId == ParticipantId)
+                                .Select(p => p.stats.Assists).FirstOrDefault(),
+
+                    ChampionId = newMatch5v5.participants
+                        .Where(p => p.participantId == ParticipantId)
+                            .Select(p => p.championId).FirstOrDefault(),
+
+                    TeamId = newMatch5v5.participants
+                        .Where(p => p.participantId == ParticipantId)
+                            .Select(p => p.teamId).FirstOrDefault(),
+
+                    GameMode = newMatch5v5.gameMode,
+
+                    GameId = newMatch5v5.gameid,
+
+                    GameDuration = newMatch5v5.gameDuration,
+
+                    DatePlayed = DateTime.Now
+                };
+                    _matchRepository.AddStatsForEachPlayers(gameStatistic);
+                }
 
                 return Ok(newMatch5v5);
             }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using LOLHUB.Data;
 using LOLHUB.Models;
 using LOLHUB.Models.Match;
+using LOLHUB.Models.SummonerViewModels;
 using LOLHUB.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -66,13 +67,29 @@ namespace LOLHUB.Controllers
                     {
                         return RedirectToAction("Index","Home");
                     }
-                    var SummonerReturnModel = _repository.SummonerInfos.Where(s => s.id == RecentID).FirstOrDefault();
-                    return View(SummonerReturnModel);
+
+                    SummonersAndMachHistories model = new SummonersAndMachHistories();
+                        model.Summoner = _repository.SummonerInfos
+                            .Where(s => s.id == RecentID);
+                        model.GameStatistics = _matchRepository.GameStatistics.Include(m=>m.MatchSelectedData)
+                        .Where(p => p.SummonerId == RecentID);
+
+                    return View(model);
                 }
             } else// ("jezeli do konta jest już przypisane konto")
             {
-                var SummonerReturnModel = _repository.SummonerInfos.Where(p => p.ConectedAccount == LoggedUserEmail).FirstOrDefault();
-                return View(SummonerReturnModel);
+
+                var ConnectedSummonerID = _repository
+                    .SummonerInfos.Where(p => p.ConectedAccount == LoggedUserEmail)
+                    .Select(s => s.id).FirstOrDefault();
+
+                SummonersAndMachHistories model = new SummonersAndMachHistories();
+                    model.Summoner = _repository.SummonerInfos
+                        .Where(p => p.ConectedAccount == LoggedUserEmail);
+                    model.GameStatistics = _matchRepository.GameStatistics.Include(m=>m.MatchSelectedData)
+                        .Where(p => p.SummonerId == ConnectedSummonerID);
+
+                return View(model);
             }
         }
 
@@ -219,7 +236,8 @@ namespace LOLHUB.Controllers
 
                 GameStatistic gameStatistic = new GameStatistic
                 {
-                    MatchSelectedData = newMatch5v5.Id,
+                    MatchSelectedData = _matchRepository.Matches
+                            .Where(m=>m.Id == newMatch5v5.Id).FirstOrDefault(),
 
                     Win = newMatch5v5.participants
                             .Where(p => p.participantId == ParticipantId)
@@ -243,7 +261,6 @@ namespace LOLHUB.Controllers
                                                         .Select(s => s.playerInfo.summonerId).FirstOrDefault())
                                                             .FirstOrDefault(),
                                     
-                             
                     Kills = newMatch5v5.participants
                             .Where(p => p.participantId == ParticipantId)
                                 .Select(p => p.stats.Kills).FirstOrDefault(),
@@ -275,7 +292,8 @@ namespace LOLHUB.Controllers
                     _matchRepository.AddStatsForEachPlayers(gameStatistic);
                 }
 
-                return Ok(newMatch5v5);
+                return RedirectToAction("Index");
+               // return Ok(newMatch5v5);
             }
         }
 

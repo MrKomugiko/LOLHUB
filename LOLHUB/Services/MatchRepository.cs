@@ -18,7 +18,6 @@ namespace LOLHUB.Services
 
         public IQueryable<MatchSelectedData> Matches => _context.Matches;
 
-
         public void SaveMatch(MatchSelectedData matchSelectedData)
         {
             _context.Matches.Add(matchSelectedData);

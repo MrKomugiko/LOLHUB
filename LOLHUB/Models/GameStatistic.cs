@@ -1,4 +1,5 @@
-﻿using RiotApi.Models;
+﻿using LOLHUB.Models.Match;
+using RiotApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace LOLHUB.Models
     {
         public int Id { get; set; }
 
-        public int MatchSelectedData { get; set; }
+        public MatchSelectedData MatchSelectedData { get; set; }
         public bool Win { get; set; }
 
         public string SummonerName { get; set; }

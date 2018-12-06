@@ -16,8 +16,7 @@ namespace LOLHUB.Services
             _context = context;
         }
 
-        public IQueryable<Player> Players =>
-            _context.Players;
+        public IQueryable<Player> Players => _context.Players;
 
         public void CreateBasicPlayer(Player player) // inicjacja "pustego" playera dla zarejestrowanego konta
         {
@@ -37,25 +36,19 @@ namespace LOLHUB.Services
             _context.SaveChanges();
         }
 
-        public Player AssignPlayerToSummonerAccount(int id, SummonerInfoRepository summonerId)
-        {
-            throw new NotImplementedException();
-        }
+        //-----------------------------------------------------------------------------------------
+        public IQueryable<Team>  Teams => _context.Teams;
 
-        public Player DeletePlayer(int id)
+        public void JoinTeam(int playerId, int teamId)
         {
-            throw new NotImplementedException();
-        }
+            //Team team = _context.Teams.Where(t => t.Id == teamId).First();
 
-        public Player DissconectSummonerAccount(int id)
-        {
-            throw new NotImplementedException();
-        }
+            //Player dbEntry = _context.Players.Where(p => p.Id == playerId).First();
+            //dbEntry.TeamId = teamId;
+            //dbEntry.Team = team;
 
-        public Player EditPlayer(int id)
-        {
-            throw new NotImplementedException();
+            //_context.Players.Update(dbEntry);
+            //_context.SaveChanges();
         }
-
     }
 }

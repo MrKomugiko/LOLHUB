@@ -11,9 +11,10 @@ using System;
 namespace LOLHUB.Data.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181206200012_Polaczenie_Gracza_Druzyna_ec")]
+    partial class Polaczenie_Gracza_Druzyna_ec
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,7 +199,7 @@ namespace LOLHUB.Data.Migrations
 
                     b.Property<string>("LastName");
 
-                    b.Property<int?>("LeaderOfTheTeamId");
+                    b.Property<int?>("TeamId");
 
                     b.Property<string>("Telephone");
 
@@ -207,6 +208,10 @@ namespace LOLHUB.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ConectedSummonersSummonerInfoID");
+
+                    b.HasIndex("TeamId")
+                        .IsUnique()
+                        .HasFilter("[TeamId] IS NOT NULL");
 
                     b.HasIndex("TournamentId");
 
@@ -222,11 +227,7 @@ namespace LOLHUB.Data.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int?>("TeamLeaderId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TeamLeaderId");
 
                     b.ToTable("Teams");
                 });
@@ -326,16 +327,13 @@ namespace LOLHUB.Data.Migrations
                         .WithMany()
                         .HasForeignKey("ConectedSummonersSummonerInfoID");
 
+                    b.HasOne("LOLHUB.Models.Team", "Team")
+                        .WithOne("TeamLeader")
+                        .HasForeignKey("LOLHUB.Models.Player", "TeamId");
+
                     b.HasOne("LOLHUB.Models.Tournament", "Tournament")
                         .WithMany("Players")
                         .HasForeignKey("TournamentId");
-                });
-
-            modelBuilder.Entity("LOLHUB.Models.Team", b =>
-                {
-                    b.HasOne("LOLHUB.Models.Player", "TeamLeader")
-                        .WithMany()
-                        .HasForeignKey("TeamLeaderId");
                 });
 #pragma warning restore 612, 618
         }

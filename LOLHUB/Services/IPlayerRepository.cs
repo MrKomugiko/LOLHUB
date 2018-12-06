@@ -14,12 +14,8 @@ namespace LOLHUB.Services
 
         void SavePlayer(Player player);
 
-        Player AssignPlayerToSummonerAccount(int id, SummonerInfoRepository summonerId);
+        IQueryable<Team> Teams { get; }
 
-        Player DissconectSummonerAccount(int id);
-
-        Player DeletePlayer(int id);
-
-        Player EditPlayer(int id);
+        void JoinTeam(int PlayerId, int TeamId);
     }
 }

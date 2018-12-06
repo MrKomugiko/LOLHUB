@@ -11,9 +11,10 @@ using System;
 namespace LOLHUB.Data.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181206205815_poprawki_ciagdalszy")]
+    partial class poprawki_ciagdalszy
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,8 +199,6 @@ namespace LOLHUB.Data.Migrations
 
                     b.Property<string>("LastName");
 
-                    b.Property<int?>("LeaderOfTheTeamId");
-
                     b.Property<string>("Telephone");
 
                     b.Property<int?>("TournamentId");
@@ -222,11 +221,13 @@ namespace LOLHUB.Data.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int?>("TeamLeaderId");
+                    b.Property<int?>("PlayerId");
+
+                    b.Property<int?>("TeamLeader");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TeamLeaderId");
+                    b.HasIndex("PlayerId");
 
                     b.ToTable("Teams");
                 });
@@ -333,9 +334,9 @@ namespace LOLHUB.Data.Migrations
 
             modelBuilder.Entity("LOLHUB.Models.Team", b =>
                 {
-                    b.HasOne("LOLHUB.Models.Player", "TeamLeader")
+                    b.HasOne("LOLHUB.Models.Player", "Player")
                         .WithMany()
-                        .HasForeignKey("TeamLeaderId");
+                        .HasForeignKey("PlayerId");
                 });
 #pragma warning restore 612, 618
         }

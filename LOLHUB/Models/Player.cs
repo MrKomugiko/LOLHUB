@@ -12,6 +12,8 @@ namespace LOLHUB.Models
     {
         [Key]
         public int Id { get; set; }
+        public int? TeamId { get; set; }
+        public int? TournamentId { get; set; }
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -20,11 +22,12 @@ namespace LOLHUB.Models
         public string Telephone { get; set; }
         public DateTime Created { get; set; }
 
-        public int? TournamentId { get; set; }
         public virtual Tournament Tournament { get; set; }
+
         public string ConnectedSummonerEmail { get; set; } 
         public virtual SummonerInfoModel ConectedSummoners { get; set; }
 
-        public int? LeaderOfTheTeamId { get; set; }
+
+
     }
 }

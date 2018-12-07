@@ -11,5 +11,11 @@ namespace LOLHUB.Services
         IQueryable<Team> Teams { get; }
         
         void SaveTeam(Team TeamData);
+
+        void JoinTeam(int teamId);
+
+        bool CheckIfUserAlreadyIsTeamLEader();
+
+        bool CheckIfUserAlreadyIsMemberOfTheTeam(int teamId);
     }
 }

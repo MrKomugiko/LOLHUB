@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using LOLHUB.Data;
 using LOLHUB.Models;
+using LOLHUB.Models.TeamViewModels;
 using LOLHUB.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,32 +30,63 @@ namespace LOLHUB.Controllers
         [Route("/Team")]
         public IActionResult Index()
         {
-            var teams = _context.Teams.Include(t => t.TeamLeader).Include(s=>s.TeamLeader.ConectedSummoners).Select(p => p);
-            return View(teams);
+            TeamsWithMembers model = new TeamsWithMembers();
+            model.Player = _context.Players.Include(p=>p.ConectedSummoners).Select(p=>p);
+            model.Team = _context.Teams.Include(p=>p.Players).Include(t=>t.TeamLeader).Include(c=>c.TeamLeader.ConectedSummoners).Select(p=>p);
+
+            return View(model);
         }
 
         [HttpGet]
         public IActionResult CreateTeam()
         {
+            if (_teamRepository.CheckIfUserAlreadyIsTeamLEader())
+            {
+                TempData["AlreadyTeamLeader"] = "Już jesteś Liderem Drużyny, nie możesz utworzyć kolejnej";
+                return RedirectToAction("Index");
+            } else
             return View();
         }
-            
+
         [HttpPost]
         public IActionResult CreateTeam(Team TeamData)
         {
-            if (ModelState.IsValid)
-            {
-                Team Team = new Team
+            //if (_teamRepository.CheckIfUserAlreadyIsTeamLEader())
+            //{
+            //    TempData["AlreadyTeamLeader"] = "Już jesteś Liderem Drużyny, nie możesz utworzyć kolejnej";
+            //    return RedirectToAction("Index");
+            //}
+            //else
+            //{
+                if (ModelState.IsValid)
                 {
-                    Name = TeamData.Name,
-                    Description = TeamData.Description
-                };
+                    Team Team = new Team
+                    {
+                        Name = TeamData.Name,
+                        Description = TeamData.Description
+                    };
 
-                _teamRepository.SaveTeam(TeamData);
+                    _teamRepository.SaveTeam(TeamData);
 
+                    return RedirectToAction("Index");
+                }
                 return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
+        //}
+
+        [HttpPost]
+        public IActionResult JoinTeam(int teamId)
+        {
+            if (_teamRepository.CheckIfUserAlreadyIsMemberOfTheTeam(teamId))
+            {
+                TempData["AlreadyTeamLeader"] = "Już należysz to tej drużyny :)";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                _teamRepository.JoinTeam(teamId);
+                return RedirectToAction("Index");
+            }
         }
     }
 }

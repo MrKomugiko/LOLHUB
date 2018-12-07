@@ -4,10 +4,9 @@
     ViewData["Title"] = "CreateTeam";
 }
 
-<h2>CreateTeam</h2>
+<h2>Create your Team!</h2>
 
-<h4>Team</h4>
-<hr />
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="CreateTeam">
@@ -23,13 +22,13 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="CreateTeam" class="btn btn-default" />
+                <input  type="submit" value="CreateTeam" class="btn btn-success" />
             </div>
         </form>
      </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-default" asp-controller="Team" asp-action="Index">Back to List</a>
 </div>
 

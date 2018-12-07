@@ -37,18 +37,6 @@ namespace LOLHUB.Services
         }
 
         //-----------------------------------------------------------------------------------------
-        public IQueryable<Team>  Teams => _context.Teams;
 
-        public void JoinTeam(int playerId, int teamId)
-        {
-            //Team team = _context.Teams.Where(t => t.Id == teamId).First();
-
-            //Player dbEntry = _context.Players.Where(p => p.Id == playerId).First();
-            //dbEntry.TeamId = teamId;
-            //dbEntry.Team = team;
-
-            //_context.Players.Update(dbEntry);
-            //_context.SaveChanges();
-        }
     }
 }

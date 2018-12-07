@@ -11,9 +11,10 @@ using System;
 namespace LOLHUB.Data.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181207121153_Dolaczenie_do_modelu_teamu_liste_czlonkow_druzyny4")]
+    partial class Dolaczenie_do_modelu_teamu_liste_czlonkow_druzyny4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -330,7 +331,7 @@ namespace LOLHUB.Data.Migrations
                         .HasForeignKey("ConectedSummonersSummonerInfoID");
 
                     b.HasOne("LOLHUB.Models.Team")
-                        .WithMany("Players")
+                        .WithMany("TeamMembers")
                         .HasForeignKey("TeamId");
 
                     b.HasOne("LOLHUB.Models.Tournament", "Tournament")

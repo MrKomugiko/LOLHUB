@@ -14,8 +14,5 @@ namespace LOLHUB.Services
 
         void SavePlayer(Player player);
 
-        IQueryable<Team> Teams { get; }
-
-        void JoinTeam(int PlayerId, int TeamId);
     }
 }

@@ -11,9 +11,10 @@ using System;
 namespace LOLHUB.Data.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181207121508_Edit_po_raz_enty")]
+    partial class Edit_po_raz_enty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,6 +201,8 @@ namespace LOLHUB.Data.Migrations
 
                     b.Property<int?>("TeamId");
 
+                    b.Property<int?>("TeamMember");
+
                     b.Property<string>("Telephone");
 
                     b.Property<int?>("TournamentId");
@@ -330,7 +333,7 @@ namespace LOLHUB.Data.Migrations
                         .HasForeignKey("ConectedSummonersSummonerInfoID");
 
                     b.HasOne("LOLHUB.Models.Team")
-                        .WithMany("Players")
+                        .WithMany("TeamMembers")
                         .HasForeignKey("TeamId");
 
                     b.HasOne("LOLHUB.Models.Tournament", "Tournament")

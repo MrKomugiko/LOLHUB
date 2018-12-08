@@ -38,7 +38,7 @@ namespace LOLHUB.Controllers
         private ISummonerInfoRepository _repository;
         private IPlayerRepository _playerRepository;
         private IMatchRepository _matchRepository;
-        private ITournamentRepository _tournamentRepository;
+        private readonly ITournamentRepository _tournamentRepository;
         private IGenerateCode _code;
 
         [Authorize(Roles = "Member, Admin")]
@@ -83,7 +83,6 @@ namespace LOLHUB.Controllers
 
                 var ConnectedSummonerID = _repository
                     .SummonerInfos.Where(p => p.ConectedAccount == LoggedUserEmail)
-                    .Include(p=>p.Code)
                     .Select(s => s.id).FirstOrDefault();
 
                 SummonersAndMachHistories model = new SummonersAndMachHistories

@@ -24,7 +24,7 @@
         <tr>
             <td>@item.TournamentId</td>
             <td>@item.Name</td>
-            <td>@item.Players.Count()/16</td>
+            <td>@item.Teams.Count()/16</td>
             <td>
                 @{ if (item.IsExpired == false)
                     { <text>Aktywny</text> }
@@ -34,7 +34,7 @@
             </td>
 
             <td>
-               <form asp-controller="Tournament" asp-action="Detail" method="get">
+               <form asp-controller="Tournament" asp-action="DetailNew" method="get">
                     <input type="hidden" id="id" name="id" value="@item.TournamentId" />
                     <button type="submit" class="btn btn-danger">About tournament, list of participatiens</button>
                 </form>

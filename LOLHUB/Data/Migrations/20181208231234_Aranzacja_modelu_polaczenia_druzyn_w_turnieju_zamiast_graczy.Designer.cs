@@ -11,9 +11,10 @@ using System;
 namespace LOLHUB.Data.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181208231234_Aranzacja_modelu_polaczenia_druzyn_w_turnieju_zamiast_graczy")]
+    partial class Aranzacja_modelu_polaczenia_druzyn_w_turnieju_zamiast_graczy
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

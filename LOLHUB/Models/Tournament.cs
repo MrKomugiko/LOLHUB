@@ -13,6 +13,6 @@ namespace LOLHUB.Models
         public DateTime EndDate { get; set; }
         public bool IsExpired { get; set; }
 
-        public IList<Player> Players { get; set; }
+        public IList<Team> Teams { get; set; }
     }
 }

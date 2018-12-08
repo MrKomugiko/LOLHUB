@@ -27,7 +27,6 @@ namespace LOLHUB.Services
             var teamLeader = _context.Players
                         .Where(p => p.ConnectedSummonerEmail == _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value).First();
                         
-
             Team team = TeamData;
             team = new Team
             {
@@ -55,7 +54,7 @@ namespace LOLHUB.Services
             _context.SaveChanges();
         }
 
-        public bool CheckIfUserAlreadyIsTeamLEader()
+        public bool CheckIfUserAlreadyIsTeamLeader()
         {
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
 
@@ -73,6 +72,23 @@ namespace LOLHUB.Services
             {
                 return true;
             }else
+                return false;
+        }
+
+        public bool CheckIfUserAlreadyConnectSummonerAccount()
+        {
+            var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+
+            var connectedSummoner = _context.Players.Where(p => p.ConnectedSummonerEmail == playerName)
+                .Include(p => p.ConectedSummoners)
+                .Where(p => p.ConectedSummoners.ConectedAccount == playerName)
+                .Any();
+
+            if (connectedSummoner)
+            {
+                return true;
+            }
+            else
                 return false;
         }
     }

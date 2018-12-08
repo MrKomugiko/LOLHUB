@@ -23,16 +23,19 @@ namespace LOLHUB.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
         private LOLHUBApplicationDbContext _context;
-        private IPlayerRepository _playerRepository;
+        private readonly IPlayerRepository _playerRepository;
         private ITeamRepository _teamRepository;
-        private IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         [Route("/Team")]
         public IActionResult Index()
         {
-            TeamsWithMembers model = new TeamsWithMembers();
-            model.Player = _context.Players.Include(p=>p.ConectedSummoners).Select(p=>p);
-            model.Team = _context.Teams.Include(p=>p.Players).Include(t=>t.TeamLeader).Include(c=>c.TeamLeader.ConectedSummoners).Select(p=>p);
+            TeamsWithMembers model = new TeamsWithMembers
+            {
+                Player = _context.Players.Include(p => p.ConectedSummoners).Select(p => p),
+                Team = _context.Teams.Include(p => p.Players).Include(t => t.TeamLeader).Include(c => c.TeamLeader.ConectedSummoners).Select(p => p)
+            };
+
 
             return View(model);
         }
@@ -40,24 +43,21 @@ namespace LOLHUB.Controllers
         [HttpGet]
         public IActionResult CreateTeam()
         {
-            if (_teamRepository.CheckIfUserAlreadyIsTeamLEader())
+            if (_teamRepository.CheckIfUserAlreadyIsTeamLeader())
             {
                 TempData["AlreadyTeamLeader"] = "Już jesteś Liderem Drużyny, nie możesz utworzyć kolejnej";
                 return RedirectToAction("Index");
-            } else
-            return View();
+            } else if (!_teamRepository.CheckIfUserAlreadyConnectSummonerAccount())
+            {
+                TempData["AlreadyTeamLeader"] = "Aby stworzyć drużynę, napierw trzeba połączyć swoje konto LeagueOfLegends";
+                return RedirectToAction("Index");
+            }
+            else return View();
         }
 
         [HttpPost]
         public IActionResult CreateTeam(Team TeamData)
         {
-            //if (_teamRepository.CheckIfUserAlreadyIsTeamLEader())
-            //{
-            //    TempData["AlreadyTeamLeader"] = "Już jesteś Liderem Drużyny, nie możesz utworzyć kolejnej";
-            //    return RedirectToAction("Index");
-            //}
-            //else
-            //{
                 if (ModelState.IsValid)
                 {
                     Team Team = new Team
@@ -80,9 +80,14 @@ namespace LOLHUB.Controllers
             if (_teamRepository.CheckIfUserAlreadyIsMemberOfTheTeam(teamId))
             {
                 TempData["AlreadyTeamLeader"] = "Już należysz to tej drużyny :)";
+
                 return RedirectToAction("Index");
             }
-            else
+            else if (!_teamRepository.CheckIfUserAlreadyConnectSummonerAccount())
+            {
+                TempData["AlreadyTeamLeader"] = "aby dołączyć do drużyny musisz najpierw połączyć swoje konto LeagueOfLegends";
+                return RedirectToAction("Index");
+            }
             {
                 _teamRepository.JoinTeam(teamId);
                 return RedirectToAction("Index");

@@ -9,7 +9,7 @@ namespace LOLHUB.Services
 {
     public class GenerateCode : IGenerateCode
     {
-        public string generateCode() // generowanie kodu
+        public string GenerateConnectionCode() // generowanie kodu
         {
             char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
             byte[] data = new byte[20];

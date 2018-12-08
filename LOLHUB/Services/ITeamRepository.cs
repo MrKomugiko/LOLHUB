@@ -14,8 +14,10 @@ namespace LOLHUB.Services
 
         void JoinTeam(int teamId);
 
-        bool CheckIfUserAlreadyIsTeamLEader();
+        bool CheckIfUserAlreadyIsTeamLeader();
 
         bool CheckIfUserAlreadyIsMemberOfTheTeam(int teamId);
+
+        bool CheckIfUserAlreadyConnectSummonerAccount();
     }
 }

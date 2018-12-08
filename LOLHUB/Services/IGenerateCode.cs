@@ -7,6 +7,6 @@ namespace LOLHUB.Services
 {
     public interface IGenerateCode
     {
-        string generateCode();
+        string GenerateConnectionCode();
     }
 }

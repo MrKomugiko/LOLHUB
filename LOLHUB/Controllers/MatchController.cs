@@ -13,29 +13,26 @@ namespace LOLHUB.Controllers
 {
     public class MatchController : Controller
     {
-        public MatchController(LOLHUBApplicationDbContext context, ISummonerInfoRepository repository, IPlayerRepository playerRepository, IGenerateCode code, IMatchRepository matchRepository, ITournamentRepository tournamentRepository)
+        public MatchController(LOLHUBApplicationDbContext context, ISummonerInfoRepository repository, IPlayerRepository playerRepository, IGenerateCode code, ITournamentRepository tournamentRepository)
         {
             _context = context;
             _playerRepository = playerRepository;
-            _matchRepository = matchRepository;
             _tournamentRepository = tournamentRepository;
         }
         private LOLHUBApplicationDbContext _context;
-        private ISummonerInfoRepository _repository;
-        private IPlayerRepository _playerRepository;
-        private IMatchRepository _matchRepository;
-        private ITournamentRepository _tournamentRepository;
+        private readonly ISummonerInfoRepository _repository;
+        private readonly IPlayerRepository _playerRepository;
+        private readonly ITournamentRepository _tournamentRepository;
 
         public IActionResult Index()
         {
             return View();
         }
 
-        
-        //public IActionResult MatchDetail(int id)
-        //{
-
-        //        return Ok(model);
-        //}
+        public IActionResult MatchDetail()
+        {
+            var model = _context.GameStatistics;
+            return Ok(model);
+        }
     }
 }

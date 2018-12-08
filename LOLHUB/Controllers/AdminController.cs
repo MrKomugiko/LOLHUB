@@ -31,10 +31,10 @@ namespace LOLHUB.Controllers
                                   join r in _identityContext.Roles on ur.RoleId equals r.Id
                                   select new
                                   {
-                                      UserId = ur.UserId,
+                                      ur.UserId,
                                       Username = u.UserName,
-                                      Email = u.Email,
-                                      RoleId = ur.RoleId,
+                                      u.Email,
+                                      ur.RoleId,
                                       Rolename = r.Name
                                   })
                                   .Select(p => new UserAndRolesViewModel()

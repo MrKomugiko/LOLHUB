@@ -32,7 +32,7 @@ namespace LOLHUB.Controllers
             _tournamentRepository = tournamentRepository;
             _code = code;
         }
-        private LOLHUBApplicationDbContext _context;
+        private readonly LOLHUBApplicationDbContext _context;
         private readonly IRiotApiService _riotApiService;
 
         private ISummonerInfoRepository _repository;
@@ -68,11 +68,13 @@ namespace LOLHUB.Controllers
                         return RedirectToAction("Index","Home");
                     }
 
-                    SummonersAndMachHistories model = new SummonersAndMachHistories();
-                        model.Summoner = _repository.SummonerInfos
-                            .Where(s => s.id == RecentID);
-                        model.GameStatistics = _matchRepository.GameStatistics.Include(m=>m.MatchSelectedData)
-                        .Where(p => p.SummonerId == RecentID);
+                    SummonersAndMachHistories model = new SummonersAndMachHistories
+                    {
+                        Summoner = _repository.SummonerInfos
+                            .Where(s => s.id == RecentID),
+                        GameStatistics = _matchRepository.GameStatistics.Include(m => m.MatchSelectedData)
+                        .Where(p => p.SummonerId == RecentID)
+                    };
 
                     return View(model);
                 }
@@ -81,13 +83,16 @@ namespace LOLHUB.Controllers
 
                 var ConnectedSummonerID = _repository
                     .SummonerInfos.Where(p => p.ConectedAccount == LoggedUserEmail)
+                    .Include(p=>p.Code)
                     .Select(s => s.id).FirstOrDefault();
 
-                SummonersAndMachHistories model = new SummonersAndMachHistories();
-                    model.Summoner = _repository.SummonerInfos
-                        .Where(p => p.ConectedAccount == LoggedUserEmail);
-                    model.GameStatistics = _matchRepository.GameStatistics.Include(m=>m.MatchSelectedData)
-                        .Where(p => p.SummonerId == ConnectedSummonerID);
+                SummonersAndMachHistories model = new SummonersAndMachHistories
+                {
+                    Summoner = _repository.SummonerInfos
+                        .Where(p => p.ConectedAccount == LoggedUserEmail),
+                    GameStatistics = _matchRepository.GameStatistics.Include(m => m.MatchSelectedData)
+                        .Where(p => p.SummonerId == ConnectedSummonerID)
+                };
 
                 return View(model);
             }
@@ -140,7 +145,7 @@ namespace LOLHUB.Controllers
                     ConectedAccount = null,
                     AddTime = DateTime.Now,
 
-                    Code = _code.generateCode()
+                    Code = _code.GenerateConnectionCode()
                 };
 
                 var RecentID = newSummoner.id;
@@ -332,7 +337,7 @@ namespace LOLHUB.Controllers
         [Authorize(Roles = "Member, Admin")]
         public IActionResult RegenerateCode(int id)
         {
-           string newCode = _code.generateCode();
+           string newCode = _code.GenerateConnectionCode();
 
             _repository.RegenerateCode(id,newCode);
 

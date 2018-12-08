@@ -32,18 +32,18 @@
         <div class="btn-toolbar mb-4" role="toolbar" aria-label="Toolbar with button groups">
             <div class="btn-group">
                 <form asp-controller="riotapi" asp-action="regenerateCode" method="post">
-                    <input type="hidden" id="id" name="id" value="@Model.Summoner.Select(s => s.id)" />
+                    <input type="hidden" id="id" name="id" value="@Int32.Parse(Model.Summoner.Select(s => s.id).First().ToString())" />
                     <button type="submit" class="btn btn-danger">Generuj Nowy Kod Weryfikacyjny</button>
                 </form>
             </div>
 
             <div class="input-group">
-                <input runat="server" readonly="readonly" id="id" type="text" class="form-control text-center" style="font-size:larger; font-weight:500;" Value=@Model.Summoner.Select(s => s.Code) aria-describedby="btnGroupAddon" maxlength="20" size="22" />
+                <input runat="server" readonly="readonly" id="id" type="text" class="form-control text-center" style="font-size:larger; font-weight:500;" Value=@Model.Summoner.Select(s=>s.Code).First().ToString() aria-describedby="btnGroupAddon" maxlength="20" size="22" />
             </div>
             <div class="btn-group" style="margin-right:20px">
                 <form asp-controller="riotapi" asp-action="Check" method="post">
-                    <input type="hidden" id="id" name="id" value="@Model.Summoner.Select(s => s.id)" />
-                    <input type="hidden" id="code" name="code" value=@Model.Summoner.Select(s => s.Code) />
+                    <input type="hidden" id="id" name="id" value="@Int32.Parse(Model.Summoner.Select(s => s.id).First().ToString())" />
+                    <input type="hidden" id="code" name="code" value=@Model.Summoner.Select(s => s.Code).First() />
                     <button type="submit" class="btn btn-warning">Weryfikuj</button>
                 </form>
             </div>

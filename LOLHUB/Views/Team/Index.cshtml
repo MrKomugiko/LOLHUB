@@ -4,81 +4,88 @@
     ViewData["Title"] = "Index";
 }
 
+@if (User.Identity.IsAuthenticated)
+{
+    <div>
+        <a class="btn btn-primary" asp-controller="Team" asp-action="CreateTeam">Create a Team</a>
+    </div>
+}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    TeamLeader
+                </th>
+                <th>
+                    Members
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Team)
+            {
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+                    <td>
+                        @item.TeamLeader.ConectedSummoners.name
+                    </td>
 
-<div>
-    <a class="btn btn-primary" asp-controller="Team" asp-action="CreateTeam">Create a Team</a>
-</div>
-
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Description
-            </th>
-            <th>
-                TeamLeader
-            </th>
-            <th>
-                Members
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Team)
-        {
-        <tr>
-            <td>
-                @item.Name
-            </td>
-            <td>
-                @item.Description
-            </td>
-            <td>
-                @item.TeamLeader.ConectedSummoners.name
-            </td>
-            
-            <td>
-                <ul>
-                    @foreach (var item2 in item.Players)
-                    {
-                        var PlayerId = item2.Id;
-
-                        foreach (var item3 in Model.Player)
-                        {
-                            if (item3.Id == PlayerId && item.TeamLeader.Id == PlayerId)
-                            {
-                                <li style="color:gold; font-weight:900;"> @item3.ConectedSummoners.name</li>}
-                        }
-                    }
-                    @foreach (var item2 in item.Players)
-                    {
-                        var PlayerId = item2.Id;
-
-                        foreach (var item3 in Model.Player)
-                        {
-                            if (item3.Id == PlayerId && item.TeamLeader.Id != PlayerId)
-                            {
-                                <li> @item3.ConectedSummoners.name</li>
+                    <td>
+                        <ul>
+                            @{
+                                var LeaderCount = 1;
                             }
+                            @foreach (var item2 in item.Players)
+                            {
+                                var PlayerId = item2.Id;
+                                foreach (var item3 in Model.Player)
+                                {
+                                    if (item3.Id == PlayerId && item.TeamLeader.Id == PlayerId && LeaderCount == 1)
+                                    {
+                                        <li style="color:blueviolet; font-weight:700;"> @item3.ConectedSummoners.name </li>
+                                        LeaderCount++;
+                                    }
+                                }
+                            }
+
+                            @foreach (var item2 in item.Players)
+                            {
+                                var PlayerId = item2.Id;
+                                foreach (var item3 in Model.Player)
+                                {
+                                    if (item3.Id == PlayerId && item.TeamLeader.Id != PlayerId && LeaderCount >=1)
+                                    {
+                                        <li style="color:black; font-weight:500;"> @item3.ConectedSummoners.name</li>
+                                    }
+                                }
+                            }
+
+                        </ul>
+                    </td>
+
+                    <td>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <form asp-controller="Team" asp-action="JoinTeam" method="post" class="text-center">
+                                <input type="hidden" id="teamId" name="teamId" value="@item.Id" />
+                                <button type="submit" class="btn btn-info"><b>Join</b></button>
+                            </form>
                         }
-                    }
-                </ul>
-            </td>
-              
-            <td>
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <form asp-controller="Team" asp-action="JoinTeam" method="post" class="text-center">
-                        <input type="hidden" id="teamId" name="teamId" value="@item.Id" />
-                        <button type="submit" class="btn btn-info"><b>Join</b></button>
-                    </form>
-                }
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>

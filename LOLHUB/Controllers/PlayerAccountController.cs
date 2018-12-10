@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LOLHUB.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class PlayerAccountController : Controller
     {
         public PlayerAccountController(IPlayerRepository playerRepository, IHttpContextAccessor httpContextAccessor,ISummonerInfoRepository summonerRepository)

@@ -7,12 +7,14 @@ using LOLHUB.Data;
 using LOLHUB.Models;
 using LOLHUB.Models.TeamViewModels;
 using LOLHUB.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace LOLHUB.Controllers
 {
+    
     public class TeamController : Controller
     {
         public TeamController(LOLHUBApplicationDbContext context, IPlayerRepository playerRepository, ITeamRepository teamrepository, IHttpContextAccessor httpContextAccessor)
@@ -40,6 +42,7 @@ namespace LOLHUB.Controllers
             return View(model);
         }
 
+        [Authorize]
         [HttpGet]
         public IActionResult CreateTeam()
         {
@@ -54,7 +57,7 @@ namespace LOLHUB.Controllers
             }
             else return View();
         }
-
+        [Authorize]
         [HttpPost]
         public IActionResult CreateTeam(Team TeamData)
         {
@@ -74,6 +77,7 @@ namespace LOLHUB.Controllers
             }
         //}
 
+        [Authorize]
         [HttpPost]
         public IActionResult JoinTeam(int teamId)
         {

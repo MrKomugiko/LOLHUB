@@ -20,7 +20,6 @@ namespace LOLHUB.Controllers
             _tournamentRepository = tournamentRepository;
         }
         private LOLHUBApplicationDbContext _context;
-        private readonly ISummonerInfoRepository _repository;
         private readonly IPlayerRepository _playerRepository;
         private readonly ITournamentRepository _tournamentRepository;
 

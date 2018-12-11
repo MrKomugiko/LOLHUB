@@ -2,14 +2,15 @@
 using RiotApi.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace LOLHUB.Models
 {
     public class GameStatistic
-    {
-        public int Id { get; set; }
+    {   
+        public int GameStatisticId { get; set; }
 
         public MatchSelectedData MatchSelectedData { get; set; }
         public bool Win { get; set; }

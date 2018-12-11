@@ -115,8 +115,14 @@
                 @{
                     int Win = Model.GameStatistics.Where(g => g.Win == true).Count();
                     int GamesPlayed = Model.GameStatistics.Where(g => g.Win == true).Count();
-                    float WinRatio = (Win * 100) / GamesPlayed;
-            }
+                    float WinRatio = 0;
+                    if (GamesPlayed >= 1)
+                    {
+                        WinRatio = (Win * 100) / GamesPlayed;
+                    }
+                    else { WinRatio = 0; }
+                }
+
             @WinRatio %
         </td>
         <td>@Model.GameStatistics.Select(g => g.GameId).Count()</td>

@@ -180,7 +180,7 @@ namespace LOLHUB.Controllers
                 var result = await _riotApiService.GetMatchDataBasedOnId(Int32.Parse(cuttedUrl));
 
                 MatchSelectedData newMatch5v5 = new MatchSelectedData
-                {
+                {                   
                     gameid = result.gameid,
                     seasonId = result.seasonId,
                     queueId = result.queueId,
@@ -238,8 +238,10 @@ namespace LOLHUB.Controllers
                                                                 .Select(p=>p.participantId)
                                                                 .FirstOrDefault();
 
-                GameStatistic gameStatistic = new GameStatistic
-                {
+                    GameStatistic gameStatistic = new GameStatistic
+                    {
+                        GameStatisticId = ((newMatch5v5.Id) * 1000000) + INDEX,
+
                     MatchSelectedData = _matchRepository.Matches
                             .Where(m=>m.Id == newMatch5v5.Id).FirstOrDefault(),
 

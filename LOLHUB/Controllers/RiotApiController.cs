@@ -247,7 +247,7 @@ namespace LOLHUB.Controllers
 
                     Win = newMatch5v5.participants
                             .Where(p => p.participantId == ParticipantId)
-                                .Select(p => p.stats.Win).Any(),
+                                .Select(p => p.stats.Win).First(),
 
                     SummonerName = newMatch5v5.participantIdentities
                             .Where(p => p.participantId == ParticipantId)

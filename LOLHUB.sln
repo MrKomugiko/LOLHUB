@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2047
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LOLHUB", "LOLHUB\LOLHUB.csproj", "{518D3985-4AF3-4D05-83A3-2CBC0EB02972}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LOLHUB", "LOLHUB\LOLHUB.csproj", "{518D3985-4AF3-4D05-83A3-2CBC0EB02972}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiotApi", "RiotApi\RiotApi.csproj", "{89E270E4-BA52-44E1-B157-CA10EBE20674}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiotApi", "RiotApi\RiotApi.csproj", "{89E270E4-BA52-44E1-B157-CA10EBE20674}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

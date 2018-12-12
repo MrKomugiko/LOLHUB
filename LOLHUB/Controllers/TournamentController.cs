@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LOLHUB.Data;
 using LOLHUB.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 
 namespace LOLHUB.Controllers
@@ -38,6 +39,7 @@ namespace LOLHUB.Controllers
             return RedirectToAction("Index");
         }
 
+        [Route("Tournament/{id}/Details")]
         public ViewResult DetailNew(int id)
         {
             ViewBag.TournamentId = id;
@@ -47,6 +49,7 @@ namespace LOLHUB.Controllers
                 .Where(t => t.TournamentId == id)
                 .Include(t=>t.TeamLeader.ConectedSummoners)
                 .Include(t=>t.Players)
+                .Where(t=>t.Players.Count() > 0)
                 .ToList();
 
             return View(teams);

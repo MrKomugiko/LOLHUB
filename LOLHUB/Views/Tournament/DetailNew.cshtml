@@ -12,6 +12,7 @@
         <th>Team ID</th>
         <th>Team Name</th>
         <th>Team Leader</th>
+        <th>Members Count</th>
         <th>W.I.P.</th>
     </tr>
 
@@ -21,7 +22,8 @@
             <td>@item.Id</td>
             <td>@item.Name</td>
             <td>@item.TeamLeader.ConectedSummoners.name</td>
-            <td>  <a asp-controller="Team" asp-action="TeamDetail" asp-route-id="@item.Id">[Team Members/Team Details]</a></td>
+            <td>@item.Players.Count()</td>
+            <td>  <a asp-controller="Team" asp-action="DetailNew" asp-route-id="@item.Id">[Team Members/Team Details]</a></td>
         </tr>
             
     }

@@ -81,7 +81,22 @@ namespace LOLHUB.Controllers
         [HttpPost]
         public IActionResult JoinTeam(int teamId)
         {
-            if (_teamRepository.CheckIfUserAlreadyIsMemberOfTheTeam(teamId))
+            if (_teamRepository.CheckIfUserAlreadyIsTeamLeader())
+            {
+                if (_teamRepository.CheckIfUserAlreadyIsMemberOfTheTeam(teamId))
+                {
+                    TempData["AlreadyTeamLeader"] = "Jestes tu szefem:D";
+
+                    return RedirectToAction("Index");
+                }
+                if (_teamRepository.CheckIfTeamLeaderWantLeaveHisOwnTeam(teamId))
+                {
+                    TempData["AlreadyTeamLeader"] = "Kapitan nie porzuca swojej łajby, usuń drużynę, jeżeli chcesz dołączyć do innej.";
+
+                    return RedirectToAction("Index");
+                }
+            }
+            else if (_teamRepository.CheckIfUserAlreadyIsMemberOfTheTeam(teamId))
             {
                 TempData["AlreadyTeamLeader"] = "Już należysz to tej drużyny :)";
 

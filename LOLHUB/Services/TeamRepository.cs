@@ -74,6 +74,20 @@ namespace LOLHUB.Services
             }else
                 return false;
         }
+        public bool CheckIfTeamLeaderWantLeaveHisOwnTeam(int teamId)
+        {
+            var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            if (_context.Teams
+                    .Where(t => t.Id == teamId)
+                    .Include(p=>p.TeamLeader)
+                    .Where(p=>p.TeamLeader.ConnectedSummonerEmail == playerName) // pobierze lidera druzyny do ktorej lider che dolaczyc, są inne, więc nie mzoe sie ruszyc ze swojej druzyny ?
+                    .Any())
+            {
+                return false;
+            }
+            else
+                return true;
+        }
 
         public bool CheckIfUserAlreadyConnectSummonerAccount()
         {

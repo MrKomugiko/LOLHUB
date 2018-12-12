@@ -88,7 +88,7 @@ namespace LOLHUB.Models
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             Player playerData = _playerCtx.Players.Where(p => p.ConnectedSummonerEmail == playerName).First();
 
-            Team teamData = _teamRepository.Teams.Where(t => t.TeamLeader.ConnectedSummonerEmail == playerName).Include(t => t.Tournament).Include(t=>t.TeamLeader.ConectedSummoners).First();
+            Team teamData = _teamRepository.Teams.Where(t => t.TeamLeader.ConnectedSummonerEmail == playerName).Include(t => t.Tournament).Include(t=>t.TeamLeader.ConectedSummoners).Include(p=>p.Players).First();
 
             bool TournamentStatus = _context.Tournaments.Where(t => t.TournamentId == tournamentId).First().IsExpired;
             if (TournamentStatus != true)
@@ -115,6 +115,9 @@ namespace LOLHUB.Models
                     if (playerData.TeamId != null)
                     {//zmiana turnieju przez lidera drużyny => jest ok
                         teamData.TournamentId = tournamentId;
+                        
+                       
+
                         _context.Teams.Update(teamData);
                         _context.SaveChanges();
                         return 10;

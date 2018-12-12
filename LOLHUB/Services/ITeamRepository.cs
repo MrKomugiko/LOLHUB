@@ -16,6 +16,8 @@ namespace LOLHUB.Services
 
         bool CheckIfUserAlreadyIsTeamLeader();
 
+        bool CheckIfTeamLeaderWantLeaveHisOwnTeam(int teamId);
+
         bool CheckIfUserAlreadyIsMemberOfTheTeam(int teamId);
 
         bool CheckIfUserAlreadyConnectSummonerAccount();

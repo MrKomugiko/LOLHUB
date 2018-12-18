@@ -12,7 +12,7 @@ namespace LOLHUB.Services
 
         void Dodaj(Drabinka drabinka);
 
-        void Update(Drabinka drabinka);
+        void Aktualizuj(Drabinka drabinka, int id, int level);
 
     }
 }

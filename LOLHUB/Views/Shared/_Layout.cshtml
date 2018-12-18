@@ -38,7 +38,7 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     @if (User.IsInRole("Member"))
                     {
-                    <li><a asp-area="" asp-controller="RiotApi" asp-action="Index">Summoner Profile</a></li>
+                        <li><a asp-area="" asp-controller="RiotApi" asp-action="Index">Summoner Profile</a></li>
                     }
                     <!--    Tylko admin: Zakładka [Aministracja]    -->
                     @if (User.Identity.IsAuthenticated)
@@ -62,7 +62,7 @@
                     <li><a asp-area="" asp-controller="Tournament" asp-action="Index">Players&Tournaments</a></li>
                     <li><a asp-area="" asp-controller="Team" asp-action="Index">Teams List</a></li>
                     @*<li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
+                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
@@ -121,7 +121,6 @@
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
-
-    @RenderSection("Scripts", required: false)
+    @RenderSection("scripts", required: false)
 </body>
 </html>

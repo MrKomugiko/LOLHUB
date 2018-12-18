@@ -1,0 +1,92 @@
+﻿@model IEnumerable<LOLHUB.Models.TournamentViewModels.Drabinka>
+
+@{
+    ViewData["Title"] = "Default";
+}
+
+Cwierćfinały
+
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    Game
+                </th>
+                <th >
+                    Drużyna 1  vs   Drużyna 2
+                </th>
+                <th>
+                    Winner
+                </th>
+                <th>
+                   Poziom 
+                </th>
+                <th>
+                    Upload Stats
+                </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Where(d => d.Tournament_Level == 1))
+{
+        <tr>
+            <td>
+                #@item.Id
+            </td>
+            <td>
+                <div>
+                    @if (item.Team1_Win == null)
+                    {
+                        <b style="color:black">#@item.Team1_Name </b>
+                    }
+                    @if (item.Team1_Win == true)
+                    {
+                        <b style="color:green">#@item.Team1_Name </b>
+                    }
+                    @if (item.Team1_Win == false)
+                    {
+                        <b style="color:darkred">#@item.Team1_Name </b>
+                    }
+                    versus
+                    @if (item.Team2_Win == null)
+                    {
+                        <b style="color:black">#@item.Team2_Name </b>
+                    }
+                    @if (item.Team2_Win == true)
+                    {
+                        <b style="color:green">#@item.Team2_Name </b>
+                    }
+                    @if (item.Team2_Win == false)
+                    {
+                        <b style="color:darkred">#@item.Team2_Name </b>
+                    }
+                </div>
+            </td>
+            <td>
+                @if (item.Team1_Win == true)
+                {
+                    <b style="color:yellowgreen">#@item.Team1_Name </b>
+                }
+                @if (item.Team2_Win == true)
+                {
+                    <b style="color:yellowgreen">#@item.Team2_Name </b>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tournament_Level)/3 (Cwierćfinały)
+            </td>
+            <td>
+                <form asp-controller="Tournament" asp-action="UploadGameStats" 
+                      asp-route-id ="@item.Id" 
+                      asp-route-team1Id =" @item.Team1_Id"
+                      asp-route-team2Id ="@item.Team2_Id"
+                      asp-route-TournamentId="@item.Tournament_Id" 
+                      asp-route-TournamentLevel="@item.Tournament_Level"  
+                      method="post" class="text-center">       
+                    <button type="submit" class="btn btn-info"><b>Upload</b></button>
+                </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

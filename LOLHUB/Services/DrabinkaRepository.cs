@@ -25,9 +25,17 @@ namespace LOLHUB.Services
                 _context.SaveChanges();
             }
 
-        public void Update(Drabinka drabinka)
+        //dodać odwołanie do sprawdzania meczu, i sprawdzania ktory team wygrał po czym zaktualizowanie
+        public void Aktualizuj(Drabinka drabinka, int id, int level)
         {
-            throw new NotImplementedException();
+            Drabinka dbEntry = _context.Drabinki.Where(d => d.Id == drabinka.Id && d.Tournament_Level==level).First();
+
+            dbEntry.Team1_Win = true;
+            dbEntry.Team2_Win = false;
+
+            _context.Update(dbEntry);
+            _context.SaveChanges();
+
         }
     }
 }

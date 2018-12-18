@@ -5,27 +5,31 @@
 
 <ul class="nav nav-tabs">
     <li class="nav-item active">
-        <a class="nav-link active" href="#Szczegoly" data-toggle="tab">Szczególy</a>
+        <a href="#Szczegoly" data-toggle="tab">Szczególy</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#Druzyny" data-toggle="tab">Druzyny</a>
+        <a href="#Druzyny" data-toggle="tab">Druzyny</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#Cwiercfnialy" data-toggle="tab">Cwiercfnialy</a>
+        <a href="#Cwiercfnialy" data-toggle="tab">Cwiercfnialy</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#Polfinaly" data-toggle="tab">Polfinaly</a>
+        <a href="#Polfinaly" data-toggle="tab">Polfinaly</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#Finaly" data-toggle="tab">Finaly</a>
+        <a href="#Finaly" data-toggle="tab">Finaly</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link disabled" href="#Podsumowanie" data-toggle="tab">Podsumowanie</a>
+        <a href="#Podsumowanie" data-toggle="tab">Podsumowanie</a>
+    </li>
+    <li class="nav-item">
+        <a href="#Administracja" data-toggle="tab">Administracja</a>
     </li>
 </ul>
 
 <div class="tab-content">
-    <div id="Szczegoly" class="tab-pane" >
+
+    <div id="Szczegoly" class="tab-pane active">
         <h3>Szczegóły turnieju  @ViewBag.TournamentId # </h3>
 
         <p>
@@ -71,17 +75,17 @@
 
     <div id="Cwiercfnialy" class="tab-pane">
         <h3>Cwierćfinały</h3>
-        @{ 
+        @{
             if (Model.Where(t => t.Tournament.Teams.Count() != 0).Any())
             {
                 @await Component.InvokeAsync("Drabinka", new { id = @ViewBag.TournamentId, level = 1 })
             }
-         }
+        }
     </div>
 
     <div id="Polfinaly" class="tab-pane">
 
-        <h3>Półfinaly</h3> 
+        <h3>Półfinaly</h3>
         @{
             if (Model.Where(t => t.Tournament.Teams.Count() != 0).Any())
             {
@@ -95,9 +99,17 @@
         @{
             if (Model.Where(t => t.Tournament.Teams.Count() != 0).Any())
             {
-                @await Component.InvokeAsync("Drabinka", new { id = @ViewBag.TournamentId, level = 3})
+                @await Component.InvokeAsync("Drabinka", new { id = @ViewBag.TournamentId, level = 3 })
             }
         }
+    </div>
+
+    <div id="Podsumowanie" class="tab-pane">
+        <h3>Podsumowanie</h3>
+    </div>
+
+    <div id="Administracja" class="tab-pane">
+        <h3>Administracja</h3>
     </div>
 
 </div>

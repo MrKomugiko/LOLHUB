@@ -1,5 +1,6 @@
 ﻿using LOLHUB.Models;
 using LOLHUB.Models.Match;
+using LOLHUB.Models.TournamentViewModels;
 using Microsoft.EntityFrameworkCore;
 using RiotApi.Models;
 using System;
@@ -20,6 +21,8 @@ namespace LOLHUB.Data
         public DbSet<SummonerInfoModel> SummonerInfos { get; set; }
         public DbSet<MatchSelectedData> Matches { get; set; }
         public DbSet<GameStatistic> GameStatistics { get; set; }
+
+        public DbSet<Drabinka> Drabinki { get; set; }
     }
 }
 

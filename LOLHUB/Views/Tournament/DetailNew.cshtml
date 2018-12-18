@@ -3,28 +3,102 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>DetailPage of Tournament with id = @ViewBag.TournamentId </h1>
-<h3>List participated Teams who join this tournament: </h3>
+<ul class="nav nav-tabs">
+    <li class="nav-item active">
+        <a class="nav-link active" href="#Szczegoly" data-toggle="tab">Szczególy</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#Druzyny" data-toggle="tab">Druzyny</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#Cwiercfnialy" data-toggle="tab">Cwiercfnialy</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#Polfinaly" data-toggle="tab">Polfinaly</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#Finaly" data-toggle="tab">Finaly</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link disabled" href="#Podsumowanie" data-toggle="tab">Podsumowanie</a>
+    </li>
+</ul>
 
+<div class="tab-content">
+    <div id="Szczegoly" class="tab-pane" >
+        <h3>Szczegóły turnieju  @ViewBag.TournamentId # </h3>
 
-<table class="table table-hover table-striped">
-    <tr>
-        <th>Team ID</th>
-        <th>Team Name</th>
-        <th>Team Leader</th>
-        <th>Members Count</th>
-        <th>W.I.P.</th>
-    </tr>
+        <p>
+            Turniej rozpoczyna się @foreach (var item in Model)
+            {
+                <text> @item.Tournament.StartDate.ToString();</text>
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>@item.Id</td>
-            <td>@item.Name</td>
-            <td>@item.TeamLeader.ConectedSummoners.name</td>
-            <td>@item.Players.Count()</td>
-            <td>  <a asp-controller="Team" asp-action="DetailNew" asp-route-id="@item.Id">[Team Members/Team Details]</a></td>
-        </tr>
-            
-    }
-    </table>
+                DateTime czasRozpoczecia = @item.Tournament.StartDate;
+                DateTime czasAktualny = DateTime.Now;
+                var pozostalyCzas = czasRozpoczecia - czasAktualny;
+                <br />
+                <text> Do rozpoczęcia pozostało @Math.Round(pozostalyCzas.TotalHours) godzin </text>
+                break;
+            }
+        </p>
+
+    </div>
+
+    <div id="Druzyny" class="tab-pane">
+        <h3>Lista uczestniczących drużyn: </h3>
+        <table class="table table-hover table-striped">
+            <tr>
+                <th>Team ID</th>
+                <th>Team Name</th>
+                <th>Team Leader</th>
+                <th>Members Count</th>
+                <th>W.I.P.</th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.TeamLeader.ConectedSummoners.name</td>
+                    <td>@item.Players.Count()</td>
+                    <td>  <a asp-controller="Team" asp-action="DetailNew" asp-route-id="@item.Id">[Team Members/Team Details]</a></td>
+                </tr>
+
+            }
+        </table>
+    </div>
+
+    <div id="Cwiercfnialy" class="tab-pane">
+        <h3>Cwierćfinały</h3>
+        @{ 
+            if (Model.Where(t => t.Tournament.Teams.Count() != 0).Any())
+            {
+                @await Component.InvokeAsync("Drabinka", new { id = @ViewBag.TournamentId, level = 1 })
+            }
+         }
+    </div>
+
+    <div id="Polfinaly" class="tab-pane">
+
+        <h3>Półfinaly</h3> 
+        @{
+            if (Model.Where(t => t.Tournament.Teams.Count() != 0).Any())
+            {
+                @await Component.InvokeAsync("Drabinka", new { id = @ViewBag.TournamentId, level = 2 })
+            }
+        }
+    </div>
+
+    <div id="Finaly" class="tab-pane">
+        <h3>Finały</h3>
+        @{
+            if (Model.Where(t => t.Tournament.Teams.Count() != 0).Any())
+            {
+                @await Component.InvokeAsync("Drabinka", new { id = @ViewBag.TournamentId, level = 3})
+            }
+        }
+    </div>
+
+</div>
+

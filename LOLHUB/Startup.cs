@@ -45,6 +45,7 @@ namespace LOLHUB
             services.AddTransient<IPlayerRepository, PlayerRepository>();
             services.AddTransient<IMatchRepository, MatchRepository>();
             services.AddTransient<ITeamRepository, TeamRepository>();
+            services.AddTransient<IDrabinkaRepository, DrabinkaRepository>(); //nowe
 
             services.AddSingleton<IRiotApiService, RiotApiService>();
             services.AddSingleton<IGetSummonerInfo, GetSummonerInfo>();
@@ -54,9 +55,6 @@ namespace LOLHUB
             services.AddMvc();
             services.AddDistributedMemoryCache();
             services.AddSession();
-
-
-
         }
 
 
@@ -78,6 +76,7 @@ namespace LOLHUB
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
             app.UseSession();
 
             app.UseMvc(routes =>

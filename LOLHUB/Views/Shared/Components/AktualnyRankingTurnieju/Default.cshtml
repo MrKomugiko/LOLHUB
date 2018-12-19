@@ -1,0 +1,49 @@
+﻿@model IList<LOLHUB.Models.TournamentViewModels.TournamentRanking>
+@{
+    ViewData["Title"] = "Ranking";
+}
+
+Ranking
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Miejsce
+            </th>
+            <th>
+               Nazwa Drużyny
+            </th>
+            <th>
+                Suma Wygranych
+            </th>
+            <th>
+                Rozegrane Gry
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ 
+            var index = 1;
+        }
+        
+        @foreach (var item in Model.OrderByDescending(s => s.Suma_Wygranych))
+        {
+        <tr>
+            <td>
+                #@index
+            </td>
+            <td>
+                @item.Nazwa_Druzyny
+            </td>
+            <td>
+                @item.Suma_Wygranych
+            </td>
+            <td>
+                @item.Rozegrane_Gry
+            </td>
+        </tr>
+            index += 1;
+        }
+    </tbody>
+</table>

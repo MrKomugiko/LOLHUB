@@ -8,12 +8,13 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace LOLHUB.Data.Migrations
+namespace LOLHUB.Migrations.LOLHUBApplicationDb
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181219010431_Testhistoriimeczydlagracza")]
+    partial class Testhistoriimeczydlagracza
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -220,11 +221,7 @@ namespace LOLHUB.Data.Migrations
 
                     b.Property<int>("PlayerId");
 
-                    b.Property<bool?>("Status");
-
                     b.Property<int>("TeamId");
-
-                    b.Property<string>("TeamName");
 
                     b.HasKey("Id");
 
@@ -244,15 +241,9 @@ namespace LOLHUB.Data.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int?>("Participate_in_Tournaments");
-
-                    b.Property<int?>("Points");
-
                     b.Property<int?>("TeamLeaderId");
 
                     b.Property<int?>("TournamentId");
-
-                    b.Property<int?>("Tournaments_Win");
 
                     b.HasKey("Id");
 

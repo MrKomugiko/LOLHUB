@@ -25,6 +25,7 @@ namespace LOLHUB.Models
         public string ConnectedSummonerEmail { get; set; } 
         public virtual SummonerInfoModel ConectedSummoners { get; set; }
 
+        public ICollection<PlaysHistory> Histories { get; set; }
 
 
     }

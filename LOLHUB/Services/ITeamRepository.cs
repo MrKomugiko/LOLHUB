@@ -21,5 +21,11 @@ namespace LOLHUB.Services
         bool CheckIfUserAlreadyIsMemberOfTheTeam(int teamId);
 
         bool CheckIfUserAlreadyConnectSummonerAccount();
+
+        void PrzydzielPunkty(int teamId, int punkty);
+
+        void UploadTeamParticipate(int teamId);
+
+        void SaveWinInTournament(int teamId);
     }
 }

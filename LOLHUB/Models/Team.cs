@@ -19,6 +19,10 @@ namespace LOLHUB.Models
 
         public int? TournamentId { get; set; }             // FK turnieju z tabeli Tournament
         public virtual Tournament Tournament { get; set; } // połączenie z tabelą Tournament
+
+        public int? Points { get; set; }                     // Wygrana turnieju da xx punktów za miejsca 1 i 2
+        public int? Tournaments_Win { get; set; }            // W ilu turniejach druzyna zajela 1 miejsce    
+        public int? Participate_in_Tournaments { get; set; } // w ilu turniejach druzyna brała udział
     }
 
 }

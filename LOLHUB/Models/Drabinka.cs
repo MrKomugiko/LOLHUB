@@ -22,5 +22,7 @@ namespace LOLHUB.Models.TournamentViewModels
         public bool? Team2_Win { get; set; }
 
         public int Tournament_Level { get; set; } // 1 = początek, x = finał 1/x => 2/x => x/x
+
+        public ICollection<PlaysHistory> Histories { get; set; }
     }
 }

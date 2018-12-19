@@ -46,6 +46,7 @@ namespace LOLHUB
             services.AddTransient<IMatchRepository, MatchRepository>();
             services.AddTransient<ITeamRepository, TeamRepository>();
             services.AddTransient<IDrabinkaRepository, DrabinkaRepository>(); //nowe
+            services.AddTransient<IPlaysHistoryRepository, PlaysHistoryRepository>();
 
             services.AddSingleton<IRiotApiService, RiotApiService>();
             services.AddSingleton<IGetSummonerInfo, GetSummonerInfo>();

@@ -19,11 +19,15 @@ namespace LOLHUB.Controllers
         private readonly LOLHUBApplicationDbContext _context;
         private ITournamentRepository _tournamentCtx;
         private IDrabinkaRepository _drabinkaCtx;
-        public TournamentController(LOLHUBApplicationDbContext context, ITournamentRepository tournamentCtx, IDrabinkaRepository drabinkaCtx)
+        private IPlaysHistoryRepository _historyCtx;
+        private ITeamRepository _teamCtx;
+        public TournamentController(LOLHUBApplicationDbContext context, ITournamentRepository tournamentCtx, IDrabinkaRepository drabinkaCtx, IPlaysHistoryRepository historyCtx, ITeamRepository teamCtx)
         {
             _context = context;
             _tournamentCtx = tournamentCtx;
             _drabinkaCtx = drabinkaCtx;
+            _historyCtx = historyCtx;
+            _teamCtx = teamCtx;
         }
 
         public IActionResult Index()
@@ -61,24 +65,10 @@ namespace LOLHUB.Controllers
 
         }
      
-        public IActionResult UploadGameStats(int id,int team1Id, int team2Id, int TournamentId, int TournamentLevel)
-        {
-            
-            Drabinka drabinka = _drabinkaCtx.Drabinki.Where(d => d.Id == id).First();
-            _drabinkaCtx.Aktualizuj(drabinka,TournamentId,TournamentLevel);
-            return RedirectToAction("Index");
-        }
-
-        //[Authorize(Roles = "Admin")]
-        //[Route("GenerujDrabinke/{TournamentId}/{TournamentLevel}")]
-        //public IActionResult DrabinkaTest(int TournamentId,int TournamentLevel)
-        //{
-        //    return ViewComponent("Drabinka", new { id = TournamentId, level = TournamentLevel });
-        //}
 
         [Authorize(Roles = "Admin")]
         [Route("GenerujDrabinke/{id}/{level}")]
-        public async Task<IActionResult> GenerujDrabinke(int id, int level)
+        public async Task<IActionResult> GenerujDrabinke(int id, int level)       
         {
             IList<Team> teams = _context.Teams
                 .Include(t => t.Tournament)
@@ -97,28 +87,42 @@ namespace LOLHUB.Controllers
                 }
                 else
                 {
+                        List<int> teamidpool = teams.Select(t => t.Id).ToList();
+                        Random randm = new Random();
+                        int team1_index = randm.Next(teamidpool.Count);
+                        int team1 = teamidpool[team1_index];
+                        int team2_index = randm.Next(teamidpool.Count);
+                        int team2 = teamidpool[team2_index];
+
                     while (liczba_par > 0)
                     {
 
-                        Random randm = new Random();
-                        int team1 = randm.Next(1, 9);
-                        int team2 = randm.Next(1, 9);
-
-                        while (team1 == team2)
+                        while (team1_index == team2_index)
                         {
-                            team1 = randm.Next(1, 9);
-                            team2 = randm.Next(1, 9);
+                            team1_index = randm.Next(teamidpool.Count);
+                            team1 = teamidpool[team1_index];
+                            team2_index = randm.Next(teamidpool.Count);
+                            team2 = teamidpool[team2_index];
                         }
 
-                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team1).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team1).Any())
+                        if (liczba_par == 4)
                         {
-                            team1 = randm.Next(1, 9);
+                            goto pomin;
                         }
+                        else {
+                        while (_drabinkaCtx.Drabinki.Where(d => (d.Team1_Id == team1 && d.Tournament_Level == 1)).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team1 && d.Tournament_Level == 1).Any() || team1 == team2 ) 
+                        {
+                            team1_index = randm.Next(teamidpool.Count);
+                            team1 = teamidpool[team1_index];
 
-                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team2).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team2).Any())
-                        {
-                            team2 = randm.Next(1, 9);
                         }
+                        while (_drabinkaCtx.Drabinki.Where(d => (d.Team1_Id == team2 && d.Tournament_Level == 1)).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team2 && d.Tournament_Level == 1).Any() || team1 == team2 )
+                        {
+                            team2_index = randm.Next(teamidpool.Count);
+                            team2 = teamidpool[team2_index];
+                        }
+                         }
+                        pomin:
 
                         Drabinka nowaDrabinka = new Drabinka()
                         {
@@ -152,31 +156,19 @@ namespace LOLHUB.Controllers
                 }
                 else
                 {
-                    while (liczba_par > 0)
-                    {
-                        List<int> teamidpool = teams.Select(t => t.Id).ToList();
-                        List<int> team1winners = _drabinkaCtx.Drabinki.Where(d => d.Team1_Win == true).Select(d=>d.Team1_Id).ToList();
-                        List<int> team2winners = _drabinkaCtx.Drabinki.Where(d=>d.Team2_Win == true).Select(d => d.Team2_Id).ToList();
+                        List<int> team1winners = _drabinkaCtx.Drabinki.Where(d => d.Team1_Win == true && d.Tournament_Level == 1).Select(d => d.Team1_Id).ToList();
+                        List<int> team2winners = _drabinkaCtx.Drabinki.Where(d => d.Team2_Win == true && d.Tournament_Level == 1).Select(d => d.Team2_Id).ToList();
 
                         List<int> TeamWinners = new List<int>();
 
-                        foreach (var item in teamidpool)
-                        {
-                            foreach (var team1win in team1winners)
+                            foreach (var item in team1winners)
                             {
-                                if (item == team1win )
-                                {
                                     TeamWinners.Add(item);
-                                }
                             }
-                            foreach (var team2win in team2winners)
+                            foreach (var item in team2winners)
                             {
-                                if (item == team2win)
-                                {
                                     TeamWinners.Add(item);
-                                }
                             }
-                        }
 
                         Random randm = new Random();
                         int team1_index = randm.Next(TeamWinners.Count);
@@ -184,6 +176,8 @@ namespace LOLHUB.Controllers
                         int team2_index = randm.Next(TeamWinners.Count);
                             int team2 = TeamWinners[team2_index];
 
+                    while (liczba_par > 0)
+                    {
                         while (team1_index == team2_index)
                         {
                             team1_index = randm.Next(TeamWinners.Count);
@@ -192,13 +186,13 @@ namespace LOLHUB.Controllers
                                  team2 = TeamWinners[team2_index];
                         }
 
-                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team1  && d.Tournament_Level == 2).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team1 && d.Tournament_Level == 2).Any())
+                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team1  && d.Tournament_Level == 2).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team1 && d.Tournament_Level == 2).Any() || team1 == team2 )
                         {
                             team1_index = randm.Next(TeamWinners.Count);
                             team1 = TeamWinners[team1_index];
                         }
 
-                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team2 && d.Tournament_Level == 2).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team2 && d.Tournament_Level == 2).Any())
+                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team2 && d.Tournament_Level == 2).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team2 && d.Tournament_Level == 2).Any() || team1 == team2 )
                         {
                             team2_index = randm.Next(TeamWinners.Count);
                             team2 = TeamWinners[team2_index];
@@ -236,31 +230,18 @@ namespace LOLHUB.Controllers
                 }
                 else
                 {
-                    while (liczba_par > 0)
-                    {
-
-                        List<int> teamidpool = teams.Select(t => t.Id).ToList();
                         List<int> team1winners = _drabinkaCtx.Drabinki.Where(d => d.Team1_Win == true && d.Tournament_Level == 2).Select(d => d.Team1_Id).ToList();
                         List<int> team2winners = _drabinkaCtx.Drabinki.Where(d => d.Team2_Win == true && d.Tournament_Level == 2).Select(d => d.Team2_Id).ToList();
 
                         List<int> TeamWinners = new List<int>();
 
-                        foreach (var item in teamidpool)
+                        foreach (var item in team1winners)
                         {
-                            foreach (var team1win in team1winners)
-                            {
-                                if (item == team1win)
-                                {
-                                    TeamWinners.Add(item);
-                                }
-                            }
-                            foreach (var team2win in team2winners)
-                            {
-                                if (item == team2win)
-                                {
-                                    TeamWinners.Add(item);
-                                }
-                            }
+                            TeamWinners.Add(item);
+                        }
+                        foreach (var item in team2winners)
+                        {
+                            TeamWinners.Add(item);
                         }
 
                         Random randm = new Random();
@@ -269,6 +250,8 @@ namespace LOLHUB.Controllers
                         int team2_index = randm.Next(TeamWinners.Count);
                         int team2 = TeamWinners[team2_index];
 
+                    while (liczba_par > 0)
+                    {
                         while (team1_index == team2_index)
                         {
                             team1_index = randm.Next(TeamWinners.Count);
@@ -277,13 +260,13 @@ namespace LOLHUB.Controllers
                             team2 = TeamWinners[team2_index];
                         }
 
-                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team1 && d.Tournament_Level == 3).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team1 && d.Tournament_Level == 3).Any())
+                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team1 && d.Tournament_Level == 3).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team1 && d.Tournament_Level == 3).Any() || team1 == team2 )
                         {
                             team1_index = randm.Next(TeamWinners.Count);
                             team1 = TeamWinners[team1_index];
                         }
 
-                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team2 && d.Tournament_Level == 3).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team2 && d.Tournament_Level == 3).Any())
+                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team2 && d.Tournament_Level == 3).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team2 && d.Tournament_Level == 3).Any() || team1 == team2 )
                         {
                             team2_index = randm.Next(TeamWinners.Count);
                             team2 = TeamWinners[team2_index];
@@ -312,6 +295,97 @@ namespace LOLHUB.Controllers
             }
 
             else return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+        }
+
+        public IActionResult UploadGameStats(int id,int team1Id, int team2Id, int TournamentId, int TournamentLevel)
+        {
+             const int punkty_za_1_miejsce = 100;
+             const int punkty_za_2_miejsce = 50;
+             const int punkty_za_3_miejsce = 25;
+             const int punkty_za_udzial = 10;
+
+            Drabinka drabinka = _drabinkaCtx.Drabinki.Where(d => d.Id == id).First();
+            _drabinkaCtx.Aktualizuj(drabinka,TournamentId,TournamentLevel);
+
+            PlaysHistory TeamHistory1 = new PlaysHistory
+            {
+                Drabinka = drabinka,
+                Player = _context.Teams.Include(l=>l.TeamLeader).Where(t => t.Id == drabinka.Team1_Id).First().TeamLeader,
+                TeamId = drabinka.Team1_Id,
+                TeamName = drabinka.Team1_Name,
+                Status = drabinka.Team1_Win         
+            };
+            _historyCtx.Dodaj(TeamHistory1);
+
+            PlaysHistory TeamHistory2 = new PlaysHistory
+            {
+                Drabinka = drabinka,
+                Player = _context.Teams.Include(l => l.TeamLeader).Where(t => t.Id == drabinka.Team2_Id).First().TeamLeader,
+                TeamId = drabinka.Team2_Id,
+                TeamName = drabinka.Team2_Name,
+                Status = drabinka.Team2_Win
+            };
+            _historyCtx.Dodaj(TeamHistory2);
+
+            //punkty za zajecia vice 3 miejsca
+            if (TournamentLevel == 1)
+            {
+                if (TeamHistory1.Status == false)
+                {
+                    _teamCtx.PrzydzielPunkty(TeamHistory1.TeamId, punkty_za_udzial);
+                    _teamCtx.UploadTeamParticipate(TeamHistory1.TeamId);
+                }
+
+                if (TeamHistory2.Status == false)
+                {
+                    _teamCtx.PrzydzielPunkty(TeamHistory2.TeamId, punkty_za_udzial);
+                    _teamCtx.UploadTeamParticipate(TeamHistory2.TeamId);
+                }
+            }
+
+                if (TournamentLevel == 2)
+                {
+                    if (TeamHistory1.Status == false)
+                    {
+                        _teamCtx.PrzydzielPunkty(TeamHistory1.TeamId, punkty_za_3_miejsce);
+                        _teamCtx.UploadTeamParticipate(TeamHistory1.TeamId);
+                    }
+
+                    if (TeamHistory2.Status == false)
+                    {
+                        _teamCtx.PrzydzielPunkty(TeamHistory2.TeamId, punkty_za_3_miejsce);
+                        _teamCtx.UploadTeamParticipate(TeamHistory2.TeamId);
+                    }
+                }
+                //Przydzielenie punktów za pierwsze 1 i 2 miejsca 
+                if (TournamentLevel == 3)
+                {
+                    if (TeamHistory1.Status == true)
+                    {
+                        _teamCtx.PrzydzielPunkty(TeamHistory1.TeamId,punkty_za_1_miejsce); 
+                        _teamCtx.UploadTeamParticipate(TeamHistory1.TeamId);
+                        _teamCtx.SaveWinInTournament(TeamHistory1.TeamId);
+                    }
+                    else if (TeamHistory1.Status == false)
+                    {
+                        _teamCtx.PrzydzielPunkty(TeamHistory1.TeamId, punkty_za_2_miejsce);
+                        _teamCtx.UploadTeamParticipate(TeamHistory1.TeamId);
+                    }
+
+                    if (TeamHistory2.Status == true)
+                    {
+                        _teamCtx.PrzydzielPunkty(TeamHistory2.TeamId, punkty_za_1_miejsce);
+                        _teamCtx.UploadTeamParticipate(TeamHistory2.TeamId);
+                        _teamCtx.SaveWinInTournament(TeamHistory2.TeamId);
+                    }
+                    else if(TeamHistory2.Status == false)
+                    {
+                        _teamCtx.PrzydzielPunkty(TeamHistory2.TeamId, punkty_za_2_miejsce);
+                        _teamCtx.UploadTeamParticipate(TeamHistory2.TeamId);
+                    }
+
+                }
+            return RedirectToAction("Index");
         }
     }
 }

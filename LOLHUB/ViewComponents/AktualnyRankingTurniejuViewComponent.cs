@@ -1,5 +1,7 @@
 ﻿using LOLHUB.Data;
 using LOLHUB.Models;
+using LOLHUB.Models.SummonerViewModels;
+using LOLHUB.Models.TournamentViewModels;
 using LOLHUB.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,28 +13,43 @@ using System.Threading.Tasks;
 
 namespace LOLHUB.ViewComponents
 {
-    public class AktualnyRankingTurniejuViewComponent: ViewComponent
+    public class AktualnyRankingTurniejuViewComponent : ViewComponent
     {
-            private IDrabinkaRepository _drabinkaCtx;
-            private LOLHUBApplicationDbContext _context;
-            public AktualnyRankingTurniejuViewComponent(IDrabinkaRepository drabinkaCtx, LOLHUBApplicationDbContext context)
+
+        private LOLHUBApplicationDbContext _context;
+        public AktualnyRankingTurniejuViewComponent(LOLHUBApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+
+        public async Task<IViewComponentResult> InvokeAsync(int id)
+        {
+            var data = await _context.Histories
+                    .Include(p => p.Player)
+                    .Include(d => d.Drabinka)
+                    .Include(p => p.Player.ConectedSummoners)
+                    .Where(h => h.Drabinka.Tournament_Id == id)
+                    .ToListAsync();
+
+           var groupeddata = data.GroupBy(g => g.TeamName).OrderBy(o => o.Key).ToList();
+            List<TournamentRanking> rankingData = new List<TournamentRanking>();
+
+            foreach (var team in groupeddata)
             {
-                _drabinkaCtx = drabinkaCtx;
-                _context = context;
+                TournamentRanking teamstats = new TournamentRanking()
+                {
+                   Suma_Wygranych = data.Where(s => s.Status == true && s.TeamName == team.Key.ToString()).Count(),
+                   Nazwa_Druzyny = team.Key.ToString(),
+                   Rozegrane_Gry = data.Where(s =>s.TeamName == team.Key.ToString()).Count()
+                };
+                rankingData.Add(teamstats);
             }
 
-            public async Task<IViewComponentResult> InvokeAsync(int tournamentId)
-            {
-                IList<Team> teams = _context.Teams
-                    .Include(t => t.Tournament)
-                    .Where(t => t.TournamentId == tournamentId)
-                    .Include(t => t.TeamLeader.ConectedSummoners)
-                    .Include(t => t.Players)
-                    .Where(t => t.Players.Count() > 0)
-                    .ToList();
+            return View(rankingData);
 
-                return View("RankingTurnieju", await _drabinkaCtx.Drabinki.ToListAsync());
-            }
+            //return View(await _context.Histories.ToListAsync());
 
         }
     }
+}

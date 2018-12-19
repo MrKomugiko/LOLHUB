@@ -106,10 +106,44 @@
 
     <div id="Podsumowanie" class="tab-pane">
         <h3>Podsumowanie</h3>
+        @await Component.InvokeAsync("AktualnyRankingTurnieju", new { id = @ViewBag.TournamentId })
     </div>
 
     <div id="Administracja" class="tab-pane">
         <h3>Administracja</h3>
+        <div>
+            <ul>
+                <li>
+                    <form asp-controller="Tournament" asp-action="GenerujDrabinke"
+                          asp-route-id="@ViewBag.TournamentId"
+                          asp-route-level="1"
+                          method="post">
+                        <button type="submit" class="btn btn-primary"><b>[ Wygeneruj 1 grupe turniejową / Podgląd json ]</b></button>
+                    </form>
+                    <ul>
+                        <li><br />
+                            <form asp-controller="Tournament" asp-action="GenerujDrabinke"
+                                  asp-route-id="@ViewBag.TournamentId"
+                                  asp-route-level="2"
+                                  method="post">
+                                <button type="submit" class="btn btn-primary"><b>[ Wygeneruj 2 grupe turniejową / Podgląd json ]</b></button>
+                            </form>
+                            <ul>
+                                <li>
+                                    <br />
+                                    <form asp-controller="Tournament" asp-action="GenerujDrabinke"
+                                          asp-route-id="@ViewBag.TournamentId"
+                                          asp-route-level="3"
+                                          method="post">
+                                        <button type="submit" class="btn btn-primary"><b>[ Wygeneruj 3 grupe turniejową / Podgląd json ]</b></button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
     </div>
 
 </div>

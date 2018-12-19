@@ -23,6 +23,7 @@ namespace LOLHUB.Data
         public DbSet<GameStatistic> GameStatistics { get; set; }
 
         public DbSet<Drabinka> Drabinki { get; set; }
+        public DbSet<PlaysHistory> Histories { get; set; }
     }
 }
 

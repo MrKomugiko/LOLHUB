@@ -21,7 +21,6 @@ namespace LOLHUB.Services
         }
 
         public IQueryable<Team> Teams => _context.Teams;
-
         public void SaveTeam(Team TeamData)
         {
             var teamLeader = _context.Players
@@ -33,14 +32,17 @@ namespace LOLHUB.Services
                 Name = TeamData.Name,
                 Description = TeamData.Description,
                 TeamLeader = teamLeader,
-                Players = new List<Player>()
+                Players = new List<Player>(),
+                Participate_in_Tournaments = 0,
+                Points = 0,
+                Tournaments_Win = 0
+                
             };
 
             _context.Teams.Add(team);
             team.Players.Add(teamLeader);
             _context.SaveChanges();
         }
-
         public void JoinTeam(int teamId)
         {
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
@@ -53,7 +55,6 @@ namespace LOLHUB.Services
             _context.Teams.Update(teamEntry);
             _context.SaveChanges();
         }
-
         public bool CheckIfUserAlreadyIsTeamLeader()
         {
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
@@ -64,7 +65,6 @@ namespace LOLHUB.Services
             } else
                 return false;
         }
-
         public bool CheckIfUserAlreadyIsMemberOfTheTeam(int teamId)
         {
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
@@ -88,7 +88,6 @@ namespace LOLHUB.Services
             else
                 return true;
         }
-
         public bool CheckIfUserAlreadyConnectSummonerAccount()
         {
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
@@ -104,6 +103,37 @@ namespace LOLHUB.Services
             }
             else
                 return false;
+        }
+ 
+        public void PrzydzielPunkty(int teamId, int punkty)
+        {
+            Team teamEntry = _context.Teams.Where(t => t.Id == teamId).First();
+            int oldpkts = teamEntry.Points.Value;
+            teamEntry.Points = oldpkts + punkty;
+
+            _context.Teams.Update(teamEntry);
+            _context.SaveChanges();
+
+        }
+        public void UploadTeamParticipate(int teamId)
+        {
+            Team teamEntry = _context.Teams.Where(t => t.Id == teamId).First();
+            int old_participate_count = teamEntry.Participate_in_Tournaments.Value;
+
+            teamEntry.Participate_in_Tournaments = old_participate_count+1;
+
+            _context.Teams.Update(teamEntry);
+            _context.SaveChanges();
+        }
+        public void SaveWinInTournament(int teamId)
+        {
+            Team teamEntry = _context.Teams.Where(t => t.Id == teamId).First();
+
+            int old_win_count = teamEntry.Tournaments_Win.Value;
+            teamEntry.Tournaments_Win = old_win_count + 1;
+
+            _context.Teams.Update(teamEntry);
+            _context.SaveChanges();
         }
     }
 }

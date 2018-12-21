@@ -38,13 +38,14 @@ namespace LOLHUB.Controllers
 
         public IActionResult JoinToTournament(int tournamentId)
         {
-            int result = _tournamentCtx.JoinToTournament(tournamentId); //<--- DO EDYCJI teraz trzeba spawdzac czy user jest liderem i czy juz nie gra w tym turnieju
-            if (result == 11) { TempData["joiningResult"] = "Poprawnie dołączyłeś do turnieju, gratulacje :)"; }
-            if (result == 01) { TempData["joiningResult"] = "Już jesteś przypisany do tego turnieju."; }
-            if (result == 101) { TempData["joiningResult]"] = "Tylko lider drużyny może zmienić przynależnośc do turnieju."; }
+            int result = _tournamentCtx.JoinToTournament(tournamentId); 
+            if (result == 2)   { TempData["joiningResult"] = "Turniej właśnie się odbywa, nie możesz do niego dołączyć."; }
+            if (result == 11)  { TempData["joiningResult"] = "Poprawnie dołączyłeś do turnieju, gratulacje :)"; }
+            if (result == 01)  { TempData["joiningResult"] = "Już jesteś przypisany do tego turnieju."; }
+            if (result == 101) { TempData["joiningResult"] = "Tylko lider drużyny może zmienić przynależnośc do turnieju."; }
             if (result == 111) { TempData["joiningResult"] = "Nie jesteś liderem drużyny"; }
-            if (result == 10) { TempData["joiningResult"] = "Z Powodzeniem zmieniłeś uczestnictwo w turnieju na inny."; }
-            if (result == 00) { TempData["joiningResult"] = "Nie udało się dołączyć do turnieju. Turniej już się zakończył."; }
+            if (result == 10)  { TempData["joiningResult"] = "Z Powodzeniem zmieniłeś uczestnictwo w turnieju na inny."; }
+            if (result == 00)  { TempData["joiningResult"] = "Nie udało się dołączyć do turnieju. Turniej już się zakończył."; }
             return RedirectToAction("Index");
         }
 
@@ -64,11 +65,10 @@ namespace LOLHUB.Controllers
             return View(teams);
 
         }
-     
 
         [Authorize(Roles = "Admin")]
         [Route("GenerujDrabinke/{id}/{level}")]
-        public async Task<IActionResult> GenerujDrabinke(int id, int level)       
+        public async Task<IActionResult> GenerujDrabinke(int id, int level)
         {
             IList<Team> teams = _context.Teams
                 .Include(t => t.Tournament)
@@ -295,6 +295,17 @@ namespace LOLHUB.Controllers
             }
 
             else return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult ZmienStanTurnieju(int id,string status)
+        {
+            if (status == "start") {
+                _tournamentCtx.ChangeTournamentStatus(id, status);
+                    } else if (status == "stop") {
+                _tournamentCtx.ChangeTournamentStatus(id, status);
+                    }
+            return RedirectToAction("DetailNew", id);
         }
 
         public IActionResult UploadGameStats(int id,int team1Id, int team2Id, int TournamentId, int TournamentLevel)

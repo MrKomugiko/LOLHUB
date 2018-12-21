@@ -16,5 +16,7 @@ namespace LOLHUB.Models
         Tournament TimeOut(int tournamentId);
 
         int JoinToTournament(int tournamentId);
+
+        void ChangeTournamentStatus(int tournamentId, string status);
     }
 }

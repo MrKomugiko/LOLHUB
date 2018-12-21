@@ -11,7 +11,8 @@
         <th>Nazwa Turnieju</th>
         <th>Liczba zajętych miejsc</th>
         <th>Status</th>
-        <th>Detale</th>
+        <th>Start Turnieju</th>
+        <th>Koniec Turnieju</th>
 
         @if (User.Identity.IsAuthenticated)
         {
@@ -26,7 +27,11 @@
             <td>@item.Name</td>
             <td>@item.Teams.Count()/16</td>
             <td>
-                @{ if (item.IsExpired == false)
+                @if(item.IsActuallyPlayed == true)
+                {
+                    <text> Turniej właśnie się odbywa. </text>
+
+                }else if (item.IsExpired == false)
                     {
                         <text>Aktywny</text> 
                     }
@@ -36,7 +41,12 @@
                     }
                  }
             </td>
-
+            <td>
+                @item.StartDate
+            </td>
+            <td>
+                @item.EndDate
+            </td>
             <td>
                <form asp-controller="Tournament" asp-action="DetailNew" asp-route-id="@item.TournamentId" method="get">
                     @*<input type="hidden" id="id" name="id" value="@item.TournamentId" />*@

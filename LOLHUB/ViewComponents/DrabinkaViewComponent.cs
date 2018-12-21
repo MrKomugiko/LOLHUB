@@ -57,7 +57,7 @@ namespace LOLHUB.ViewComponents
                     break;
             }
 
-            return View("Drabinka1", await _drabinkaCtx.Drabinki.ToListAsync());
+            return View();
         }
 
     }

@@ -38,7 +38,7 @@
             </div>
 
             <div class="input-group">
-                <input runat="server" readonly="readonly" id="id" type="text" class="form-control text-center" style="font-size:larger; font-weight:500;" Value=@Model.Summoner.Select(s=>s.Code).First().ToString() aria-describedby="btnGroupAddon" maxlength="20" size="22" />
+                <input runat="server" readonly="readonly" id="id" type="text" class="form-control text-center" style="font-size:larger; font-weight:500;" Value=@Model.Summoner.Select(s => s.Code).First().ToString() aria-describedby="btnGroupAddon" maxlength="20" size="22" />
             </div>
             <div class="btn-group" style="margin-right:20px">
                 <form asp-controller="riotapi" asp-action="Check" method="post">
@@ -90,7 +90,7 @@
                     @GameDurationInMinutes.ToString() min
                 </td>
             </tr>
-        }
+                            }
 
         </table>
 
@@ -114,21 +114,22 @@
             <td>
                 @{
                     int Win = Model.GameStatistics.Where(g => g.Win == true).Count();
-                    int GamesPlayed = Model.GameStatistics.Where(g => g.Win == true).Count();
+                    int GamesPlayed = Model.GameStatistics.Count();
                     float WinRatio = 0;
-                    if (GamesPlayed >= 1)
+                    if (GamesPlayed > 0)
                     {
                         WinRatio = (Win * 100) / GamesPlayed;
                     }
-                    else { WinRatio = 0; }
                 }
 
             @WinRatio %
         </td>
         <td>@Model.GameStatistics.Select(g => g.GameId).Count()</td>
         <td>
-            @Model.GameStatistics.GroupBy(g => g.ChampionId).OrderByDescending(g => g.Count()).Select(g=>g.Key).First()
-
+            @{if (Model.GameStatistics.Select(g => g.GameId).Count() > 0) {
+                    Model.GameStatistics.GroupBy(g => g.ChampionId).OrderByDescending(g => g.Count()).Select(g => g.Key).First();
+                    }
+            }
 
         </td>
     </tr>

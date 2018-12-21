@@ -25,11 +25,20 @@
                 <th>
                     Members
                 </th>
+                <th>
+                    Points
+                </th>
+                <th>
+                    Tournament Wins
+                </th>
+                <th>
+                    % Win
+                </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.Team)
+            @foreach (var item in Model.Team.OrderByDescending(t=>t.Points))
             {
                 <tr>
                     <td>
@@ -65,7 +74,7 @@
                                 var PlayerId = item2.Id;
                                 foreach (var item3 in Model.Player)
                                 {
-                                    if (item3.Id == PlayerId && item.TeamLeader.Id != PlayerId && LeaderCount >=1)
+                                    if (item3.Id == PlayerId && item.TeamLeader.Id != PlayerId && LeaderCount >= 1)
                                     {
                                         <li style="color:black; font-weight:500;"> @item3.ConectedSummoners.name</li>
                                     }
@@ -73,6 +82,27 @@
                             }
 
                         </ul>
+                    </td>
+
+                    <td>
+                        @item.Points
+                    </td>
+
+                    <td>
+                        @item.Tournaments_Win
+                    </td>
+
+                    <td>
+                           @{ 
+                               float procentWin = 0;
+                               if (item.Tournaments_Win > 0)
+                               {
+                                  procentWin = (Int64)(((item.Tournaments_Win * 100) / item.Participate_in_Tournaments));
+                               }
+
+                            }
+
+                               @procentWin %
                     </td>
 
                     <td>

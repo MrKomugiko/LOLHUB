@@ -114,6 +114,24 @@
         <div>
             <ul>
                 <li>
+                    <form asp-controller="Tournament" asp-action="ZmienStanTurnieju"
+                          asp-route-id="@ViewBag.TournamentId"
+                          asp-route-status="start"
+                          method="post">
+                        <button type="submit" class="btn btn-warning"><b>[Rozpocznij Turniej]</b></button>
+                    </form>
+                </li>
+                <li>
+                    <form asp-controller="Tournament" asp-action="ZmienStanTurnieju"
+                          asp-route-id="@ViewBag.TournamentId"
+                          asp-route-status="stop"
+                          method="post">
+                        <button type="submit" class="btn btn-danger"><b>[Zakończ Turniej]</b></button>
+                    </form>
+                </li>
+            </ul>
+            <ul>
+                <li>
                     <form asp-controller="Tournament" asp-action="GenerujDrabinke"
                           asp-route-id="@ViewBag.TournamentId"
                           asp-route-level="1"
@@ -121,7 +139,7 @@
                         <button type="submit" class="btn btn-primary"><b>[ Wygeneruj 1 grupe turniejową / Podgląd json ]</b></button>
                     </form>
                     <ul>
-                        <li><br />
+                        <li>
                             <form asp-controller="Tournament" asp-action="GenerujDrabinke"
                                   asp-route-id="@ViewBag.TournamentId"
                                   asp-route-level="2"
@@ -130,7 +148,6 @@
                             </form>
                             <ul>
                                 <li>
-                                    <br />
                                     <form asp-controller="Tournament" asp-action="GenerujDrabinke"
                                           asp-route-id="@ViewBag.TournamentId"
                                           asp-route-level="3"

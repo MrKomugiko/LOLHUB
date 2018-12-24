@@ -8,7 +8,7 @@
     },
     "iisExpress": {
       "applicationUrl": "http://localhost:64929/",
-      "sslPort": 44302
+      "sslPort": 44344
     }
   },
   "profiles": {
@@ -20,7 +20,7 @@
       }
     },
     "LOLHUB": {
-      "commandName": "IISExpress",
+      "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

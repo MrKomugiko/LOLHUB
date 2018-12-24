@@ -10,7 +10,7 @@ namespace RiotApi.RiotApi
 {
     public class GetMatchData : IGetMatchData
     {
-        private const string api_key = "RGAPI-d796fb76-dc50-409c-b400-4c3fbccb232f";
+        private const string api_key = "RGAPI-3d6bf66c-6026-459d-a565-93c801706d52";
 
         public async Task<MatchDto> ReturnMatchData(int matchId)
         {

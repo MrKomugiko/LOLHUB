@@ -13,6 +13,8 @@ using LOLHUB.Models;
 using LOLHUB.Services;
 using RiotApi.Services;
 using RiotApi.RiotApi;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LOLHUB
 {
@@ -29,7 +31,8 @@ namespace LOLHUB
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<LOLHUBIdentityDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection")));
+                options.UseSqlServer(Configuration.
+                    GetConnectionString("IdentityConnection")));
 
             services.AddDbContext<LOLHUBApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ApplicationConnection")));
@@ -53,7 +56,15 @@ namespace LOLHUB
             services.AddSingleton<IGetMatchData, GetMatchData>();
             services.AddSingleton<IGenerateCode, GenerateCode>();
 
-            services.AddMvc();
+
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            });
+            services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new RequireHttpsAttribute());
+            });
             services.AddDistributedMemoryCache();
             services.AddSession();
         }
@@ -73,7 +84,9 @@ namespace LOLHUB
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            var options = new RewriteOptions().AddRedirectToHttps();
+      
+            app.UseRewriter(options);
             app.UseStaticFiles();
 
             app.UseAuthentication();

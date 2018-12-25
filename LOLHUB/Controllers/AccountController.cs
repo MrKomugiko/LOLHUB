@@ -326,13 +326,24 @@ namespace LOLHUB.Controllers
                 }
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user);
+
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "Member");
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+
+                        Player player = new Player
+                        {
+                            ConectedSummoners = null,
+                            FirstName = null,
+                            ConnectedSummonerEmail = user.Email
+                        };
+
+                        _playerRepository.CreateBasicPlayer(player);
                         return RedirectToLocal(returnUrl);
                     }
                 }

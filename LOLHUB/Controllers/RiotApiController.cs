@@ -22,7 +22,7 @@ namespace LOLHUB.Controllers
     [Authorize]
     public class RiotApiController : Controller
     {
-        public RiotApiController(LOLHUBApplicationDbContext context,IRiotApiService riotApiService, ISummonerInfoRepository repository, IPlayerRepository playerRepository, IGenerateCode code, IMatchRepository matchRepository, ITournamentRepository tournamentRepository)
+        public RiotApiController(LOLHUBApplicationDbContext context, IRiotApiService riotApiService, ISummonerInfoRepository repository, IPlayerRepository playerRepository, IGenerateCode code, IMatchRepository matchRepository, ITournamentRepository tournamentRepository)
         {
             _context = context;
             _riotApiService = riotApiService;
@@ -50,7 +50,7 @@ namespace LOLHUB.Controllers
 
             Player checkPlayer = _playerRepository.Players
                     .Include(p => p.ConectedSummoners)
-                    .Where(p=> p.ConnectedSummonerEmail == LoggedUserEmail)
+                    .Where(p => p.ConnectedSummonerEmail == LoggedUserEmail)
                     .FirstOrDefault();
 
             if (checkPlayer.ConectedSummoners == null)
@@ -63,9 +63,9 @@ namespace LOLHUB.Controllers
                 {
                     // var RecentID = Convert.ToInt32(TempData["RecentID"]);
                     var RecentID = HttpContext.Session.GetInt32("RecentID");
-                    if(RecentID == null)
+                    if (RecentID == null)
                     {
-                        return RedirectToAction("Index","Home");
+                        return RedirectToAction("Index", "Home");
                     }
 
                     SummonersAndMachHistories model = new SummonersAndMachHistories
@@ -78,7 +78,8 @@ namespace LOLHUB.Controllers
 
                     return View(model);
                 }
-            } else// ("jezeli do konta jest już przypisane konto")
+            }
+            else// ("jezeli do konta jest już przypisane konto")
             {
 
                 var ConnectedSummonerID = _repository
@@ -106,28 +107,33 @@ namespace LOLHUB.Controllers
         public async Task<IActionResult> GetSummonerInfo(string nickname)
         {
             // JEZELI TAKI NICK JUZ JEST W BAZIE PRZEJDZ DALEJ BEZ UDZIAŁU RIOTAPI
-            if (_repository.SummonerInfos.Where(s => s.name == nickname).Any()) {
+            if (_repository.SummonerInfos.Where(s => s.name == nickname).Any())
+            {
 
                 var RecentID = _repository.SummonerInfos.Where(s => s.name == nickname).FirstOrDefault().id;  // przeszukanie bazy wedlug nickow i przypisanie jego ID 
 
-                if (User.IsInRole("Admin")) {return RedirectToAction("ListOfSummonerInfos");}
-                else if (User.IsInRole("Member")) {
+                if (User.IsInRole("Admin")) { return RedirectToAction("ListOfSummonerInfos"); }
+                else if (User.IsInRole("Member"))
+                {
                     HttpContext.Session.SetInt32("RecentID", (int)RecentID);
                     //TempData["RecentID"] = RecentID;
                 }
-                    return RedirectToAction("Index");
-            } 
+                return RedirectToAction("Index");
+            }
             // POBRANIE SUMMONERA Z RIOTAPI JEZELI JESZCZE NIE ISTNIEJE
-            else {
-            var result = await _riotApiService.GetSummonerInfoBasedOnNickname(nickname);
+            else
+            {
+                var result = await _riotApiService.GetSummonerInfoBasedOnNickname(nickname);
 
                 if (result.name == null)
                 {
                     TempData["SummonerDontExists"] = $"Nazwa przywoływacza:{nickname} jest błędna, lub nie istnieje na serwerze EUNE";
 
-                    if (User.IsInRole("Admin")) {
-                        return RedirectToAction("ListOfSummonerInfos"); }
-                    else if (User.IsInRole("Member")) {}
+                    if (User.IsInRole("Admin"))
+                    {
+                        return RedirectToAction("ListOfSummonerInfos");
+                    }
+                    else if (User.IsInRole("Member")) { }
                     return RedirectToAction("Index");
                 }
 
@@ -156,7 +162,7 @@ namespace LOLHUB.Controllers
                 }
                 else if (User.IsInRole("Member"))
                 {
-                    HttpContext.Session.SetInt32("RecentID",(int)RecentID);
+                    HttpContext.Session.SetInt32("RecentID", (int)RecentID);
                     _repository.SaveSummonerInfo(newSummoner);
                 }
                 return RedirectToAction("Index");
@@ -164,12 +170,12 @@ namespace LOLHUB.Controllers
         }
 
         [Authorize(Roles = "Member, Admin")]
-        [Route("/v1/riotapi/getMatchData/{url}")] 
+        [Route("/v1/riotapi/getMatchData/{url}")]
         public async Task<IActionResult> GetMatchData(string url)
         {
-            var cuttedUrl = url.Substring(69,10);
+            var cuttedUrl = url.Substring(69, 10);
             var matchId = Int32.Parse(cuttedUrl);
-    
+
 
             if (_matchRepository.Matches.Where(m => m.gameid == matchId).Any())
             {
@@ -178,128 +184,132 @@ namespace LOLHUB.Controllers
             else
             {
                 var result = await _riotApiService.GetMatchDataBasedOnId(Int32.Parse(cuttedUrl));
-
-                MatchSelectedData newMatch5v5 = new MatchSelectedData
-                {                   
-                    gameid = result.gameid,
-                    seasonId = result.seasonId,
-                    queueId = result.queueId,
-                    gameType = result.gameType,
-                    participantIdentities = result.participantIdentities
-                    .Select(i => new ParticipantIdentity
+                bool ranked = false;
+                if (ranked == true)
+                {
+                    MatchSelectedData newMatch5v5 = new MatchSelectedData
                     {
-                        participantId = i.participantId,
-                        playerInfo = new PlayerInfo
+                        gameid = result.gameid,
+                        seasonId = result.seasonId,
+                        queueId = result.queueId,
+                        gameType = result.gameType,
+                        participantIdentities = result.participantIdentities
+                        .Select(i => new ParticipantIdentity
                         {
                             participantId = i.participantId,
-                            summonerName = i.player.summonerName,
-                            platformId = i.player.platformId,
-                            currentAccountId = i.player.currentAccountId,
-                            summonerId = i.player.summonerId,
-                            accountId = i.player.accountId
-                        }
-                    }).ToList(),
-                    gameDuration = result.gameDuration,
-                    gameMode = result.gameMode,
-                    mapId = result.mapId,
-                    participants = result.participants
-                    .Select(p => new Participant
-                    {
-                        participantId = p.participantId,
-                        teamId = p.teamId,
-                        highestAchievedSeasonTier = p.highestAchievedSeasonTier,
-                        championId = p.championId,
-                        spell1Id = p.spell1Id,
-                        spell2Id = p.spell2Id,
-                        stats = new Stats
+                            playerInfo = new PlayerInfo
+                            {
+                                participantId = i.participantId,
+                                summonerName = i.player.summonerName,
+                                platformId = i.player.platformId,
+                                currentAccountId = i.player.currentAccountId,
+                                summonerId = i.player.summonerId,
+                                accountId = i.player.accountId
+                            }
+                        }).ToList(),
+                        gameDuration = result.gameDuration,
+                        gameMode = result.gameMode,
+                        mapId = result.mapId,
+                        participants = result.participants
+                        .Select(p => new Participant
                         {
-                            ParticipantId = p.stats.ParticipantId,
-                            Kills = p.stats.Kills,
-                            Deaths = p.stats.Deaths,
-                            Assists = p.stats.Assists,
-                            Win = p.stats.Win
-                        }
-                    }).ToList()
-                };
+                            participantId = p.participantId,
+                            teamId = p.teamId,
+                            highestAchievedSeasonTier = p.highestAchievedSeasonTier,
+                            championId = p.championId,
+                            spell1Id = p.spell1Id,
+                            spell2Id = p.spell2Id,
+                            stats = new Stats
+                            {
+                                ParticipantId = p.stats.ParticipantId,
+                                Kills = p.stats.Kills,
+                                Deaths = p.stats.Deaths,
+                                Assists = p.stats.Assists,
+                                Win = p.stats.Win
+                            }
+                        }).ToList()
+                    };
 
-                 _matchRepository.SaveMatch(newMatch5v5); // nie wiem czy to mi jeszcze potrzebne skoro mam juz przemodelowane statystyki dla graczy 
+                    _matchRepository.SaveMatch(newMatch5v5); // nie wiem czy to mi jeszcze potrzebne skoro mam juz przemodelowane statystyki dla graczy 
 
-                // Pętla uaktualniająca base dla wszystkich 10 graczy biorących udział w grze
+                    // Pętla uaktualniająca base dla wszystkich 10 graczy biorących udział w grze
 
-                for (int INDEX = 1; INDEX <=10; INDEX++)
-                {
-                long SummonerId = newMatch5v5.participantIdentities.Where(p => p.participantId == INDEX)
-                                                                .Select(p => p.playerInfo.summonerId)
-                                                                .FirstOrDefault();
-
-                int ParticipantId = newMatch5v5.participantIdentities
-                                                                .Where(p => p.participantId == INDEX)
-                                                                .Where(p => p.playerInfo.summonerId == SummonerId)
-                                                                .Select(p=>p.participantId)
-                                                                .FirstOrDefault();
-
-                    GameStatistic gameStatistic = new GameStatistic
+                    for (int INDEX = 1; INDEX <= 10; INDEX++)
                     {
-                        GameStatisticId = ((newMatch5v5.Id) * 1000000) + INDEX,
+                        long SummonerId = newMatch5v5.participantIdentities.Where(p => p.participantId == INDEX)
+                                                                        .Select(p => p.playerInfo.summonerId)
+                                                                        .FirstOrDefault();
 
-                    MatchSelectedData = _matchRepository.Matches
-                            .Where(m=>m.Id == newMatch5v5.Id).FirstOrDefault(),
+                        int ParticipantId = newMatch5v5.participantIdentities
+                                                                        .Where(p => p.participantId == INDEX)
+                                                                        .Where(p => p.playerInfo.summonerId == SummonerId)
+                                                                        .Select(p => p.participantId)
+                                                                        .FirstOrDefault();
 
-                    Win = newMatch5v5.participants
+                        GameStatistic gameStatistic = new GameStatistic
+                        {
+                            GameStatisticId = ((newMatch5v5.Id) * 1000000) + INDEX,
+
+                            MatchSelectedData = _matchRepository.Matches
+                                .Where(m => m.Id == newMatch5v5.Id).FirstOrDefault(),
+
+                            Win = newMatch5v5.participants
+                                .Where(p => p.participantId == ParticipantId)
+                                    .Select(p => p.stats.Win).First(),
+
+                            SummonerName = newMatch5v5.participantIdentities
+                                .Where(p => p.participantId == ParticipantId)
+                                    .Select(p => p.playerInfo.summonerName).FirstOrDefault(),
+
+                            SummonerId = newMatch5v5.participantIdentities
+                                .Where(p => p.participantId == ParticipantId)
+                                    .Select(p => p.playerInfo.summonerId).FirstOrDefault(),
+
+                            AccountId = newMatch5v5.participantIdentities
+                                .Where(p => p.participantId == ParticipantId)
+                                    .Select(p => p.playerInfo.accountId).FirstOrDefault(),
+
+                            Summoner = _repository.SummonerInfos
+                                .Where(p => p.id == newMatch5v5.participantIdentities
+                                                        .Where(m => m.participantId == ParticipantId)
+                                                            .Select(s => s.playerInfo.summonerId).FirstOrDefault())
+                                                                .FirstOrDefault(),
+
+                            Kills = newMatch5v5.participants
+                                .Where(p => p.participantId == ParticipantId)
+                                    .Select(p => p.stats.Kills).FirstOrDefault(),
+
+                            Deaths = newMatch5v5.participants
+                                .Where(p => p.participantId == ParticipantId)
+                                    .Select(p => p.stats.Deaths).FirstOrDefault(),
+
+                            Assists = newMatch5v5.participants
+                                .Where(p => p.participantId == ParticipantId)
+                                    .Select(p => p.stats.Assists).FirstOrDefault(),
+
+                            ChampionId = newMatch5v5.participants
                             .Where(p => p.participantId == ParticipantId)
-                                .Select(p => p.stats.Win).First(),
+                                .Select(p => p.championId).FirstOrDefault(),
 
-                    SummonerName = newMatch5v5.participantIdentities
+                            TeamId = newMatch5v5.participants
                             .Where(p => p.participantId == ParticipantId)
-                                .Select(p => p.playerInfo.summonerName).FirstOrDefault(),
+                                .Select(p => p.teamId).FirstOrDefault(),
 
-                    SummonerId = newMatch5v5.participantIdentities
-                            .Where(p => p.participantId == ParticipantId)
-                                .Select(p => p.playerInfo.summonerId).FirstOrDefault(),
+                            GameMode = newMatch5v5.gameMode,
 
-                    AccountId = newMatch5v5.participantIdentities
-                            .Where(p => p.participantId == ParticipantId)
-                                .Select(p => p.playerInfo.accountId).FirstOrDefault(),
+                            GameId = newMatch5v5.gameid,
 
-                    Summoner = _repository.SummonerInfos
-                            .Where(p => p.id == newMatch5v5.participantIdentities
-                                                    .Where(m => m.participantId == ParticipantId)
-                                                        .Select(s => s.playerInfo.summonerId).FirstOrDefault())
-                                                            .FirstOrDefault(),
-                                    
-                    Kills = newMatch5v5.participants
-                            .Where(p => p.participantId == ParticipantId)
-                                .Select(p => p.stats.Kills).FirstOrDefault(),
+                            GameDuration = newMatch5v5.gameDuration,
 
-                    Deaths = newMatch5v5.participants
-                            .Where(p => p.participantId == ParticipantId)
-                                .Select(p => p.stats.Deaths).FirstOrDefault(),
+                            DatePlayed = DateTime.Now
+                        };
+                        _matchRepository.AddStatsForEachPlayers(gameStatistic);
+                    }
 
-                    Assists = newMatch5v5.participants
-                            .Where(p => p.participantId == ParticipantId)
-                                .Select(p => p.stats.Assists).FirstOrDefault(),
-
-                    ChampionId = newMatch5v5.participants
-                        .Where(p => p.participantId == ParticipantId)
-                            .Select(p => p.championId).FirstOrDefault(),
-
-                    TeamId = newMatch5v5.participants
-                        .Where(p => p.participantId == ParticipantId)
-                            .Select(p => p.teamId).FirstOrDefault(),
-
-                    GameMode = newMatch5v5.gameMode,
-
-                    GameId = newMatch5v5.gameid,
-
-                    GameDuration = newMatch5v5.gameDuration,
-
-                    DatePlayed = DateTime.Now
-                };
-                    _matchRepository.AddStatsForEachPlayers(gameStatistic);
+                    return RedirectToAction("Index");
                 }
-
-                return RedirectToAction("Index");
-               // return Ok(newMatch5v5);
+                // return Ok(newMatch5v5);
+                return Ok(result);
             }
         }
 
@@ -338,9 +348,9 @@ namespace LOLHUB.Controllers
         [Authorize(Roles = "Member, Admin")]
         public IActionResult RegenerateCode(int id)
         {
-           string newCode = _code.GenerateConnectionCode();
+            string newCode = _code.GenerateConnectionCode();
 
-            _repository.RegenerateCode(id,newCode);
+            _repository.RegenerateCode(id, newCode);
 
             return RedirectToAction("Index");
         }

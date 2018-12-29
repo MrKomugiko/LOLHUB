@@ -7,7 +7,7 @@
     <h3> Wyszukaj przywoływacza aby móc go sparować ze swoim kontem:</h3>
 
     <div class="btn-toolbar mb-4" style="margin-top:25px" role="toolbar" aria-label="Toolbar with button groups">
-        <form action="/v1/riotapi/getsummoner/{nickname}" method="post">
+        <form asp-controller="RiotApi" asp-action="GetSummonerInfo" asp-route-nickname="nickname" method="post">
             <div class="btn-group">
                 <button type="submit" class="btn btn-warning" name="submit">Wyszukaj</button>
             </div>
@@ -24,7 +24,7 @@
     <p>automatycznie wyciąga z url gameId,[...]/#match-details/EUN1/<b>2053306960</b></p>
 
     <div class="btn-toolbar mb-4" style="margin-top:25px" role="toolbar" aria-label="Toolbar with button groups">
-        <form action="/v1/riotapi/getMatchData/{matchId}" method="post">
+        <form asp-controller="RiotApi" asp-action="GetMatchData" asp-route-url="url" method="post">
             <div class="btn-group">
                 <button type="submit" class="btn btn-warning" name="submit">Wyszukaj</button>
             </div>

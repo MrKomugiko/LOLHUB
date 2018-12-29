@@ -25,7 +25,7 @@
         <tr>
             <td>@item.TournamentId</td>
             <td>@item.Name</td>
-            <td>@item.Teams.Count()/16</td>
+            <td>@item.Participants / @item.Size</td>
             <td>
                 @if(item.IsActuallyPlayed == true)
                 {
@@ -39,7 +39,7 @@
                     {
                         <text>Zakończony</text>
                     }
-                 }
+                 
             </td>
             <td>
                 @item.StartDate

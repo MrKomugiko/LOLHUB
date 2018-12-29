@@ -4,8 +4,6 @@
     ViewData["Title"] = "Default";
 }
 
-Finaly
-
 <table class="table">
     <thead>
         <tr>
@@ -22,7 +20,13 @@ Finaly
                 Poziom
             </th>
             <th>
-                Upload Stats
+                kod turniejowy
+            </th>
+            <th>
+                [1 drużyna wygrywa z automatu]
+            </th>
+            <th>
+                [spreparowany json]
             </th>
         </tr>
     </thead>
@@ -75,17 +79,39 @@ Finaly
                 <td>
                     @Html.DisplayFor(modelItem => item.Tournament_Level)/3 (Finały)
                 </td>
-                <td>
-                    <form asp-controller="Tournament" asp-action="UploadGameStats"
-                          asp-route-id="@item.Id"
-                          asp-route-team1Id=" @item.Team1_Id"
-                          asp-route-team2Id="@item.Team2_Id"
-                          asp-route-TournamentId="@item.Tournament_Id"
-                          asp-route-TournamentLevel="@item.Tournament_Level"
-                          method="post" class="text-center">
-                        <button type="submit" class="btn btn-info"><b>Upload</b></button>
-                    </form>
-                </td>
+                @if (User.Identity.Name == item.TeamLeader1_Email || User.Identity.Name == item.TeamLeader2_Email || User.IsInRole("Admin") || User.IsInRole("Moderator")) // tylko liderzy swoich druzyn moga dodac wynik meczu
+                {
+                    <td>
+                        @item.TournamentCode
+                    </td>
+
+                    <td>
+
+                        <form asp-controller="Tournament" asp-action="UploadGameStats"
+                              asp-route-id="@item.Id"
+                              asp-route-team1Id=" @item.Team1_Id"
+                              asp-route-team2Id="@item.Team2_Id"
+                              asp-route-TournamentId="@item.Tournament_Id"
+                              asp-route-TournamentLevel="@item.Tournament_Level"
+                              method="post" class="text-center">
+                            <button type="submit" class="btn btn-info"><b>Upload</b></button>
+                        </form>
+
+                    </td>
+                    <td>
+                        <div class="btn-toolbar mb-4" role="toolbar" aria-label="Toolbar with button groups">
+                            <form asp-controller="RiotApi" asp-action="GetMatchData" asp-route-url="url" method="post">
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-warning" name="submit">Wyszukaj</button>
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" name="url" class="form-control" placeholder="wprowadź: swoj kod turniejowy" aria-describedby="btnGroupAddon" size="15" maxlength="79" />
+                                </div>
+                            </form>
+                        </div>
+                    </td>
+                }
+
             </tr>
         }
     </tbody>

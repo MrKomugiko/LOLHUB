@@ -33,6 +33,8 @@ namespace LOLHUB.Services
             dbEntry.Team1_Win = true;
             dbEntry.Team2_Win = false;
 
+            dbEntry.UpdateTime = DateTime.Now;
+
             _context.Update(dbEntry);
             _context.SaveChanges();
 

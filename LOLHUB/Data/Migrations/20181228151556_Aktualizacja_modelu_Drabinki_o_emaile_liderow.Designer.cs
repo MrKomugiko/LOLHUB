@@ -8,12 +8,13 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace LOLHUB.Data.Migrations
+namespace LOLHUB.Migrations.LOLHUBApplicationDb
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181228151556_Aktualizacja_modelu_Drabinki_o_emaile_liderow")]
+    partial class Aktualizacja_modelu_Drabinki_o_emaile_liderow
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -308,13 +309,9 @@ namespace LOLHUB.Data.Migrations
 
                     b.Property<string>("TeamLeader2_Email");
 
-                    b.Property<int?>("TournamentCode");
-
                     b.Property<int>("Tournament_Id");
 
                     b.Property<int>("Tournament_Level");
-
-                    b.Property<DateTime?>("UpdateTime");
 
                     b.HasKey("Id");
 

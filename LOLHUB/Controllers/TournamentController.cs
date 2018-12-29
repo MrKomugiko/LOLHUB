@@ -38,13 +38,14 @@ namespace LOLHUB.Controllers
 
         public IActionResult JoinToTournament(int tournamentId)
         {
-            int result = _tournamentCtx.JoinToTournament(tournamentId); 
-            if (result == 2)   { TempData["joiningResult"] = "Turniej właśnie się odbywa, nie możesz do niego dołączyć."; }
-            if (result == 11)  { TempData["joiningResult"] = "Poprawnie dołączyłeś do turnieju, gratulacje :)"; }
-            if (result == 01)  { TempData["joiningResult"] = "Już jesteś przypisany do tego turnieju."; }
+            int result = _tournamentCtx.JoinToTournament(tournamentId);
+            if (result == 2) { TempData["joiningResult"] = "Turniej właśnie się odbywa, nie możesz do niego dołączyć."; }
+            if (result == 11) { TempData["joiningResult"] = "Poprawnie dołączyłeś do turnieju, gratulacje :)"; }
+            if (result == 01) { TempData["joiningResult"] = "Już jesteś przypisany do tego turnieju."; }
             if (result == 101) { TempData["joiningResult"] = "Tylko lider drużyny może zmienić przynależnośc do turnieju."; }
             if (result == 111) { TempData["joiningResult"] = "Nie jesteś liderem drużyny"; }
-            if (result == 10)  { TempData["joiningResult"] = "Z Powodzeniem zmieniłeś uczestnictwo w turnieju na inny."; }
+            if (result == 10) { TempData["joiningResult"] = "Z Powodzeniem zmieniłeś uczestnictwo w turnieju na inny."; }
+            if (result == 3) { TempData["joiningResult"] = "Brak wolnych miejsc"; }
             if (result == 00)  { TempData["joiningResult"] = "Nie udało się dołączyć do turnieju. Turniej już się zakończył."; }
             return RedirectToAction("Index");
         }
@@ -78,6 +79,38 @@ namespace LOLHUB.Controllers
                 .Where(t => t.Players.Count() > 0)
                 .ToList();
 
+            List<PreparedGamesTable> PreparedGames = new List<PreparedGamesTable>
+            {
+                new PreparedGamesTable {  Id = 1, Team1 = "Team1", Team2 = "Team2" },
+                new PreparedGamesTable {  Id = 2, Team1 = "Team1", Team2 = "Team3" },
+                new PreparedGamesTable {  Id = 3, Team1 = "Team1", Team2 = "Team4" },
+                new PreparedGamesTable {  Id = 4, Team1 = "Team1", Team2 = "Team5" },
+                new PreparedGamesTable {  Id = 5, Team1 = "Team1", Team2 = "Team6" },
+                new PreparedGamesTable {  Id = 6, Team1 = "Team1", Team2 = "Team7" },
+                new PreparedGamesTable {  Id = 7, Team1 = "Team1", Team2 = "Drużyna Testowa" },
+                new PreparedGamesTable {  Id = 8, Team1 = "Team2", Team2 = "Team3" },
+                new PreparedGamesTable {  Id = 9, Team1 = "Team2", Team2 = "Team4" },
+                new PreparedGamesTable { Id = 10, Team1 = "Team2", Team2 = "Team5" },
+                new PreparedGamesTable { Id = 11, Team1 = "Team2", Team2 = "Team6" },
+                new PreparedGamesTable { Id = 12, Team1 = "Team2", Team2 = "Team7" },
+                new PreparedGamesTable { Id = 13, Team1 = "Team2", Team2 = "Drużyna Testowa" },
+                new PreparedGamesTable { Id = 14, Team1 = "Team3", Team2 = "Team4" },
+                new PreparedGamesTable { Id = 15, Team1 = "Team3", Team2 = "Team5" },
+                new PreparedGamesTable { Id = 16, Team1 = "Team3", Team2 = "Team6" },
+                new PreparedGamesTable { Id = 17, Team1 = "Team3", Team2 = "Team7" },
+                new PreparedGamesTable { Id = 18, Team1 = "Team3", Team2 = "Drużyna Testowa" },
+                new PreparedGamesTable { Id = 19, Team1 = "Team4", Team2 = "Team5" },
+                new PreparedGamesTable { Id = 20, Team1 = "Team4", Team2 = "Team6" },
+                new PreparedGamesTable { Id = 21, Team1 = "Team4", Team2 = "Team7" },
+                new PreparedGamesTable { Id = 22, Team1 = "Team4", Team2 = "Drużyna Testowa" },
+                new PreparedGamesTable { Id = 23, Team1 = "Team5", Team2 = "Team6" },
+                new PreparedGamesTable { Id = 24, Team1 = "Team5", Team2 = "Team7" },
+                new PreparedGamesTable { Id = 25, Team1 = "Team5", Team2 = "Drużyna Testowa" },
+                new PreparedGamesTable { Id = 26, Team1 = "Team6", Team2 = "Team7" },
+                new PreparedGamesTable { Id = 27, Team1 = "Team6", Team2 = "Drużyna Testowa" },
+                new PreparedGamesTable { Id = 28, Team1 = "Team7", Team2 = "Drużyna Testowa" }
+            };
+
             if (level == 1)
             {
                 int liczba_par = 4;
@@ -110,13 +143,13 @@ namespace LOLHUB.Controllers
                             goto pomin;
                         }
                         else {
-                        while (_drabinkaCtx.Drabinki.Where(d => (d.Team1_Id == team1 && d.Tournament_Level == 1)).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team1 && d.Tournament_Level == 1).Any() || team1 == team2 ) 
-                        {
+                        while (_drabinkaCtx.Drabinki.Where(d => (d.Team1_Id == team1 && d.Tournament_Level == 1) && d.Tournament_Id == id).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team1 && d.Tournament_Level == 1 && d.Tournament_Id == id).Any() || team1 == team2 )
+                            {
                             team1_index = randm.Next(teamidpool.Count);
                             team1 = teamidpool[team1_index];
 
                         }
-                        while (_drabinkaCtx.Drabinki.Where(d => (d.Team1_Id == team2 && d.Tournament_Level == 1)).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team2 && d.Tournament_Level == 1).Any() || team1 == team2 )
+                        while (_drabinkaCtx.Drabinki.Where(d => (d.Team1_Id == team2 && d.Tournament_Level == 1) && d.Tournament_Id == id).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team2 && d.Tournament_Level == 1 && d.Tournament_Id == id).Any() || team1 == team2 )
                         {
                             team2_index = randm.Next(teamidpool.Count);
                             team2 = teamidpool[team2_index];
@@ -132,8 +165,12 @@ namespace LOLHUB.Controllers
 
                             Team1_Id = teams.Where(t => t.Id == team1).First().Id,
                             Team1_Name = teams.Where(t => t.Id == team1).First().Name,
+                            TeamLeader1_Email = teams.Where(t => t.Id == team1).First().TeamLeader.ConnectedSummonerEmail,
                             Team2_Id = teams.Where(t => t.Id == team2).First().Id,
                             Team2_Name = teams.Where(t => t.Id == team2).First().Name,
+                            TeamLeader2_Email = teams.Where(t => t.Id == team2).First().TeamLeader.ConnectedSummonerEmail,
+
+                            TournamentCode = PreparedGames.Where(p => p.Team1 == teams.Where(t => t.Id == team1).First().Name && p.Team2 == teams.Where(t => t.Id == team2).First().Name).First().Id,
 
                             Team1_Win = null,
                             Team2_Win = null
@@ -156,8 +193,8 @@ namespace LOLHUB.Controllers
                 }
                 else
                 {
-                        List<int> team1winners = _drabinkaCtx.Drabinki.Where(d => d.Team1_Win == true && d.Tournament_Level == 1).Select(d => d.Team1_Id).ToList();
-                        List<int> team2winners = _drabinkaCtx.Drabinki.Where(d => d.Team2_Win == true && d.Tournament_Level == 1).Select(d => d.Team2_Id).ToList();
+                        List<int> team1winners = _drabinkaCtx.Drabinki.Where(d => d.Team1_Win == true && d.Tournament_Level == 1 && d.Tournament_Id == id).Select(d => d.Team1_Id).ToList();
+                        List<int> team2winners = _drabinkaCtx.Drabinki.Where(d => d.Team2_Win == true && d.Tournament_Level == 1 && d.Tournament_Id == id).Select(d => d.Team2_Id).ToList();
 
                         List<int> TeamWinners = new List<int>();
 
@@ -186,13 +223,13 @@ namespace LOLHUB.Controllers
                                  team2 = TeamWinners[team2_index];
                         }
 
-                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team1  && d.Tournament_Level == 2).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team1 && d.Tournament_Level == 2).Any() || team1 == team2 )
+                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team1  && d.Tournament_Level == 2 && d.Tournament_Id == id).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team1 && d.Tournament_Level == 2 && d.Tournament_Id == id).Any() || team1 == team2 )
                         {
                             team1_index = randm.Next(TeamWinners.Count);
                             team1 = TeamWinners[team1_index];
                         }
 
-                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team2 && d.Tournament_Level == 2).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team2 && d.Tournament_Level == 2).Any() || team1 == team2 )
+                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team2 && d.Tournament_Level == 2 && d.Tournament_Id == id).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team2 && d.Tournament_Level == 2 && d.Tournament_Id == id).Any() || team1 == team2 )
                         {
                             team2_index = randm.Next(TeamWinners.Count);
                             team2 = TeamWinners[team2_index];
@@ -205,9 +242,13 @@ namespace LOLHUB.Controllers
 
                             Team1_Id = teams.Where(t => t.Id == team1).First().Id,
                             Team1_Name = teams.Where(t => t.Id == team1).First().Name,
+                            TeamLeader1_Email = teams.Where(t => t.Id == team1).First().TeamLeader.ConnectedSummonerEmail,
 
                             Team2_Id = teams.Where(t => t.Id == team2).First().Id,
                             Team2_Name = teams.Where(t => t.Id == team2).First().Name,
+                            TeamLeader2_Email = teams.Where(t => t.Id == team2).First().TeamLeader.ConnectedSummonerEmail,
+
+                            TournamentCode = PreparedGames.Where(p => p.Team1 == teams.Where(t => t.Id == team1).First().Name && p.Team2 == teams.Where(t => t.Id == team2).First().Name).First().Id,
 
                             Team1_Win = null,
                             Team2_Win = null
@@ -230,8 +271,8 @@ namespace LOLHUB.Controllers
                 }
                 else
                 {
-                        List<int> team1winners = _drabinkaCtx.Drabinki.Where(d => d.Team1_Win == true && d.Tournament_Level == 2).Select(d => d.Team1_Id).ToList();
-                        List<int> team2winners = _drabinkaCtx.Drabinki.Where(d => d.Team2_Win == true && d.Tournament_Level == 2).Select(d => d.Team2_Id).ToList();
+                        List<int> team1winners = _drabinkaCtx.Drabinki.Where(d => d.Team1_Win == true && d.Tournament_Level == 2 && d.Tournament_Id == id).Select(d => d.Team1_Id).ToList();
+                        List<int> team2winners = _drabinkaCtx.Drabinki.Where(d => d.Team2_Win == true && d.Tournament_Level == 2 && d.Tournament_Id == id).Select(d => d.Team2_Id).ToList();
 
                         List<int> TeamWinners = new List<int>();
 
@@ -260,13 +301,13 @@ namespace LOLHUB.Controllers
                             team2 = TeamWinners[team2_index];
                         }
 
-                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team1 && d.Tournament_Level == 3).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team1 && d.Tournament_Level == 3).Any() || team1 == team2 )
+                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team1 && d.Tournament_Level == 3 && d.Tournament_Id == id).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team1 && d.Tournament_Level == 3 && d.Tournament_Id == id).Any() || team1 == team2 )
                         {
                             team1_index = randm.Next(TeamWinners.Count);
                             team1 = TeamWinners[team1_index];
                         }
 
-                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team2 && d.Tournament_Level == 3).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team2 && d.Tournament_Level == 3).Any() || team1 == team2 )
+                        while (_drabinkaCtx.Drabinki.Where(d => d.Team1_Id == team2 && d.Tournament_Level == 3 && d.Tournament_Id == id).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team2 && d.Tournament_Level == 3 && d.Tournament_Id == id).Any() || team1 == team2 )
                         {
                             team2_index = randm.Next(TeamWinners.Count);
                             team2 = TeamWinners[team2_index];
@@ -280,8 +321,13 @@ namespace LOLHUB.Controllers
 
                             Team1_Id = teams.Where(t => t.Id == team1).First().Id,
                             Team1_Name = teams.Where(t => t.Id == team1).First().Name,
+                            TeamLeader1_Email = teams.Where(t => t.Id == team1).First().TeamLeader.ConnectedSummonerEmail,
+
                             Team2_Id = teams.Where(t => t.Id == team2).First().Id,
                             Team2_Name = teams.Where(t => t.Id == team2).First().Name,
+                            TeamLeader2_Email = teams.Where(t => t.Id == team2).First().TeamLeader.ConnectedSummonerEmail,
+
+                            TournamentCode = PreparedGames.Where(p => p.Team1 == teams.Where(t => t.Id == team1).First().Name && p.Team2 == teams.Where(t => t.Id == team2).First().Name).First().Id,
 
                             Team1_Win = null,
                             Team2_Win = null

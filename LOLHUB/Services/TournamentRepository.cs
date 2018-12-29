@@ -21,7 +21,6 @@ namespace LOLHUB.Models
             _context = context;
             _playerCtx = playerCtx;
             _teamRepository = teamRepository;
-
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -43,6 +42,7 @@ namespace LOLHUB.Models
                     dbEntry.StartDate = tournament.StartDate;
                     dbEntry.EndDate = tournament.EndDate;
                     dbEntry.IsActuallyPlayed = false;
+                    dbEntry.Size = tournament.Size;
                 }
 
             }
@@ -89,59 +89,76 @@ namespace LOLHUB.Models
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             Player playerData = _playerCtx.Players.Where(p => p.ConnectedSummonerEmail == playerName).First();
 
-            Team teamData = _teamRepository.Teams.Where(t => t.TeamLeader.ConnectedSummonerEmail == playerName).Include(t => t.Tournament).Include(t=>t.TeamLeader.ConectedSummoners).Include(p=>p.Players).First();
-
-            bool TournamentStatus = _context.Tournaments.Where(t => t.TournamentId == tournamentId).First().IsExpired;
+            Team teamData = _teamRepository.Teams.Where(t => t.TeamLeader.ConnectedSummonerEmail == playerName).Include(t => t.Tournament).Include(t => t.TeamLeader.ConectedSummoners).Include(p => p.Players).First();
+            Tournament tournamentDataNew = _context.Tournaments.Where(t => t.TournamentId == tournamentId).First();
+            
+            bool TournamentStatus = tournamentDataNew.IsExpired;
             bool IsActive = _context.Tournaments.Where(t => t.TournamentId == tournamentId).First().IsActuallyPlayed;
-            if (TournamentStatus != true)
+
+            if (tournamentDataNew.Participants <= tournamentDataNew.Size)
             {
-                if (IsActive == true)
+                if (TournamentStatus != true)
                 {
-                    return 2;
-                }
-                else
-                {
-                    if (teamData.TournamentId == null)
-                    {//Pierwsze dołączenie drużyny do turnieju.
+                    if (IsActive == true)
+                    {
+                        return 2;
+                    }
+                    else
+                    {
+                        if (teamData.TournamentId == null)
+                        {//Pierwsze dołączenie drużyny do turnieju.
 
-                        if (playerData.TeamId != null)
-                        {//jezeli gracz jest liderem i wcześniej jego drużyna nie bierze udziału w turniejach => dodanie nowego polaczenia
-                            teamData.TournamentId = tournamentId;
-                            _context.Teams.Update(teamData);
-                            _context.SaveChanges();
-                            return 11;
+                            if (playerData.TeamId != null)
+                            {//jezeli gracz jest liderem i wcześniej jego drużyna nie bierze udziału w turniejach => dodanie nowego polaczenia
+                                teamData.TournamentId = tournamentId;
+                                _context.Teams.Update(teamData);
+                                tournamentDataNew.Participants += 1;
+                                _context.Tournaments.Update(tournamentDataNew);
+                                _context.SaveChanges();
+                                return 11;
+                            }
+                            else
+                            {//jezeli gracz nie jest liderem nie moze dołączyc do turnieju => nope
+
+                                return 111;
+                            }
                         }
-                        else
-                        {//jezeli gracz nie jest liderem nie moze dołączyc do turnieju => nope
+                        else if (teamData.TournamentId != tournamentId)
+                        {//jeżeli team chce dołączyć do innego turnieju => zmieni miejsce
 
-                            return 111;
+                            if (playerData.TeamId != null)
+                            {//zmiana turnieju przez lidera drużyny => jest ok
+                                Tournament tournamentDataOld = _context.Tournaments.Where(t => t.TournamentId == teamData.TournamentId).First();
+                                tournamentDataOld.Participants  -= 1;
+
+                                teamData.TournamentId = tournamentId;
+                                _context.Teams.Update(teamData);
+
+                                tournamentDataNew.Participants += 1;
+
+                                _context.Tournaments.Update(tournamentDataOld);
+                                _context.Tournaments.Update(tournamentDataNew);
+                                _context.SaveChanges();
+                                return 10;
+                            }
+                            else
+                            {//członek drużyny próbuje zmienić uczestnictwo drużyny na inny => you have no power here boya
+                                return 101;
+                            }
+                        }
+                        else if (teamData.TournamentId == tournamentId)
+                        {//jezeli drużyna juz bierze udział w tym turnieju i chce jeszcze raz dołączyć => nie da rady
+                            return 01;
                         }
                     }
-                    else if (teamData.TournamentId != tournamentId)
-                    {//jeżeli team chce dołączyć do innego turnieju => zmieni miejsce
-
-                        if (playerData.TeamId != null)
-                        {//zmiana turnieju przez lidera drużyny => jest ok
-                            teamData.TournamentId = tournamentId;
-
-
-
-                            _context.Teams.Update(teamData);
-                            _context.SaveChanges();
-                            return 10;
-                        }
-                        else
-                        {//członek drużyny próbuje zmienić uczestnictwo drużyny na inny => you have no power here boya
-                            return 101;
-                        }
-                    }
-                    else if (teamData.TournamentId == tournamentId)
-                    {//jezeli drużyna juz bierze udział w tym turnieju i chce jeszcze raz dołączyć => nie da rady
-                        return 01;
-                    }
-                }
+                } return 00;
             }
-            return 00;
+            else
+            {
+                return 3;
+            } 
+
+            
         }
 
         public void ChangeTournamentStatus(int tournamentId, string status)

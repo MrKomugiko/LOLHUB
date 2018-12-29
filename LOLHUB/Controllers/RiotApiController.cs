@@ -173,9 +173,18 @@ namespace LOLHUB.Controllers
         [Route("/v1/riotapi/getMatchData/{url}")]
         public async Task<IActionResult> GetMatchData(string url)
         {
-            var cuttedUrl = url.Substring(69, 10);
+            // ------------------------------------------------------------------------------------------------------------------------------
+            // ------------------------------------------------------------------------------------------------------------------------------
+            // --------------------- Test pobieranie spreparowanego pliku json, o nazwie game(url).json [url od 1 do x] ---------------------
+            // -------------------------------------- https://localhost:44344/PreparedGames/game1.json --------------------------------------
+            // ------------------------------------------------------------------------------------------------------------------------------
+            // ------------------------------------------------------------------------------------------------------------------------------
+            //var cuttedUrl = url.Substring(69, 10);
+            //var matchId = Int32.Parse(cuttedUrl);
+            //int liczbaGraczy = 10;
+            var cuttedUrl = url;
             var matchId = Int32.Parse(cuttedUrl);
-
+            int liczbaGraczy = 2;
 
             if (_matchRepository.Matches.Where(m => m.gameid == matchId).Any())
             {
@@ -184,7 +193,7 @@ namespace LOLHUB.Controllers
             else
             {
                 var result = await _riotApiService.GetMatchDataBasedOnId(Int32.Parse(cuttedUrl));
-                bool ranked = false;
+                bool ranked = true;
                 if (ranked == true)
                 {
                     MatchSelectedData newMatch5v5 = new MatchSelectedData
@@ -234,7 +243,7 @@ namespace LOLHUB.Controllers
 
                     // Pętla uaktualniająca base dla wszystkich 10 graczy biorących udział w grze
 
-                    for (int INDEX = 1; INDEX <= 10; INDEX++)
+                    for (int INDEX = 1; INDEX <= liczbaGraczy; INDEX++)
                     {
                         long SummonerId = newMatch5v5.participantIdentities.Where(p => p.participantId == INDEX)
                                                                         .Select(p => p.playerInfo.summonerId)

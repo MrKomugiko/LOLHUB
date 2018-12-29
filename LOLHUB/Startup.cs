@@ -15,6 +15,8 @@ using RiotApi.Services;
 using RiotApi.RiotApi;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace LOLHUB
 {
@@ -43,8 +45,12 @@ namespace LOLHUB
 
             services.AddAuthentication().AddFacebook(facebookOptions =>
             {
-                facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                // facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                // facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+
+                facebookOptions.AppId = "2065271323758986";
+                facebookOptions.AppSecret = "81872cda2ddf56ba72547eb46d1cc74b";
+
             });
 
             // Add application services.
@@ -61,7 +67,6 @@ namespace LOLHUB
             services.AddSingleton<IGetSummonerInfo, GetSummonerInfo>();
             services.AddSingleton<IGetMatchData, GetMatchData>();
             services.AddSingleton<IGenerateCode, GenerateCode>();
-
 
             services.AddMvc(options =>
             {
@@ -92,8 +97,15 @@ namespace LOLHUB
             }
             var options = new RewriteOptions().AddRedirectToHttps();
       
-            app.UseRewriter(options);
+            //app.UseRewriter(options);
             app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "sample","PreparedMatchDataForTest")),
+                RequestPath = "/PreparedGames"
+            });
 
             app.UseAuthentication();
 
@@ -106,6 +118,11 @@ namespace LOLHUB
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
+        }
+
+        private string Combine(object p, string v1, string v2)
+        {
+            throw new NotImplementedException();
         }
     }
 }

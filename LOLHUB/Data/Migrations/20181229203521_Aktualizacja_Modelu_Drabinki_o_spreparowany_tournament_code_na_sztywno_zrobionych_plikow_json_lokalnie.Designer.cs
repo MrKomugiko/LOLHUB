@@ -8,12 +8,13 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace LOLHUB.Data.Migrations
+namespace LOLHUB.Migrations.LOLHUBApplicationDb
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181229203521_Aktualizacja_Modelu_Drabinki_o_spreparowany_tournament_code_na_sztywno_zrobionych_plikow_json_lokalnie")]
+    partial class Aktualizacja_Modelu_Drabinki_o_spreparowany_tournament_code_na_sztywno_zrobionych_plikow_json_lokalnie
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

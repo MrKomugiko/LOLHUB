@@ -2,36 +2,26 @@
 @{
     ViewData["Title"] = "Index";
 }
+<br />
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-szczegoly-tab" data-toggle="tab" href="#nav-szczegoly" role="tab" aria-controls="nav-szczegoly" aria-selected="true">SZCZEGÓŁY</a>
+        <a class="nav-item nav-link" id="nav-druzyny-tab" data-toggle="tab" href="#nav-druzyny" role="tab" aria-controls="nav-druzyny" aria-selected="false">DRUŻYNY</a>
+        <a class="nav-item nav-link" id="nav-cwiercfinaly-tab" data-toggle="tab" href="#nav-cwiercfinaly" role="tab" aria-controls="nav-cwiercfinaly" aria-selected="false">CWIERCFINAŁY</a>
+        <a class="nav-item nav-link" id="nav-polfinaly-tab" data-toggle="tab" href="#nav-polfinaly" role="tab" aria-controls="nav-polfinaly" aria-selected="false">PÓŁFINAŁY</a>
+        <a class="nav-item nav-link" id="nav-finaly-tab" data-toggle="tab" href="#nav-finaly" role="tab" aria-controls="nav-finaly" aria-selected="false">FINAŁY</a>
+        <a class="nav-item nav-link" id="nav-podsumowanie-tab" data-toggle="tab" href="#nav-podsumowanie" role="tab" aria-controls="nav-podsumowanie" aria-selected="false">PODSUMOWANIE</a>
+        <a class="nav-item nav-link" id="nav-administracja-tab" data-toggle="tab" href="#nav-administracja" role="tab" aria-controls="nav-administracja" aria-selected="false">ADMINISTRACJA</a>
+    </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-szczegoly" role="tabpanel" aria-labelledby="nav-szczegoly-tab">
 
-<ul class="nav nav-tabs">
-    <li class="nav-item active">
-        <a href="#Szczegoly" data-toggle="tab">Szczególy</a>
-    </li>
-    <li class="nav-item">
-        <a href="#Druzyny" data-toggle="tab">Druzyny</a>
-    </li>
-    <li class="nav-item">
-        <a href="#Cwiercfnialy" data-toggle="tab">Cwiercfnialy</a>
-    </li>
-    <li class="nav-item">
-        <a href="#Polfinaly" data-toggle="tab">Polfinaly</a>
-    </li>
-    <li class="nav-item">
-        <a href="#Finaly" data-toggle="tab">Finaly</a>
-    </li>
-    <li class="nav-item">
-        <a href="#Podsumowanie" data-toggle="tab">Podsumowanie</a>
-    </li>
-    <li class="nav-item">
-        <a href="#Administracja" data-toggle="tab">Administracja</a>
-    </li>
-</ul>
-
-<div class="tab-content">
-
-    <div id="Szczegoly" class="tab-pane active">
         <h3>Szczegóły turnieju  @ViewBag.TournamentId # </h3>
-
+        @{
+            int TournamentId = @ViewBag.TournamentId;
+         }
+        
         <p>
             Turniej rozpoczyna się @foreach (var item in Model)
             {
@@ -46,9 +36,17 @@
             }
         </p>
 
-    </div>
+        <h3>Recent Matches</h3>
+        <div id="accordion">
+            @await Component.InvokeAsync("RecentMatches", new { tournamentId = TournamentId })
+        </div>
 
-    <div id="Druzyny" class="tab-pane">
+
+
+
+    </div>
+    <div class="tab-pane fade" id="nav-druzyny" role="tabpanel" aria-labelledby="nav-druzyny-tab">
+
         <h3>Lista uczestniczących drużyn: </h3>
         <table class="table table-hover table-striped">
             <tr>
@@ -71,51 +69,45 @@
 
             }
         </table>
-    </div>
 
-    <div id="Cwiercfnialy" class="tab-pane">
-        <h3>Cwierćfinały</h3>
-        @{
-            if (Model.Where(t => t.Tournament.Teams.Count() != 0).Any())
-            {
-                @await Component.InvokeAsync("Drabinka", new { id = @ViewBag.TournamentId, level = 1 })
-            }
-        }
     </div>
+    <div class="tab-pane fade" id="nav-cwiercfinaly" role="tabpanel" aria-labelledby="nav-cwiercfinaly-tab">
 
-    <div id="Polfinaly" class="tab-pane">
+        @await Component.InvokeAsync("Drabinka", new { id = TournamentId, level = 1 })
+ 
+
+    </div>
+    <div class="tab-pane fade" id="nav-polfinaly" role="tabpanel" aria-labelledby="nav-polfinaly-tab">
+
 
         <h3>Półfinaly</h3>
-        @{
-            if (Model.Where(t => t.Tournament.Teams.Count() != 0).Any())
-            {
-                @await Component.InvokeAsync("Drabinka", new { id = @ViewBag.TournamentId, level = 2 })
-            }
-        }
-    </div>
+        @await Component.InvokeAsync("Drabinka", new { id = TournamentId, level = 2 })
 
-    <div id="Finaly" class="tab-pane">
+
+    </div>
+    <div class="tab-pane fade" id="nav-finaly" role="tabpanel" aria-labelledby="nav-finaly-tab">
+
         <h3>Finały</h3>
-        @{
-            if (Model.Where(t => t.Tournament.Teams.Count() != 0).Any())
-            {
-                @await Component.InvokeAsync("Drabinka", new { id = @ViewBag.TournamentId, level = 3 })
-            }
-        }
-    </div>
+        @await Component.InvokeAsync("Drabinka", new { id = TournamentId, level = 3 })
 
-    <div id="Podsumowanie" class="tab-pane">
+
+    </div>
+    <div class="tab-pane fade" id="nav-podsumowanie" role="tabpanel" aria-labelledby="nav-podsumowanie-tab">
+
         <h3>Podsumowanie</h3>
-        @await Component.InvokeAsync("AktualnyRankingTurnieju", new { id = @ViewBag.TournamentId })
-    </div>
+        @await Component.InvokeAsync("AktualnyRankingTurnieju", new { id = TournamentId })
 
-    <div id="Administracja" class="tab-pane">
+    </div>
+        @if (User.IsInRole("Admin"))
+        {
+    <div class="tab-pane fade" id="nav-administracja" role="tabpanel" aria-labelledby="nav-administracja-tab">
+
         <h3>Administracja</h3>
         <div>
             <ul>
                 <li>
                     <form asp-controller="Tournament" asp-action="ZmienStanTurnieju"
-                          asp-route-id="@ViewBag.TournamentId"
+                          asp-route-id="@TournamentId"
                           asp-route-status="start"
                           method="post">
                         <button type="submit" class="btn btn-warning"><b>[Rozpocznij Turniej]</b></button>
@@ -123,7 +115,7 @@
                 </li>
                 <li>
                     <form asp-controller="Tournament" asp-action="ZmienStanTurnieju"
-                          asp-route-id="@ViewBag.TournamentId"
+                          asp-route-id="@TournamentId"
                           asp-route-status="stop"
                           method="post">
                         <button type="submit" class="btn btn-danger"><b>[Zakończ Turniej]</b></button>
@@ -133,7 +125,7 @@
             <ul>
                 <li>
                     <form asp-controller="Tournament" asp-action="GenerujDrabinke"
-                          asp-route-id="@ViewBag.TournamentId"
+                          asp-route-id="@TournamentId"
                           asp-route-level="1"
                           method="post">
                         <button type="submit" class="btn btn-primary"><b>[ Wygeneruj 1 grupe turniejową / Podgląd json ]</b></button>
@@ -141,7 +133,7 @@
                     <ul>
                         <li>
                             <form asp-controller="Tournament" asp-action="GenerujDrabinke"
-                                  asp-route-id="@ViewBag.TournamentId"
+                                  asp-route-id="@TournamentId"
                                   asp-route-level="2"
                                   method="post">
                                 <button type="submit" class="btn btn-primary"><b>[ Wygeneruj 2 grupe turniejową / Podgląd json ]</b></button>
@@ -149,7 +141,7 @@
                             <ul>
                                 <li>
                                     <form asp-controller="Tournament" asp-action="GenerujDrabinke"
-                                          asp-route-id="@ViewBag.TournamentId"
+                                          asp-route-id="@TournamentId"
                                           asp-route-level="3"
                                           method="post">
                                         <button type="submit" class="btn btn-primary"><b>[ Wygeneruj 3 grupe turniejową / Podgląd json ]</b></button>
@@ -161,7 +153,7 @@
                 </li>
             </ul>
         </div>
+
     </div>
-
+        }
 </div>
-

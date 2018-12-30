@@ -44,6 +44,7 @@ namespace LOLHUB.ViewComponents
                 case 3:
                     return View("Drabinka3", await _drabinkaCtx.Drabinki.Where(d => d.Tournament_Id == id && d.Tournament_Level == level).ToListAsync());
 
+                
             }
 
             return View();

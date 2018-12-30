@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LOLHUB.Data;
 using LOLHUB.Models;
+using LOLHUB.Models.Match;
 using LOLHUB.Models.TournamentViewModels;
 using LOLHUB.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -143,25 +144,25 @@ namespace LOLHUB.Controllers
                             goto pomin;
                         }
                         else {
-                        while (_drabinkaCtx.Drabinki.Where(d => (d.Team1_Id == team1 && d.Tournament_Level == 1) && d.Tournament_Id == id).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team1 && d.Tournament_Level == 1 && d.Tournament_Id == id).Any() || team1 == team2 )
+                            while (_drabinkaCtx.Drabinki.Where(d => (d.Team1_Id == team1 && d.Tournament_Level == 1) && d.Tournament_Id == id).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team1 && d.Tournament_Level == 1 && d.Tournament_Id == id).Any() || team1 == team2)
                             {
-                            team1_index = randm.Next(teamidpool.Count);
-                            team1 = teamidpool[team1_index];
+                                team1_index = randm.Next(teamidpool.Count);
+                                team1 = teamidpool[team1_index];
 
+                            }
+                            while (_drabinkaCtx.Drabinki.Where(d => (d.Team1_Id == team2 && d.Tournament_Level == 1) && d.Tournament_Id == id).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team2 && d.Tournament_Level == 1 && d.Tournament_Id == id).Any() || team1 == team2)
+                            {
+                                team2_index = randm.Next(teamidpool.Count);
+                                team2 = teamidpool[team2_index];
+                            }
                         }
-                        while (_drabinkaCtx.Drabinki.Where(d => (d.Team1_Id == team2 && d.Tournament_Level == 1) && d.Tournament_Id == id).Any() || _drabinkaCtx.Drabinki.Where(d => d.Team2_Id == team2 && d.Tournament_Level == 1 && d.Tournament_Id == id).Any() || team1 == team2 )
-                        {
-                            team2_index = randm.Next(teamidpool.Count);
-                            team2 = teamidpool[team2_index];
-                        }
-                         }
                         pomin:
 
                         Drabinka nowaDrabinka = new Drabinka()
                         {
 
                             Tournament_Id = id,
-                            Tournament_Level = 1,//potem ogarne, w sensie poziomy 1/16 ,1/8 , finaly etc
+                            Tournament_Level = 1,
 
                             Team1_Id = teams.Where(t => t.Id == team1).First().Id,
                             Team1_Name = teams.Where(t => t.Id == team1).First().Name,
@@ -170,7 +171,10 @@ namespace LOLHUB.Controllers
                             Team2_Name = teams.Where(t => t.Id == team2).First().Name,
                             TeamLeader2_Email = teams.Where(t => t.Id == team2).First().TeamLeader.ConnectedSummonerEmail,
 
-                            TournamentCode = PreparedGames.Where(p => p.Team1 == teams.Where(t => t.Id == team1).First().Name && p.Team2 == teams.Where(t => t.Id == team2).First().Name).First().Id,
+                            TournamentCode = PreparedGames
+                            .Where(p => (p.Team1 == teams.Where(t => t.Id == team1).First().Name || p.Team1 == teams.Where(t => t.Id == team2).First().Name) && 
+                                        (p.Team2 == teams.Where(t => t.Id == team1).First().Name || p.Team2 == teams.Where(t => t.Id == team2).First().Name))
+                            .First().Id,
 
                             Team1_Win = null,
                             Team2_Win = null
@@ -385,7 +389,7 @@ namespace LOLHUB.Controllers
             _historyCtx.Dodaj(TeamHistory2);
 
             //punkty za zajecia vice 3 miejsca
-            if (TournamentLevel == 1)
+                if (TournamentLevel == 1)
             {
                 if (TeamHistory1.Status == false)
                 {
@@ -399,7 +403,6 @@ namespace LOLHUB.Controllers
                     _teamCtx.UploadTeamParticipate(TeamHistory2.TeamId);
                 }
             }
-
                 if (TournamentLevel == 2)
                 {
                     if (TeamHistory1.Status == false)
@@ -414,7 +417,7 @@ namespace LOLHUB.Controllers
                         _teamCtx.UploadTeamParticipate(TeamHistory2.TeamId);
                     }
                 }
-                //Przydzielenie punktów za pierwsze 1 i 2 miejsca 
+            //Przydzielenie punktów za pierwsze 1 i 2 miejsca 
                 if (TournamentLevel == 3)
                 {
                     if (TeamHistory1.Status == true)
@@ -442,7 +445,7 @@ namespace LOLHUB.Controllers
                     }
 
                 }
-            return RedirectToAction("Index");
+            return RedirectToAction("DetailNew", new { id= TournamentId });
         }
     }
 }

@@ -171,7 +171,7 @@ namespace LOLHUB.Controllers
 
         [Authorize(Roles = "Member, Admin")]
         [Route("/v1/riotapi/getMatchData/{url}")]
-        public async Task<IActionResult> GetMatchData(string url)
+        public async Task<IActionResult> GetMatchData(string url, int id, int team1Id, int team2Id, int TournamentId, int TournamentLevel)
         {
             // ------------------------------------------------------------------------------------------------------------------------------
             // ------------------------------------------------------------------------------------------------------------------------------
@@ -260,7 +260,7 @@ namespace LOLHUB.Controllers
                             GameStatisticId = ((newMatch5v5.Id) * 1000000) + INDEX,
 
                             MatchSelectedData = _matchRepository.Matches
-                                .Where(m => m.Id == newMatch5v5.Id).FirstOrDefault(),
+                                .Where(m => m.Id == newMatch5v5.Id).First(),
 
                             Win = newMatch5v5.participants
                                 .Where(p => p.participantId == ParticipantId)
@@ -268,41 +268,41 @@ namespace LOLHUB.Controllers
 
                             SummonerName = newMatch5v5.participantIdentities
                                 .Where(p => p.participantId == ParticipantId)
-                                    .Select(p => p.playerInfo.summonerName).FirstOrDefault(),
+                                    .Select(p => p.playerInfo.summonerName).First(),
 
                             SummonerId = newMatch5v5.participantIdentities
                                 .Where(p => p.participantId == ParticipantId)
-                                    .Select(p => p.playerInfo.summonerId).FirstOrDefault(),
+                                    .Select(p => p.playerInfo.summonerId).First(),
 
                             AccountId = newMatch5v5.participantIdentities
                                 .Where(p => p.participantId == ParticipantId)
-                                    .Select(p => p.playerInfo.accountId).FirstOrDefault(),
+                                    .Select(p => p.playerInfo.accountId).First(),
 
                             Summoner = _repository.SummonerInfos
                                 .Where(p => p.id == newMatch5v5.participantIdentities
                                                         .Where(m => m.participantId == ParticipantId)
-                                                            .Select(s => s.playerInfo.summonerId).FirstOrDefault())
-                                                                .FirstOrDefault(),
+                                                            .Select(s => s.playerInfo.summonerId).First())
+                                                                .First(),
 
                             Kills = newMatch5v5.participants
                                 .Where(p => p.participantId == ParticipantId)
-                                    .Select(p => p.stats.Kills).FirstOrDefault(),
+                                    .Select(p => p.stats.Kills).First(),
 
                             Deaths = newMatch5v5.participants
                                 .Where(p => p.participantId == ParticipantId)
-                                    .Select(p => p.stats.Deaths).FirstOrDefault(),
+                                    .Select(p => p.stats.Deaths).First(),
 
                             Assists = newMatch5v5.participants
                                 .Where(p => p.participantId == ParticipantId)
-                                    .Select(p => p.stats.Assists).FirstOrDefault(),
+                                    .Select(p => p.stats.Assists).First(),
 
                             ChampionId = newMatch5v5.participants
                             .Where(p => p.participantId == ParticipantId)
-                                .Select(p => p.championId).FirstOrDefault(),
+                                .Select(p => p.championId).First(),
 
                             TeamId = newMatch5v5.participants
                             .Where(p => p.participantId == ParticipantId)
-                                .Select(p => p.teamId).FirstOrDefault(),
+                                .Select(p => p.teamId).First(),
 
                             GameMode = newMatch5v5.gameMode,
 
@@ -314,8 +314,8 @@ namespace LOLHUB.Controllers
                         };
                         _matchRepository.AddStatsForEachPlayers(gameStatistic);
                     }
-
-                    return RedirectToAction("Index");
+                   
+                    return RedirectToAction("UploadGameStats","Tournament", new { id,team1Id,team2Id,TournamentId,TournamentLevel });
                 }
                 // return Ok(newMatch5v5);
                 return Ok(result);

@@ -33,86 +33,93 @@
     <tbody>
         @foreach (var item in Model.Where(d => d.Tournament_Level == 3))
         {
-            <tr>
-                <td>
-                    #@item.Id
-                </td>
-                <td>
-                    <div>
-                        @if (item.Team1_Win == null)
-                        {
-                            <b style="color:black">#@item.Team1_Name </b>
-                        }
-                        @if (item.Team1_Win == true)
-                        {
-                            <b style="color:green">#@item.Team1_Name </b>
-                        }
-                        @if (item.Team1_Win == false)
-                        {
-                            <b style="color:darkred">#@item.Team1_Name </b>
-                        }
-                        versus
-                        @if (item.Team2_Win == null)
-                        {
-                            <b style="color:black">#@item.Team2_Name </b>
-                        }
-                        @if (item.Team2_Win == true)
-                        {
-                            <b style="color:green">#@item.Team2_Name </b>
-                        }
-                        @if (item.Team2_Win == false)
-                        {
-                            <b style="color:darkred">#@item.Team2_Name </b>
-                        }
-                    </div>
-                </td>
-                <td>
+        <tr>
+            <td>
+                #@item.Id
+            </td>
+            <td>
+                <div>
+                    @if (item.Team1_Win == null)
+                    {
+                        <b style="color:black">#@item.Team1_Name </b>
+                    }
                     @if (item.Team1_Win == true)
                     {
-                        <b style="color:yellowgreen">#@item.Team1_Name </b>
+                        <b style="color:green">#@item.Team1_Name </b>
+                    }
+                    @if (item.Team1_Win == false)
+                    {
+                        <b style="color:darkred">#@item.Team1_Name </b>
+                    }
+                    versus
+                    @if (item.Team2_Win == null)
+                    {
+                        <b style="color:black">#@item.Team2_Name </b>
                     }
                     @if (item.Team2_Win == true)
                     {
-                        <b style="color:yellowgreen">#@item.Team2_Name </b>
+                        <b style="color:green">#@item.Team2_Name </b>
                     }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Tournament_Level)/3 (Finały)
-                </td>
-                @if (User.Identity.Name == item.TeamLeader1_Email || User.Identity.Name == item.TeamLeader2_Email || User.IsInRole("Admin") || User.IsInRole("Moderator")) // tylko liderzy swoich druzyn moga dodac wynik meczu
+                    @if (item.Team2_Win == false)
+                    {
+                        <b style="color:darkred">#@item.Team2_Name </b>
+                    }
+                </div>
+            </td>
+            <td>
+                @if (item.Team1_Win == true)
                 {
-                    <td>
-                        @item.TournamentCode
-                    </td>
+                    <b style="color:yellowgreen">#@item.Team1_Name </b>
+                }
+                @if (item.Team2_Win == true)
+                {
+                    <b style="color:yellowgreen">#@item.Team2_Name </b>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tournament_Level)/3 (Finały)
+            </td>
+            @if (User.Identity.Name == item.TeamLeader1_Email || User.Identity.Name == item.TeamLeader2_Email || User.IsInRole("Admin") || User.IsInRole("Moderator")) // tylko liderzy swoich druzyn moga dodac wynik meczu
+            {
+                <td>
+                    @item.TournamentCode
+                </td>
 
-                    <td>
+                @*<td>
+                <form asp-controller="Tournament" asp-action="UploadGameStats"
+                      asp-route-id="@item.Id"
+                      asp-route-team1Id=" @item.Team1_Id"
+                      asp-route-team2Id="@item.Team2_Id"
+                      asp-route-TournamentId="@item.Tournament_Id"
+                      asp-route-TournamentLevel="@item.Tournament_Level"
+                      method="post" class="text-center">
+                    <button type="submit" class="btn btn-info"><b>Upload</b></button>
+                </form>
+            </td>*@
 
-                        <form asp-controller="Tournament" asp-action="UploadGameStats"
+                <td>
+                    <div class="btn-toolbar mb-4" role="toolbar" aria-label="Toolbar with button groups">
+                        <form asp-controller="RiotApi" asp-action="GetMatchData"
+                              asp-route-url="url"
                               asp-route-id="@item.Id"
                               asp-route-team1Id=" @item.Team1_Id"
                               asp-route-team2Id="@item.Team2_Id"
                               asp-route-TournamentId="@item.Tournament_Id"
                               asp-route-TournamentLevel="@item.Tournament_Level"
-                              method="post" class="text-center">
-                            <button type="submit" class="btn btn-info"><b>Upload</b></button>
+                              method="post">
+
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-warning" name="submit">Wyszukaj</button>
+                            </div>
+                            <div class="input-group">
+                                <input type="text" name="url" class="form-control" placeholder="wprowadź: swoj kod turniejowy" aria-describedby="btnGroupAddon" size="15" maxlength="79" />
+                            </div>
                         </form>
+                    </div>
+                </td>
+            }
 
-                    </td>
-                    <td>
-                        <div class="btn-toolbar mb-4" role="toolbar" aria-label="Toolbar with button groups">
-                            <form asp-controller="RiotApi" asp-action="GetMatchData" asp-route-url="url" method="post">
-                                <div class="btn-group">
-                                    <button type="submit" class="btn btn-warning" name="submit">Wyszukaj</button>
-                                </div>
-                                <div class="input-group">
-                                    <input type="text" name="url" class="form-control" placeholder="wprowadź: swoj kod turniejowy" aria-describedby="btnGroupAddon" size="15" maxlength="79" />
-                                </div>
-                            </form>
-                        </div>
-                    </td>
-                }
-
-            </tr>
+        </tr>
         }
     </tbody>
 </table>

@@ -252,7 +252,10 @@ namespace LOLHUB.Controllers
                             Team2_Name = teams.Where(t => t.Id == team2).First().Name,
                             TeamLeader2_Email = teams.Where(t => t.Id == team2).First().TeamLeader.ConnectedSummonerEmail,
 
-                            TournamentCode = PreparedGames.Where(p => p.Team1 == teams.Where(t => t.Id == team1).First().Name && p.Team2 == teams.Where(t => t.Id == team2).First().Name).First().Id,
+                            TournamentCode = PreparedGames
+                            .Where(p => (p.Team1 == teams.Where(t => t.Id == team1).First().Name || p.Team1 == teams.Where(t => t.Id == team2).First().Name) &&
+                                        (p.Team2 == teams.Where(t => t.Id == team1).First().Name || p.Team2 == teams.Where(t => t.Id == team2).First().Name))
+                            .First().Id,
 
                             Team1_Win = null,
                             Team2_Win = null
@@ -331,7 +334,10 @@ namespace LOLHUB.Controllers
                             Team2_Name = teams.Where(t => t.Id == team2).First().Name,
                             TeamLeader2_Email = teams.Where(t => t.Id == team2).First().TeamLeader.ConnectedSummonerEmail,
 
-                            TournamentCode = PreparedGames.Where(p => p.Team1 == teams.Where(t => t.Id == team1).First().Name && p.Team2 == teams.Where(t => t.Id == team2).First().Name).First().Id,
+                            TournamentCode = PreparedGames
+                            .Where(p => (p.Team1 == teams.Where(t => t.Id == team1).First().Name || p.Team1 == teams.Where(t => t.Id == team2).First().Name) &&
+                                        (p.Team2 == teams.Where(t => t.Id == team1).First().Name || p.Team2 == teams.Where(t => t.Id == team2).First().Name))
+                            .First().Id,
 
                             Team1_Win = null,
                             Team2_Win = null

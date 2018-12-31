@@ -37,7 +37,8 @@ namespace RiotApi.RiotApi
         {
             using (var client = new HttpClient())
             {
-                var url = new Uri($"https://localhost:44344/PreparedGames/game{matchId}.json");
+                var url = new Uri($"https://localhost:44344/PreparedGames/game{matchId}.json");                   // Testowanie Lokalnie
+                //var url = new Uri($"https://LOLHaven.azurewebsites.net/PreparedGames/game{matchId}.json");          // Testowanie na Azure
                 var response = await client.GetAsync(url);
                 string json;
                 using (var content = response.Content)

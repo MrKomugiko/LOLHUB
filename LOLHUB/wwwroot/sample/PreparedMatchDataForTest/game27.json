@@ -9,10 +9,10 @@
         "summonerName": "Test6",
         "matchHistoryUri": "/v1/stats/player_history/EUN1/1000006",
         "platformId": "EUN1",
-        "currentAccountId": 1000005,
+        "currentAccountId": 1000006,
         "profileIcon": 3536,
-        "summonerId": 1000005,
-        "accountId": 1000005
+        "summonerId": 1000006,
+        "accountId": 1000006
       },
       "participantId": 1
     },
@@ -24,7 +24,7 @@
         "platformId": "EUN1",
         "currentAccountId": 200792805,
         "profileIcon": 1109,
-        "summonerId": 200792805,
+        "summonerId": 37015280,
         "accountId": 200792805
       },
       "participantId": 2

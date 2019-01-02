@@ -75,7 +75,7 @@ namespace LOLHUB.Controllers
                         GameStatistics = _matchRepository.GameStatistics.Include(m => m.MatchSelectedData)
                         .Where(p => p.SummonerId == RecentID)
                     };
-
+                    
                     return View(model);
                 }
             }
@@ -93,6 +93,9 @@ namespace LOLHUB.Controllers
                     GameStatistics = _matchRepository.GameStatistics.Include(m => m.MatchSelectedData)
                         .Where(p => p.SummonerId == ConnectedSummonerID)
                 };
+
+                ViewBag.WinMatches = model.GameStatistics.Where(m => m.Win == true).Select(m => m.Win).Count();
+                ViewBag.MatchCount = model.GameStatistics.Count();
 
                 return View(model);
             }

@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LOLHUB.Controllers
 {
-    
+
     public class TeamController : Controller
     {
         public TeamController(LOLHUBApplicationDbContext context, IPlayerRepository playerRepository, ITeamRepository teamrepository, IHttpContextAccessor httpContextAccessor)
@@ -50,7 +50,8 @@ namespace LOLHUB.Controllers
             {
                 TempData["AlreadyTeamLeader"] = "Już jesteś Liderem Drużyny, nie możesz utworzyć kolejnej";
                 return RedirectToAction("Index");
-            } else if (!_teamRepository.CheckIfUserAlreadyConnectSummonerAccount())
+            }
+            else if (!_teamRepository.CheckIfUserAlreadyConnectSummonerAccount())
             {
                 TempData["AlreadyTeamLeader"] = "Aby stworzyć drużynę, napierw trzeba połączyć swoje konto LeagueOfLegends";
                 return RedirectToAction("Index");
@@ -61,20 +62,20 @@ namespace LOLHUB.Controllers
         [HttpPost]
         public IActionResult CreateTeam(Team TeamData)
         {
-                if (ModelState.IsValid)
+            if (ModelState.IsValid)
+            {
+                Team Team = new Team
                 {
-                    Team Team = new Team
-                    {
-                        Name = TeamData.Name,
-                        Description = TeamData.Description
-                    };
+                    Name = TeamData.Name,
+                    Description = TeamData.Description
+                };
 
-                    _teamRepository.SaveTeam(TeamData);
+                _teamRepository.SaveTeam(TeamData);
 
-                    return RedirectToAction("Index");
-                }
                 return RedirectToAction("Index");
             }
+            return RedirectToAction("Index");
+        }
         //}
 
         [Authorize]
@@ -111,6 +112,14 @@ namespace LOLHUB.Controllers
                 _teamRepository.JoinTeam(teamId);
                 return RedirectToAction("Index");
             }
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("Team/Manage/{teamId}")]
+        public IActionResult Manage(int teamId)
+        {
+            return View();
         }
     }
 }

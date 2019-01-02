@@ -1,0 +1,27 @@
+﻿@model LOLHUB.Models.Team
+@using Microsoft.AspNetCore.Identity
+@using LOLHUB.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var teamName = "";
+    if (teamName == null)
+    {
+        teamName = "Not In Team";
+    }
+    else
+    {
+        teamName = Model.Name;
+    }
+}
+@if (SignInManager.IsSignedIn(User))
+{
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="Team" asp-action="Manage" asp-route-teamId="@Model.Id">Your Team:[@teamName]</a>
+            </li>
+}
+else
+{
+}

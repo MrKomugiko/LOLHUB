@@ -86,11 +86,11 @@
                             if ((MatchStats.GameDuration % 60) < 9) { seconds = (MatchStats.GameDuration % 60) * 10; }
                             else { seconds = (MatchStats.GameDuration % 60); }
                             string GameDurationInMinutes = (MatchStats.GameDuration / 60 + ":" + seconds);
-                    }
-                    @GameDurationInMinutes.ToString() min
-                </td>
-            </tr>
-                            }
+                        }
+                        @GameDurationInMinutes.ToString() min
+                    </td>
+                </tr>
+            }
 
         </table>
 
@@ -108,31 +108,125 @@
                         double assists = @Model.GameStatistics.Select(g => g.Assists).Sum();
                         double deaths = @Model.GameStatistics.Select(g => g.Deaths).Sum();
                         double kda = ((kill + assists) / deaths);
-                }
-                @Math.Round(kda, 2)
-            </td>
-            <td>
-                @{
-                    int Win = Model.GameStatistics.Where(g => g.Win == true).Count();
-                    int GamesPlayed = Model.GameStatistics.Count();
-                    float WinRatio = 0;
-                    if (GamesPlayed > 0)
-                    {
-                        WinRatio = (Win * 100) / GamesPlayed;
                     }
-                }
+                    @Math.Round(kda, 2)
+                </td>
+                <td>
+                    @{
+                        int Win = Model.GameStatistics.Where(g => g.Win == true).Count();
+                        int GamesPlayed = Model.GameStatistics.Count();
+                        float WinRatio = 0;
+                        if (GamesPlayed > 0)
+                        {
+                            WinRatio = (Win * 100) / GamesPlayed;
+                        }
+                    }
 
-            @WinRatio %
-        </td>
-        <td>@Model.GameStatistics.Select(g => g.GameId).Count()</td>
-        <td>
-            @{if (Model.GameStatistics.Select(g => g.GameId).Count() > 0) {
-                    Model.GameStatistics.GroupBy(g => g.ChampionId).OrderByDescending(g => g.Count()).Select(g => g.Key).First();
+                    @WinRatio %
+                </td>
+                <td>@Model.GameStatistics.Select(g => g.GameId).Count()</td>
+                <td>
+                    @{if (Model.GameStatistics.Select(g => g.GameId).Count() > 0)
+                        {
+                            Model.GameStatistics.GroupBy(g => g.ChampionId).OrderByDescending(g => g.Count()).Select(g => g.Key).First();
+                        }
                     }
+
+                </td>
+            </tr>
+        </table>
+
+
+        <script src="chartjs-plugin-doughnutlabel.min.js"></script>
+        <style>
+            #chart_container {
+                width: 300px;
+                height: 300px;
+                border: 5px solid #ddd;
+                padding: 2px;
+                border-radius: 25px;
             }
+            #bar_chart {
 
-        </td>
-    </tr>
-</table>
-}
+                display:block;
+            }
+        </style>
+        <div id="dashboard">
+            <div id="chart_container">    
+                <canvas id="bar_chart"></canvas>
+                <script >
+                    var win = @ViewBag.WinMatches;
+                    var total = @ViewBag.MatchCount;
+                    var lose = total - win;
+                    var procent = (win * 100) / total + "%";
+                        
+                    var ctx = document.getElementById('bar_chart').getContext('2d');
+                    var chart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ["Lose", "Win", "Total"],
+                            datasets: [{
+                                label: "Win/Lose Compare",
+                                backgroundColor: ["rgba(255, 99, 132,.5)", "rgba(54, 162, 235,.5)"],
+                                borderColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)"],
+                                data: [lose, win, total]
+                            }]
+                        },
+                        options: {
+                            aspectRatio:1,
+                            responsive: true,
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                            },
+                            title: {
+                                display: true,
+                                fontSize: 20,
+                                text: 'Win Ratio'
+                            },
+                            animation: {
+                                animateRotate: true
+                            },
+                            plugins: {
+                                doughnutlabel: {
+                                    labels: [
+                                        {
+                                            text: procent,
+                                            font: {
+                                                size: '70'
+                                            }
+                                        },
+                                    ]
+                                }
+                            }
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
 }

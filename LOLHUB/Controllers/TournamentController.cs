@@ -117,7 +117,8 @@ namespace LOLHUB.Controllers
                 int liczba_par = 4;
                 if (_drabinkaCtx.Drabinki.Where(d => d.Tournament_Id == id && d.Tournament_Level == 1).Any() && _drabinkaCtx.Drabinki.Where(d => d.Tournament_Level == 1).Any())
                 {
-                    return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+                    //  return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+                    return RedirectToAction("DetailNew", id );
                 }
                 else
                 {
@@ -184,7 +185,8 @@ namespace LOLHUB.Controllers
                         liczba_par--;
                     }
                 }
-                return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+                // return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+                return RedirectToAction("DetailNew", id);
             }
 
             else if (level == 2)
@@ -193,7 +195,8 @@ namespace LOLHUB.Controllers
                 if (_drabinkaCtx.Drabinki.Where(d => d.Tournament_Id == id && d.Tournament_Level == 2).Any()
                     && _drabinkaCtx.Drabinki.Where(d => d.Tournament_Level == 2).Any())
                 {
-                    return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+                    //return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+                    return RedirectToAction("DetailNew", id);
                 }
                 else
                 {
@@ -265,7 +268,8 @@ namespace LOLHUB.Controllers
                         liczba_par--;
                     }
                 }
-                return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+                //   return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+                return RedirectToAction("DetailNew", id);
             }
 
             else if (level == 3)
@@ -274,7 +278,8 @@ namespace LOLHUB.Controllers
                 if (_drabinkaCtx.Drabinki.Where(d => d.Tournament_Id == id && d.Tournament_Level == 3).Any()
                     && _drabinkaCtx.Drabinki.Where(d => d.Tournament_Level == 3).Any())
                 {
-                    return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+                    //  return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+                    return RedirectToAction("DetailNew", id);
                 }
                 else
                 {
@@ -347,10 +352,12 @@ namespace LOLHUB.Controllers
                         liczba_par--;
                     }
                 }
-                return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+                //  return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+                return RedirectToAction("DetailNew", id);
             }
 
-            else return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+            else //return Ok(await _drabinkaCtx.Drabinki.ToListAsync());
+                return RedirectToAction("DetailNew", id);
         }
 
         [Authorize(Roles = "Admin")]

@@ -50,7 +50,10 @@ namespace LOLHUB
 
                 facebookOptions.AppId = "2065271323758986";
                 facebookOptions.AppSecret = "81872cda2ddf56ba72547eb46d1cc74b";
-
+                facebookOptions.Fields.Add("name");
+                facebookOptions.Fields.Add("first_name");
+                facebookOptions.Fields.Add("short_name");
+                facebookOptions.Fields.Add("last_name");
             });
 
             // Add application services.

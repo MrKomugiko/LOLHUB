@@ -7,19 +7,21 @@
 
 @{
     var teamName = "";
-    if (teamName == null)
+    var teamId = "";
+    if (Model == null)
     {
         teamName = "Not In Team";
     }
     else
     {
         teamName = Model.Name;
+        teamId = Model.Id.ToString();
     }
 }
 @if (SignInManager.IsSignedIn(User))
 {
             <li class="nav-item">
-                <a class="nav-link" asp-area="" asp-controller="Team" asp-action="Manage" asp-route-teamId="@Model.Id">Your Team:[@teamName]</a>
+                <a class="nav-link" asp-area="" asp-controller="Team" asp-action="Manage" asp-route-teamId="@teamId">Your Team:[@teamName]</a>
             </li>
 }
 else

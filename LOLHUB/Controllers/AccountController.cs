@@ -307,7 +307,9 @@ namespace LOLHUB.Controllers
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                return View("ExternalLogin", new ExternalLoginViewModel { Email = email });
+                var first_name = info.Principal.FindFirstValue(ClaimTypes.GivenName);
+                var last_name = info.Principal.FindFirstValue(ClaimTypes.Surname); 
+                return View("ExternalLogin", new ExternalLoginViewModel { Email = email, First_name = first_name, Last_name = last_name });
             }
         }
 
@@ -339,8 +341,9 @@ namespace LOLHUB.Controllers
                         Player player = new Player
                         {
                             ConectedSummoners = null,
-                            FirstName = null,
-                            ConnectedSummonerEmail = user.Email
+                            FirstName = model.First_name, 
+                            LastName =  model.Last_name,
+                            ConnectedSummonerEmail = model.Email
                         };
 
                         _playerRepository.CreateBasicPlayer(player);

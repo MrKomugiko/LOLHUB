@@ -64,7 +64,7 @@ namespace LOLHUB.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: true);
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe,  lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -73,6 +73,11 @@ namespace LOLHUB.Controllers
                 if (result.RequiresTwoFactor)
                 {
                     return RedirectToAction(nameof(LoginWith2fa), new { returnUrl, model.RememberMe });
+                }
+                if (result.IsNotAllowed)
+                {
+                    ModelState.AddModelError(string.Empty, "Your account is not verified yet. Check Mailbox for activating mail, [ it could be in your spam folder ].");
+                    return View(model);
                 }
                 if (result.IsLockedOut)
                 {
@@ -232,8 +237,9 @@ namespace LOLHUB.Controllers
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
                     await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+                    //await _signInManager.SignInAsync(user, isPersistent: false); //nie zaloguje się po rejestracji bez potwierdzenia maila
+
                     await _userManager.AddToRoleAsync(user, "Member");
-                    await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation("User created a new account with password.");
 
                     //nowo zarejestrowany użytkownik zostanie przypisany modelowi Player z przypisanym emailem
@@ -243,14 +249,12 @@ namespace LOLHUB.Controllers
                         FirstName = null,
                         ConnectedSummonerEmail = user.Email
                     };
-
-                    _playerRepository.CreateBasicPlayer(player); 
-
+                    _playerRepository.CreateBasicPlayer(player);
+                   
                     return RedirectToLocal(returnUrl);
                 }
                 AddErrors(result);
             }
-
             // If we got this far, something failed, redisplay form
             return View(model);
         }

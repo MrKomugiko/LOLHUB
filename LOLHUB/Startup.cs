@@ -39,17 +39,21 @@ namespace LOLHUB
             services.AddDbContext<LOLHUBApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ApplicationConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(config =>
+            {
+                config.SignIn.RequireConfirmedEmail = true;
+            })
                 .AddEntityFrameworkStores<LOLHUBIdentityDbContext>()
                 .AddDefaultTokenProviders();
+
 
             services.AddAuthentication().AddFacebook(facebookOptions =>
             {
                 // facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                 // facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
 
-                facebookOptions.AppId = "2065271323758986";
-                facebookOptions.AppSecret = "81872cda2ddf56ba72547eb46d1cc74b";
+                facebookOptions.AppId = Configuration["Authentication-Facebook-AppId"];
+                facebookOptions.AppSecret = Configuration["Authentication-Facebook-AppSecret"];
                 facebookOptions.Fields.Add("name");
                 facebookOptions.Fields.Add("first_name");
                 facebookOptions.Fields.Add("short_name");
@@ -63,7 +67,7 @@ namespace LOLHUB
             services.AddTransient<IPlayerRepository, PlayerRepository>();
             services.AddTransient<IMatchRepository, MatchRepository>();
             services.AddTransient<ITeamRepository, TeamRepository>();
-            services.AddTransient<IDrabinkaRepository, DrabinkaRepository>(); //nowe
+            services.AddTransient<IDrabinkaRepository, DrabinkaRepository>();
             services.AddTransient<IPlaysHistoryRepository, PlaysHistoryRepository>();
 
             services.AddSingleton<IRiotApiService, RiotApiService>();
@@ -71,6 +75,7 @@ namespace LOLHUB
             services.AddSingleton<IGetMatchData, GetMatchData>();
             services.AddSingleton<IGenerateCode, GenerateCode>();
 
+            services.AddTransient<IEmailSender, EmailSender>();
             services.AddMvc(options =>
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
@@ -79,8 +84,11 @@ namespace LOLHUB
             {
                 options.Filters.Add(new RequireHttpsAttribute());
             });
+
             services.AddDistributedMemoryCache();
             services.AddSession();
+
+            services.Configure<AuthMessageSenderOptions>(Configuration);
         }
 
 
@@ -121,11 +129,6 @@ namespace LOLHUB
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-        }
-
-        private string Combine(object p, string v1, string v2)
-        {
-            throw new NotImplementedException();
         }
     }
 }

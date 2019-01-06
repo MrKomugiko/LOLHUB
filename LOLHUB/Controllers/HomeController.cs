@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using LOLHUB.Models;
+using Microsoft.Extensions.Configuration;
 using LOLHUB.Models.HomeViewModel;
 
 namespace LOLHUB.Controllers

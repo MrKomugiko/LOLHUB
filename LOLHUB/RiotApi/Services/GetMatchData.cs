@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RiotApi.Models;
 
@@ -10,10 +11,16 @@ namespace RiotApi.RiotApi
 {
     public class GetMatchData : IGetMatchData
     {
-        private const string api_key = "RGAPI-fb8b8f16-5da6-4f31-b75c-093841d258da";
+        public GetMatchData(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        private IConfiguration Configuration { get; }
 
         //public async Task<MatchDto> ReturnMatchData(int matchId)
         //{
+        //    string api_key = Configuration["RiotGames-api-key"];
         //    using (var client = new HttpClient())
         //    {
         //        var url = new Uri($"https://eun1.api.riotgames.com//lol/match/v3/matches/{matchId}?api_key={api_key}");
@@ -27,7 +34,6 @@ namespace RiotApi.RiotApi
         //        return JsonConvert.DeserializeObject<MatchDto>(json);
         //    }
         //}
-
         //-----------------------------------------------------------------------------------------------------------------------
         //-----------------------------------------------------------------------------------------------------------------------
         //------------------Do celow testowych na spreparowanym pliku json znajdujacym sie na serwerze lokalnie------------------

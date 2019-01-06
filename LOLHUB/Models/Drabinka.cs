@@ -28,6 +28,7 @@ namespace LOLHUB.Models.TournamentViewModels
         public int? TournamentCode { get; set; } // aby wykorzystać spreparowane pliki json dla 28 przypadków gier przy założeniu max 8 członków 
 
         public DateTime? UpdateTime { get; set; }
+
         public ICollection<PlaysHistory> Histories { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace LOLHUB.Controllers
             Player player = _playerRepository.Players
                 .Include(s=>s.ConectedSummoners)
                 .Where(s => s.ConnectedSummonerEmail == s.ConectedSummoners.ConectedAccount)
-                .Include(t=>t.TeamId)
+                .Include(t=>t.MemberOfTeamId)
                 .FirstOrDefault(p=>p.Id==id);
 
             return View("Overview", player);

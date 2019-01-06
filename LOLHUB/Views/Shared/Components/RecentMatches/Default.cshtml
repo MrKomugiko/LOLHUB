@@ -82,7 +82,23 @@
             </div>
         </div>
 
-        <div class="card w-100" style=" text-align:center;" > <text> <text style="font-weight:900">  . . : : |  Data: </text> @drabinka.UpdateTime  <text style="font-weight:900">  |   Turniej Id:</text> @drabinka.Tournament_Id <text style="font-weight:900">  |  Nazwa: </text>@ViewBag.TournamentName  <text style="font-weight:900">  |  Etap: </text> @drabinka.Tournament_Level <text style="font-weight:900">  | : : . .  </text></text> </div>
+        <div class="card w-100" style=" text-align:center;" > <text> <text style="font-weight:900">  
+            @{ 
+                string Name = null;
+                foreach(var item in ViewBag.TournamentNameList)
+                {
+                    if(item.Id == drabinka.Tournament_Id)
+                    {
+                        Name = item.Name;
+                    }
+                }
+
+            }
+            . . : : |  Data: </text> @drabinka.UpdateTime  <text style="font-weight:900">  
+                    |  Turniej Id:</text> @drabinka.Tournament_Id <text style="font-weight:900">  
+                    |  Nazwa: </text>@Name  <text style="font-weight:900">  
+                    |  Etap: </text> @drabinka.Tournament_Level <text style="font-weight:900">  
+                    | : : . .  </text></text> </div>
     </div></div>
     <br />
 

@@ -11,9 +11,10 @@ using System;
 namespace LOLHUB.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190105212458_zmiananazwy")]
+    partial class zmiananazwy
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,15 +241,13 @@ namespace LOLHUB.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("Miejsce");
+                    b.Property<int>("Druzyna");
 
-                    b.Property<int?>("TeamId");
+                    b.Property<int>("Miejsce");
 
                     b.Property<int?>("TournamentId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TeamId");
 
                     b.HasIndex("TournamentId");
 
@@ -442,10 +441,6 @@ namespace LOLHUB.Migrations
 
             modelBuilder.Entity("LOLHUB.Models.Ranking", b =>
                 {
-                    b.HasOne("LOLHUB.Models.Team", "Teams")
-                        .WithMany("Rankings")
-                        .HasForeignKey("TeamId");
-
                     b.HasOne("LOLHUB.Models.Tournament", "Tournament")
                         .WithMany("Rankingi")
                         .HasForeignKey("TournamentId");

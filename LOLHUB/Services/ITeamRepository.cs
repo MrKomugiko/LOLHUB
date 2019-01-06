@@ -12,6 +12,8 @@ namespace LOLHUB.Services
         
         void SaveTeam(Team TeamData);
 
+        void EditTeam(Team TeamData);
+
         void JoinTeam(int teamId);
 
         bool CheckIfUserAlreadyIsTeamLeader();

@@ -46,10 +46,9 @@ namespace LOLHUB.ViewComponents
                 rankingData.Add(teamstats);
             }
 
+
+
             return View(rankingData);
-
-            //return View(await _context.Histories.ToListAsync());
-
         }
     }
 }

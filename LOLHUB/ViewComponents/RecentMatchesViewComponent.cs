@@ -1,4 +1,5 @@
 ﻿using LOLHUB.Data;
+using LOLHUB.Models;
 using LOLHUB.Models.TournamentViewModels;
 using LOLHUB.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -18,14 +19,42 @@ namespace LOLHUB.ViewComponents
             _context = context;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(int tournamentId)
+        public async Task<IViewComponentResult> InvokeAsync(int? tournamentId, int? teamId) // Ogolne dla wszytskich
         {
-            var RecentMatches = await _context.Drabinki
-                .Where(d => ( d.Tournament_Id == tournamentId ) && (d.Team1_Win == true || d.Team2_Win == true))
-                .ToListAsync();
+                List<TournamentName> Data = new List<TournamentName>();
+                foreach (var item in _context.Tournaments.Select(t => t).ToList())
+                {
+                    Data.Add(new TournamentName { Id = item.TournamentId, Name = item.Name });
+                }
+                ViewBag.TournamentNameList = Data.ToList();
 
-            ViewBag.TournamentName = _context.Tournaments.Where(t => t.TournamentId == tournamentId).First().Name.ToString();
-            return View(RecentMatches.OrderBy(d=>d.UpdateTime));
+            if (tournamentId == null && teamId == null) {
+                return View();
+            }
+            // Ogólna historia rozgrywek dla rozgrywanego turnieju, w /Tournament/x/Details
+            else if (tournamentId != null && teamId == null) {
+                var RecentMatches = await _context.Drabinki
+                    .Where(d => (d.Tournament_Id == tournamentId) && (d.Team1_Win == true || d.Team2_Win == true))
+                    .ToListAsync();
+
+                ViewBag.TournamentName = _context.Tournaments.Where(t => t.TournamentId == tournamentId).First().Name.ToString();
+                return View(RecentMatches.OrderBy(d => d.UpdateTime));
+            }
+            // Historia poszczególnych drużyn wyswietlana na ich profilach /Team/Manage/x
+            else if (tournamentId == null && teamId != null) {
+                var RecentMatchesForSpecificTeam = await _context.Drabinki
+                    .Where(d => (d.Team1_Id == teamId || d.Team2_Id == teamId) && (d.Team1_Win == true || d.Team2_Win == true))
+                    .ToListAsync();
+
+                return View(RecentMatchesForSpecificTeam.OrderBy(d => d.UpdateTime));
+            } else {
+                return View();
+            }
         }
+    }
+   public class TournamentName
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

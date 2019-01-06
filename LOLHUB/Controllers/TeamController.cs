@@ -70,14 +70,13 @@ namespace LOLHUB.Controllers
                     Description = TeamData.Description
                 };
 
-                _teamRepository.SaveTeam(TeamData);
+                _teamRepository.SaveTeam(Team);
 
                 return RedirectToAction("Index");
             }
             return RedirectToAction("Index");
         }
-        //}
-
+   
         [Authorize]
         [HttpPost]
         public IActionResult JoinTeam(int teamId)
@@ -119,7 +118,24 @@ namespace LOLHUB.Controllers
         [Route("Team/Manage/{teamId}")]
         public IActionResult Manage(int teamId)
         {
-            return View();
+            Team model = _teamRepository.Teams.Where(t => t.Id == teamId).First();
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("Team/Edit/{teamId}")]
+        public IActionResult EditTeam(Team TeamData)
+        {
+            if (ModelState.IsValid)
+            {
+                // Przekazanie w TeamData aktualnego ID, nowej nazwy i nowego opisu drużyny
+                // Pobranie obecnie zapisanych danych tj. punkty lider etc. 
+                _teamRepository.EditTeam(TeamData); // Zaktualizowanie danych drużyny
+
+                return RedirectToAction("Manage");
+            }
+            return RedirectToAction("Manage");
         }
     }
 }

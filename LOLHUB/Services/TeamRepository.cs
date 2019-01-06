@@ -36,25 +36,36 @@ namespace LOLHUB.Services
                 Participate_in_Tournaments = 0,
                 Points = 0,
                 Tournaments_Win = 0
-                
             };
 
             _context.Teams.Add(team);
             team.Players.Add(teamLeader);
             _context.SaveChanges();
         }
+
+        public void EditTeam(Team TeamData)
+        {
+            Team dbEntry = _context.Teams.Where(t => t.Id == TeamData.Id).First();
+                dbEntry.Name = TeamData.Name;
+                dbEntry.Description = TeamData.Description;
+
+            _context.Teams.Update(dbEntry);
+            _context.SaveChanges();
+        }
+
         public void JoinTeam(int teamId)
         {
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             Player playerEntry = _context.Players.Where(p => p.ConnectedSummonerEmail == playerName).Include(p=>p.ConectedSummoners).Select(p=>p).First();
             Team teamEntry = _context.Teams.Where(t => t.Id == teamId).Include(p=>p.Players).First();
 
-            playerEntry.TeamId = teamEntry.Id;
+            playerEntry.MemberOfTeamId = teamEntry.Id;
             teamEntry.Players.Add(playerEntry);
 
             _context.Teams.Update(teamEntry);
             _context.SaveChanges();
         }
+
         public bool CheckIfUserAlreadyIsTeamLeader()
         {
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
@@ -68,7 +79,7 @@ namespace LOLHUB.Services
         public bool CheckIfUserAlreadyIsMemberOfTheTeam(int teamId)
         {
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
-            if (_context.Players.Where(p=>p.TeamId == teamId && p.ConnectedSummonerEmail == playerName).Any())
+            if (_context.Players.Where(p=>p.MemberOfTeamId == teamId && p.ConnectedSummonerEmail == playerName).Any())
             {
                 return true;
             }else
@@ -135,5 +146,7 @@ namespace LOLHUB.Services
             _context.Teams.Update(teamEntry);
             _context.SaveChanges();
         }
+
+
     }
 }

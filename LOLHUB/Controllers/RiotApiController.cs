@@ -53,7 +53,7 @@ namespace LOLHUB.Controllers
                     .Where(p => p.ConnectedSummonerEmail == LoggedUserEmail)
                     .FirstOrDefault();
 
-            if (checkPlayer.ConectedSummoners == null)
+            if (checkPlayer == null)
             {
                 if (TempData["SummonerDontExists"] != null)
                 {
@@ -178,7 +178,7 @@ namespace LOLHUB.Controllers
         {
             // ------------------------------------------------------------------------------------------------------------------------------
             // ------------------------------------------------------------------------------------------------------------------------------
-            // --------------------- Test pobieranie spreparowanego pliku json, o nazwie game(url).json [url od 1 do x] ---------------------
+            // --------------------- Test pobieranie spreparowanego pliku json, o nazwie game(url).json [url od 1 do 28] --------------------
             // -------------------------------------- https://localhost:44344/PreparedGames/game1.json --------------------------------------
             // ------------------------------------------------------------------------------------------------------------------------------
             // ------------------------------------------------------------------------------------------------------------------------------
@@ -260,7 +260,7 @@ namespace LOLHUB.Controllers
 
                         GameStatistic gameStatistic = new GameStatistic
                         {
-                            GameStatisticId = ((newMatch5v5.Id) * 1000000) + INDEX,
+                            //GameStatisticId = ((newMatch5v5.Id) * 1000000) + INDEX,
 
                             MatchSelectedData = _matchRepository.Matches
                                 .Where(m => m.Id == newMatch5v5.Id).First(),

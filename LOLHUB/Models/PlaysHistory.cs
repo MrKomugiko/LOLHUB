@@ -16,6 +16,7 @@ namespace LOLHUB.Models
         public bool? Status { get; set; }
 
         public virtual Player Player { get; set; }
+
         public virtual Drabinka Drabinka { get; set; }
     }
 }

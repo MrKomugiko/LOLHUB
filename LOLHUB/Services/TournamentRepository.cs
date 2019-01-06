@@ -1,4 +1,5 @@
 ﻿using LOLHUB.Data;
+using LOLHUB.Models.TournamentViewModels;
 using LOLHUB.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -88,7 +89,7 @@ namespace LOLHUB.Models
         {
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             Player playerData = _playerCtx.Players.Where(p => p.ConnectedSummonerEmail == playerName).First();
-
+            if (playerData.MemberOfTeamId == null) { return 4; }
             Team teamData = _teamRepository.Teams.Where(t => t.TeamLeader.ConnectedSummonerEmail == playerName).Include(t => t.Tournament).Include(t => t.TeamLeader.ConectedSummoners).Include(p => p.Players).First();
             Tournament tournamentDataNew = _context.Tournaments.Where(t => t.TournamentId == tournamentId).First();
             
@@ -108,7 +109,7 @@ namespace LOLHUB.Models
                         if (teamData.TournamentId == null)
                         {//Pierwsze dołączenie drużyny do turnieju.
 
-                            if (playerData.TeamId != null)
+                            if (playerData.MemberOfTeamId != null)
                             {//jezeli gracz jest liderem i wcześniej jego drużyna nie bierze udziału w turniejach => dodanie nowego polaczenia
                                 teamData.TournamentId = tournamentId;
                                 _context.Teams.Update(teamData);
@@ -126,7 +127,7 @@ namespace LOLHUB.Models
                         else if (teamData.TournamentId != tournamentId)
                         {//jeżeli team chce dołączyć do innego turnieju => zmieni miejsce
 
-                            if (playerData.TeamId != null)
+                            if (playerData.MemberOfTeamId != null)
                             {//zmiana turnieju przez lidera drużyny => jest ok
                                 Tournament tournamentDataOld = _context.Tournaments.Where(t => t.TournamentId == teamData.TournamentId).First();
                                 tournamentDataOld.Participants  -= 1;
@@ -176,6 +177,53 @@ namespace LOLHUB.Models
 
             _context.Tournaments.Update(dbEntry);
             _context.SaveChanges();
+        }
+        //----------------------------------------------------------------------------------------------------------------
+        //--------------------------------------- [ ZAPISYWANIE RANKINGU W BAZIE ] ---------------------------------------
+        //----------------------------------------------------------------------------------------------------------------
+
+        public void ZapiszRanking(int tournamentId)
+        {
+            var data = _context.Histories
+                    .Include(p => p.Player)
+                    .Include(d => d.Drabinka)
+                    .Include(p => p.Player.ConectedSummoners)
+                    .Where(h => h.Drabinka.Tournament_Id == tournamentId)
+                    .ToList();
+
+            var groupeddata = data.GroupBy(g => g.TeamName).OrderBy(o => o.Key).ToList();
+            List<TournamentRanking> rankingData = new List<TournamentRanking>();
+
+            foreach (var team in groupeddata)
+            {
+                TournamentRanking teamstats = new TournamentRanking()
+                {
+                    Suma_Wygranych = data.Where(s => s.Status == true && s.TeamName == team.Key.ToString()).Count(),
+                    Nazwa_Druzyny = team.Key.ToString(),
+                    Rozegrane_Gry = data.Where(s => s.TeamName == team.Key.ToString()).Count()
+                };
+                rankingData.Add(teamstats);
+            }
+
+
+            int index = _context.Tournaments.Where(t => t.TournamentId == tournamentId).First().Size;
+            if (_context.Rankingi.Where(r=>r.TournamentId == tournamentId).Count() != _context.Tournaments.Where(t=>t.TournamentId == tournamentId).First().Size)
+            {
+                while (index > 0)
+                {
+                    var rankData = rankingData.OrderByDescending(r=>r.Rozegrane_Gry).ElementAt(index - 1);
+                    Ranking dbEntry = new Ranking
+                    {
+                        Miejsce = index,
+                        Teams = _context.Teams.Where(t => t.Name == rankData.Nazwa_Druzyny).First(),
+                        Tournament = _context.Tournaments.Where(t => t.TournamentId == tournamentId).First()
+                    };
+                    index--;
+
+                    _context.Rankingi.Add(dbEntry);
+                    _context.SaveChanges();
+                }
+            }
         }
     }
 }

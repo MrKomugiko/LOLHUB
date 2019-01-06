@@ -32,7 +32,7 @@ namespace LOLHUB
                     logger.LogError(ex, "An error occured while seeding the database.");
                 }
             }
-            host.Run();
+          host.Run();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>

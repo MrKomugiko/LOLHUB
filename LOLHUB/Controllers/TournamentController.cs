@@ -40,6 +40,7 @@ namespace LOLHUB.Controllers
         public IActionResult JoinToTournament(int tournamentId)
         {
             int result = _tournamentCtx.JoinToTournament(tournamentId);
+            if (result == 4) { TempData["joiningResult"] = "Nie posiadasz żadnej drużyny."; }
             if (result == 2) { TempData["joiningResult"] = "Turniej właśnie się odbywa, nie możesz do niego dołączyć."; }
             if (result == 11) { TempData["joiningResult"] = "Poprawnie dołączyłeś do turnieju, gratulacje :)"; }
             if (result == 01) { TempData["joiningResult"] = "Już jesteś przypisany do tego turnieju."; }
@@ -367,6 +368,9 @@ namespace LOLHUB.Controllers
                 _tournamentCtx.ChangeTournamentStatus(id, status);
                     } else if (status == "stop") {
                 _tournamentCtx.ChangeTournamentStatus(id, status);
+
+               _tournamentCtx.ZapiszRanking(id);
+
                     }
             return RedirectToAction("DetailNew", id);
         }

@@ -1,18 +1,117 @@
-﻿
+﻿@model LOLHUB.Models.Team
+
 @{
     ViewData["Title"] = "Manage";
 }
 
-<h2>Manage your Team</h2>
+<h2 style="text-align:center">Team Dashboard</h2>
+
+    <h4><b>Edytuj Drużynę:</b></h4>
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="EditTeam">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group hidden">
+                    <input asp-for="Id" class="form-control hidden" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Zatwierdz zmiany" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form asp-action="EditTeam">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group hidden">
+                    <input asp-for="Id" class="form-control hidden" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Zatwierdz zmiany" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4 ">
+            <form asp-action="EditTeam">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group hidden">
+                    <input asp-for="Id" class="form-control hidden" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Zatwierdz zmiany" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4" style="text-align:center">
+
+            <style>
+                #chart_container {
+                    border: 5px solid #ddd;
+                    padding: 2px;
+                    border-radius: 25px;
+                    text-align:center;
+                }
+
+            </style>
+                <div id="chart_container">
+                    <canvas id="bar_chart"></canvas>
+            </div>
+        </div>
+            <div class="col-md-4">
+                <h3>Points: <b>@Model.Points</b></h3>
+                Recent Tournaments<br />
+                <ul>
+                    @await Component.InvokeAsync("RecentTournamentsPlayed", new { teamid = Model.Id })
+                </ul>
+            </div>
+
+            <div class="col-md-12">
+                <h3>Team match History</h3>
+                @{
+                    int? tournamentid = null;
+                }
+                @await Component.InvokeAsync("RecentMatches", new { tournamentId = tournamentid, teamId = Model.Id })
+            </div>
+        </div>
 
 <h3>TODO:</h3>
-<h4>Zmiana nazwy<br />
-    Zmiana opisu<br />
+<h4>
+    <s>Zmiana nazwy</s><br />
+    <s>Zmiana opisu</s><br />
     Zmiana typu ( dodam na czasie czy to druzyna 1v1,3v3,5v5, otwarta czy zamknięta, player+)<br />
     Wysylanie zaproszeń ( jezeli druzyna zamknieta)<br />
     Usuwanie Członkow (tylko teamLeader)<br />
-    Statystyki Meczy<br />
-    Rozegrane Mecze druzynowo<br />
+    <s>Historia Meczy</s><br />
+    <s>Statystyki Meczy</s><br />
     *Podsumowanie wyników meczy z wyszczegolnieniem graczy ?<br />
     Usunięcie Drużyny<br />
     Zmiana TeamLidera<br />
@@ -20,3 +119,53 @@
     **Wydzielenie grup w drużynie 1v1 (tylko lider ?), 3v3 (glowna lista reszta to awaryjni członkowie?), 5v5<br />
     ***Osiągnięcia<br />
 </h4>
+
+
+ <script>
+                    var win = @Model.Tournaments_Win;
+                    var total = @Model.Participate_in_Tournaments;
+                    var lose = total - win;
+                    var procent = (win * 100) / total + "%";
+
+                    var ctx = document.getElementById('bar_chart').getContext('2d');
+                    var chart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ["Lose", "Win", "Total"],
+                            datasets: [{
+                                label: "Win/Lose Compare",
+                                backgroundColor: ["rgba(255, 99, 132,.5)", "rgba(54, 162, 235,.5)","rgba(192,192,192,.5)"],
+                                borderColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)", "rgb(192, 192, 192)"],
+                                data: [lose, win, total]
+                            }]
+                        },
+                        options: {
+                            aspectRatio:1,
+                            responsive: true,
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                            },
+                            title: {
+                                display: true,
+                                fontSize: 20,
+                                text: 'Win Ratio'
+                            },
+                            animation: {
+                                animateRotate: true
+                            },
+                            plugins: {
+                                doughnutlabel: {
+                                    labels: [
+                                        {
+                                            text: procent,
+                                            font: {
+                                                size: '70'
+                                            }
+                                        },
+                                    ]
+                                }
+                            }
+                        }
+                    });
+                    </script>

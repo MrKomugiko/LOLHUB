@@ -18,5 +18,6 @@ namespace LOLHUB.Models
         public bool IsActuallyPlayed { get; set; }
 
         public IList<Team> Teams { get; set; }
+        public IList<Ranking> Rankingi { get; set; }
     }
 }

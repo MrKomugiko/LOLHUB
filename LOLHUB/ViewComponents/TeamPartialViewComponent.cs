@@ -29,7 +29,8 @@ namespace LOLHUB.ViewComponents
         {
             var User = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             var playerData = _context.Players.Where(p => p.ConnectedSummonerEmail == User).Select(p => p).ToList();
-            var TeamName = _context.Teams.Where(t => t.Id == playerData.Select(p => p.TeamId).First()).FirstOrDefault();
+
+            var TeamName = _context.Teams.Where(t => t.Id == playerData.Select(p => p.MemberOfTeamId).FirstOrDefault()).FirstOrDefault();
             return View("Default", TeamName);
         }
     }

@@ -1,0 +1,9 @@
+﻿@model IEnumerable<LOLHUB.Models.Ranking>
+
+@foreach(var item in Model)
+{
+    var punkty = 0;
+    if (item.Miejsce == 1) { punkty = 100; } else if (item.Miejsce == 2) { punkty = 50; } else if (item.Miejsce == 3) { punkty = 25; } else { punkty = 10; }
+<li><b>@item.Tournament.Name</b> miejsce <b>#@item.Miejsce</b> punkty [<b>+@punkty</b>]</li>
+
+}

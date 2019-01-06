@@ -18,5 +18,7 @@ namespace LOLHUB.Models
         int JoinToTournament(int tournamentId);
 
         void ChangeTournamentStatus(int tournamentId, string status);
+
+        void ZapiszRanking(int tournamentId);
     }
 }

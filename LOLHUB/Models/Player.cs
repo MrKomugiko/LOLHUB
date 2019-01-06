@@ -12,8 +12,7 @@ namespace LOLHUB.Models
     {
         [Key]
         public int Id { get; set; }
-        public int? TeamId { get; set; }
-
+        public int? MemberOfTeamId { get; set; }
 
         public string FirstName { get; set; }
         public string LastName { get; set; }

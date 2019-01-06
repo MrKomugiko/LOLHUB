@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RiotApi.Models;
 
 namespace LOLHUB.Controllers
 {
@@ -118,7 +119,9 @@ namespace LOLHUB.Controllers
         [Route("Team/Manage/{teamId}")]
         public IActionResult Manage(int teamId)
         {
-            Team model = _teamRepository.Teams.Where(t => t.Id == teamId).First();
+            Team model = _teamRepository.Teams.Include(t => t.TeamLeader).Where(t => t.Id == teamId).Include(t => t.Players).First();
+            List<SummonerInfoModel> nickList = _context.SummonerInfos.Select(s => s).ToList();
+            ViewBag.SummonerInfos = nickList;
             return View(model);
         }
 

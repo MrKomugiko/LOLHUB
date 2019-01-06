@@ -6,102 +6,96 @@
 
 <h2 style="text-align:center">Team Dashboard</h2>
 
-    <h4><b>Edytuj Drużynę:</b></h4>
     <div class="row">
-        <div class="col-md-6">
-            <form asp-action="EditTeam">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group hidden">
-                    <input asp-for="Id" class="form-control hidden" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="Name" class="control-label"></label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Description" class="control-label"></label>
-                    <input asp-for="Description" class="form-control" />
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Zatwierdz zmiany" class="btn btn-success" />
-                </div>
-            </form>
+
+        @if (User.Identity.Name == Model.TeamLeader.ConnectedSummonerEmail || User.IsInRole("Admin") || User.IsInRole("Moderator")) // tylko liderzy swoich druzyn moga dodac wynik meczu
+        {
+            <div class="col-md-6">
+                <form asp-action="EditTeam">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group hidden">
+                        <input asp-for="Id" class="form-control hidden" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label"></label>
+                        <input asp-for="Description" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Zatwierdz zmiany" class="btn btn-success" />
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-6">
+               <h1>DELETE TEAM</h1>
+            </div>
+
+        }
+        else
+        {
+            <div class="col-md-6">
+            </div>
+
+            <div class="col-md-6">
+            </div>
+        }
+        <div class="col-md-4">
+            <h3>Team Members:</h3>
+            <ul class="h4">
+            @foreach (var members in Model.Players)
+            {
+                var nickname = "";
+                foreach (var item in ViewBag.SummonerInfos)
+                {
+                    if(members.ConnectedSummonerEmail == item.ConectedAccount) {
+                        if(Model.TeamLeader.ConnectedSummonerEmail == item.ConectedAccount) { nickname = item.name +" ♔ "; }else { nickname = item.name; }
+
+                    }
+                }
+             <li>@nickname</li>
+            }
+            </ul>
         </div>
-        <div class="col-md-6">
-            <form asp-action="EditTeam">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group hidden">
-                    <input asp-for="Id" class="form-control hidden" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="Name" class="control-label"></label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Description" class="control-label"></label>
-                    <input asp-for="Description" class="form-control" />
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Zatwierdz zmiany" class="btn btn-success" />
-                </div>
-            </form>
-        </div>
-        <div class="col-md-4 ">
-            <form asp-action="EditTeam">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group hidden">
-                    <input asp-for="Id" class="form-control hidden" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="Name" class="control-label"></label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Description" class="control-label"></label>
-                    <input asp-for="Description" class="form-control" />
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Zatwierdz zmiany" class="btn btn-success" />
-                </div>
-            </form>
-        </div>
-        <div class="col-md-4" style="text-align:center">
+
+        <div class="col-md-4" >
 
             <style>
                 #chart_container {
                     border: 5px solid #ddd;
                     padding: 2px;
+                    width:300px;
+                    height:300px;
                     border-radius: 25px;
-                    text-align:center;
                 }
-
             </style>
-                <div id="chart_container">
-                    <canvas id="bar_chart"></canvas>
+            <div id="chart_container" class="center-block">
+                <canvas id="bar_chart"></canvas>
             </div>
         </div>
-            <div class="col-md-4">
-                <h3>Points: <b>@Model.Points</b></h3>
-                Recent Tournaments<br />
-                <ul>
-                    @await Component.InvokeAsync("RecentTournamentsPlayed", new { teamid = Model.Id })
-                </ul>
-            </div>
 
-            <div class="col-md-12">
-                <h3>Team match History</h3>
-                @{
-                    int? tournamentid = null;
-                }
-                @await Component.InvokeAsync("RecentMatches", new { tournamentId = tournamentid, teamId = Model.Id })
-            </div>
+        <div class="col-md-4">
+            <h3>Points: <b>@Model.Points</b></h3>
+            Recent Tournaments<br />
+            <ul>
+                @await Component.InvokeAsync("RecentTournamentsPlayed", new { teamid = Model.Id })
+            </ul>
         </div>
+
+        <div class="col-md-12">
+            <h3>Team match History</h3>
+            @{
+                int? tournamentid = null;
+            }
+            @await Component.InvokeAsync("RecentMatches", new { tournamentId = tournamentid, teamId = Model.Id })
+        </div>
+
+    </div>
 
 <h3>TODO:</h3>
 <h4>

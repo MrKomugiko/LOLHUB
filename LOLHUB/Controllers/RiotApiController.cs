@@ -53,7 +53,7 @@ namespace LOLHUB.Controllers
                     .Where(p => p.ConnectedSummonerEmail == LoggedUserEmail)
                     .FirstOrDefault();
 
-            if (checkPlayer == null)
+            if (checkPlayer.ConectedSummoners == null)
             {
                 if (TempData["SummonerDontExists"] != null)
                 {

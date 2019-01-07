@@ -41,21 +41,18 @@ namespace LOLHUB
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-            .ConfigureAppConfiguration((ctx, builder) =>
-                {
-                var keyVaultEndpoint = GetKeyVaultEndpoint();
-                if (!string.IsNullOrEmpty(keyVaultEndpoint))
-                    {
-                        var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                        var keyVaultClient = new KeyVaultClient(
-                        new KeyVaultClient.AuthenticationCallback(
-                            azureServiceTokenProvider.KeyVaultTokenCallback));
-                            builder.AddAzureKeyVault(keyVaultEndpoint, keyVaultClient, new DefaultKeyVaultSecretManager());
-                    }
-                })
+            .ConfigureAppConfiguration((context, config) =>
+            {
+                var builtConfig = config.Build();
+
+                config.AddAzureKeyVault(
+                    $"https://{builtConfig["Vault"]}.vault.azure.net/",
+                    builtConfig["ClientId"],
+                    builtConfig["ClientSecret"]);
+            })
             .UseStartup<Startup>()
             .Build();
 
-        private static string GetKeyVaultEndpoint() => "https://lolhaven-dev-key-vault.vault.azure.net";
+        //private static string GetKeyVaultEndpoint() => "https://lolhaven-dev-key-vault.vault.azure.net";
     }
 }

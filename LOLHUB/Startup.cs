@@ -76,6 +76,7 @@ namespace LOLHUB
             services.AddSingleton<IGenerateCode, GenerateCode>();
 
             services.AddTransient<IEmailSender, EmailSender>();
+        
             services.AddMvc(options =>
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
@@ -107,10 +108,25 @@ namespace LOLHUB
                 app.UseExceptionHandler("/Home/Error");
             }
             var options = new RewriteOptions().AddRedirectToHttps();
-      
-            //app.UseRewriter(options);
-            app.UseStaticFiles();
 
+
+           // Registered before static files to always set header
+            app.UseHsts(hsts => hsts.MaxAge(365).IncludeSubdomains());
+            app.UseXContentTypeOptions();
+            app.UseReferrerPolicy(opts => opts.NoReferrer());
+            app.UseXXssProtection(option => option.EnabledWithBlockMode());
+            app.UseXfo(option => option.Deny());
+
+            app.UseCsp(opts => opts
+                .BlockAllMixedContent()
+                //.StyleSources(s => s.Self())
+                .FontSources(s => s.Self())
+                .FormActions(s => s.Self())
+                .FrameAncestors(s => s.Self())
+                .ImageSources(s => s.Self())
+            // .ScriptSources(s => s.CustomSources("self","*.jquery.com", "*.bootstrapcdn.com", "*.cloudflare.com"))
+            );
+            app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
@@ -128,7 +144,6 @@ namespace LOLHUB
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
         }
     }
 }

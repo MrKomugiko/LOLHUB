@@ -52,7 +52,5 @@ namespace LOLHUB
             })
             .UseStartup<Startup>()
             .Build();
-
-        //private static string GetKeyVaultEndpoint() => "https://lolhaven-dev-key-vault.vault.azure.net";
     }
 }

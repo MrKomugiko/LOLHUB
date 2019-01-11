@@ -54,7 +54,7 @@
                 <th>Team Name</th>
                 <th>Team Leader</th>
                 <th>Members Count</th>
-                <th>W.I.P.</th>
+                <th>Team Profile</th>
             </tr>
 
             @foreach (var item in Model)
@@ -64,7 +64,7 @@
                     <td>@item.Name</td>
                     <td>@item.TeamLeader.ConectedSummoners.name</td>
                     <td>@item.Players.Count()</td>
-                    <td>  <a asp-controller="Team" asp-action="DetailNew" asp-route-id="@item.Id">[Team Members/Team Details]</a></td>
+                    <td>  <a asp-controller="Team" asp-action="Manage" asp-route-id="@item.Id">[profile]</a></td>
                 </tr>
 
             }

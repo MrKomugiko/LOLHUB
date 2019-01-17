@@ -70,7 +70,7 @@ namespace LOLHUB
             services.AddTransient<IDrabinkaRepository, DrabinkaRepository>();
             services.AddTransient<IPlaysHistoryRepository, PlaysHistoryRepository>();
 
-            services.AddSingleton<IRiotApiService, RiotApiService>();
+            services.AddTransient<IRiotApiService, RiotApiService>();
             services.AddSingleton<IGetSummonerInfo, GetSummonerInfo>();
             services.AddSingleton<IGetMatchData, GetMatchData>();
             services.AddSingleton<IGenerateCode, GenerateCode>();
@@ -110,7 +110,6 @@ namespace LOLHUB
             var options = new RewriteOptions().AddRedirectToHttps();
 
 
-           // Registered before static files to always set header
             app.UseHsts(hsts => hsts.MaxAge(365).IncludeSubdomains());
             app.UseXContentTypeOptions();
             app.UseReferrerPolicy(opts => opts.NoReferrer());
@@ -122,9 +121,10 @@ namespace LOLHUB
                 //.StyleSources(s => s.Self())
                 .FontSources(s => s.Self())
                 .FormActions(s => s.Self())
+                .FormActions(s => s.CustomSources("https://www.facebook.com/"))
                 .FrameAncestors(s => s.Self())
                 .ImageSources(s => s.Self())
-            // .ScriptSources(s => s.CustomSources("self","*.jquery.com", "*.bootstrapcdn.com", "*.cloudflare.com"))
+               // .ScriptSources(s => s.CustomSources("self","*.jquery.com", "*.bootstrapcdn.com", "*.cloudflare.com"))
             );
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions

@@ -10,5 +10,7 @@ namespace RiotApi.Services
         Task<MatchDto> GetMatchDataBasedOnId(int matchId);
 
         Task<string> GetVerificationCodeBasedOnId(int id);
+
+        MatchDto CreateAndReturnMatchDataBasedOnId(int matchId, int team1Id, int team2Id);
     }
 }

@@ -42,7 +42,6 @@ namespace LOLHUB.Services
             team.Players.Add(teamLeader);
             _context.SaveChanges();
         }
-
         public void EditTeam(Team TeamData)
         {
             Team dbEntry = _context.Teams.Where(t => t.Id == TeamData.Id).First();
@@ -52,7 +51,21 @@ namespace LOLHUB.Services
             _context.Teams.Update(dbEntry);
             _context.SaveChanges();
         }
-
+        public void DeleteTeam(int id)
+        {
+            //czyszczenie powiązań miedzy graczami będącymi członkami drużyny
+            List<Player> playerEntry = _context.Players.Where(p => p.MemberOfTeamId == id).ToList();
+            foreach(var player in playerEntry)
+            {
+                player.MemberOfTeamId = null;
+            }
+            _context.Players.UpdateRange(playerEntry);
+            _context.SaveChanges();
+            //usunięcie drużyny
+            Team teamEntry = _context.Teams.Where(t => t.Id == id).First();
+            _context.Teams.Remove(teamEntry);
+            _context.SaveChanges();
+        }
         public void JoinTeam(int teamId)
         {
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
@@ -65,7 +78,6 @@ namespace LOLHUB.Services
             _context.Teams.Update(teamEntry);
             _context.SaveChanges();
         }
-
         public bool CheckIfUserAlreadyIsTeamLeader()
         {
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
@@ -115,7 +127,6 @@ namespace LOLHUB.Services
             else
                 return false;
         }
- 
         public void PrzydzielPunkty(int teamId, int punkty)
         {
             Team teamEntry = _context.Teams.Where(t => t.Id == teamId).First();
@@ -146,7 +157,19 @@ namespace LOLHUB.Services
             _context.Teams.Update(teamEntry);
             _context.SaveChanges();
         }
-
-
+        public void ChangeTeamLeader(int id, int currentLeader, int newLeader)
+        {
+            Team teamEntry = _context.Teams.Where(t => t.Id == id).First();
+            teamEntry.TeamLeader = _context.Players.Where(p=>p.Id == newLeader).First();
+            _context.SaveChanges();
+        }
+        public bool CheckIfCorrect(int id, string check)
+        {
+            if ((_context.Teams.Where(t => t.Id == id).First().Name == check))
+            {
+                return true;
+            }   
+            return false;
+        }
     }
 }

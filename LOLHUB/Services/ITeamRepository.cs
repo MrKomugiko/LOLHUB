@@ -29,5 +29,8 @@ namespace LOLHUB.Services
         void UploadTeamParticipate(int teamId);
 
         void SaveWinInTournament(int teamId);
+        void ChangeTeamLeader(int id, int currentLeader, int newLeader);
+        bool CheckIfCorrect(int id, string check);
+        void DeleteTeam(int id);
     }
 }

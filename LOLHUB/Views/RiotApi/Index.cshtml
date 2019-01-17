@@ -164,12 +164,12 @@
                     var chart = new Chart(ctx, {
                         type: 'doughnut',
                         data: {
-                            labels: ["Lose", "Win", "Total"],
+                            labels: ["Lose", "Win"],
                             datasets: [{
                                 label: "Win/Lose Compare",
-                                backgroundColor: ["rgba(255, 99, 132,.5)", "rgba(54, 162, 235,.5)", "rgba(192,192,192,.5)"],
-                                borderColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)", "rgb(192, 192, 192)"],
-                                data: [lose, win, total]
+                                backgroundColor: ["rgba(255, 99, 132,.5)", "rgba(54, 162, 235,.5)"],
+                                borderColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)"],
+                                data: [lose, win]
                             }]
                         },
                         options: {

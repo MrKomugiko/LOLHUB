@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using LOLHUB.Models;
 using LOLHUB.Models.AccountViewModels;
 using LOLHUB.Services;
+using RiotApi.Models;
 
 namespace LOLHUB.Controllers
 {
@@ -25,12 +26,14 @@ namespace LOLHUB.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
         private readonly IPlayerRepository _playerRepository;
+        private readonly ISummonerInfoRepository _summonerRepository;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             IPlayerRepository playerRepository,
+            ISummonerInfoRepository summonerRepository,
             ILogger<AccountController> logger)
         {
             _userManager = userManager;
@@ -38,6 +41,7 @@ namespace LOLHUB.Controllers
             _emailSender = emailSender;
             _logger = logger;
             _playerRepository = playerRepository;
+            _summonerRepository = summonerRepository;
         }
 
         [TempData]
@@ -228,29 +232,70 @@ namespace LOLHUB.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                ApplicationUser user;
+                if (model.CreateTestAccount == true)
+                {
+                    user = new ApplicationUser { UserName = model.Email, Email = model.Email, EmailConfirmed = true };
+                }
+                else
+                {
+                    user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                }
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
-
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
-                    await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-                    //await _signInManager.SignInAsync(user, isPersistent: false); //nie zaloguje się po rejestracji bez potwierdzenia maila
-
-                    await _userManager.AddToRoleAsync(user, "Member");
-                    _logger.LogInformation("User created a new account with password.");
-
-                    //nowo zarejestrowany użytkownik zostanie przypisany modelowi Player z przypisanym emailem
-                    Player player = new Player
+                    if (model.CreateTestAccount == true)
                     {
-                        ConectedSummoners = null,
-                        FirstName = null,
-                        ConnectedSummonerEmail = user.Email
-                    };
-                    _playerRepository.CreateBasicPlayer(player);
-                   
+                        _logger.LogInformation("Create random generated user for tests.");
+                        await _userManager.AddToRoleAsync(user, "Member");
+                        _logger.LogInformation("User created a new test account.");
+
+                        string testUserName = "TestUser" + (_playerRepository.Players.Count() + 1);
+                        SummonerInfoModel testSummoner = new SummonerInfoModel
+                        {
+                            profileIconId = 1,
+                            name = testUserName,
+                            summonerLevel = 100,
+                            accountId = 1000 + (_playerRepository.Players.Count()+1),
+                            id = 1000 + (_playerRepository.Players.Count()+1),
+                            revisionDate = 0,
+                            IsVerified = true,
+                            ConectedAccount = model.Email,
+                            AddTime = DateTime.Now,
+                            ConnectedTime = DateTime.Now,
+                            LockedToAssign = true
+                        };
+                        _summonerRepository.SaveSummonerInfo(testSummoner);
+
+                        Player testPlayer = new Player
+                        {
+                            ConectedSummoners = _summonerRepository.SummonerInfos.Where(s => s.name == testUserName).FirstOrDefault(),
+                            FirstName = testUserName,
+                            ConnectedSummonerEmail = user.Email
+                        };
+                        _playerRepository.CreateBasicPlayer(testPlayer);
+                    }
+                    else
+                    {
+                        _logger.LogInformation("User created a new account with password.");
+
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
+                        await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+                        //await _signInManager.SignInAsync(user, isPersistent: false); //nie zaloguje się po rejestracji bez potwierdzenia maila
+
+                        await _userManager.AddToRoleAsync(user, "Member");
+                        _logger.LogInformation("User created a new account with password.");
+
+                        //nowo zarejestrowany użytkownik zostanie przypisany modelowi Player z przypisanym emailem
+                        Player player = new Player
+                        {
+                            ConectedSummoners = null,
+                            FirstName = null,
+                            ConnectedSummonerEmail = user.Email
+                        };
+                        _playerRepository.CreateBasicPlayer(player);
+                    }
                     return RedirectToLocal(returnUrl);
                 }
                 AddErrors(result);

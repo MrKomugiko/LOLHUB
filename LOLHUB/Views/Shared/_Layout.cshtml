@@ -85,6 +85,10 @@
         {
             <div class="alert alert-success mt-1 text-center">@TempData["message"]</div>
         }
+        @if (TempData["error"] != null)
+        {
+            <div class="alert alert-danger mt-1 text-center">@TempData["error"]</div>
+        }
         @if (TempData["SummonnerIsAlreadyAssigned"] != null)
         {
             <div class="alert alert-danger mt-1 text-center">@TempData["SummonnerIsAlreadyAssigned"]</div>

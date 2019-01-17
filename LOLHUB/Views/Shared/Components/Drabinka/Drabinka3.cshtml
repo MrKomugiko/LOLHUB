@@ -100,7 +100,7 @@
                 <td>
                     <div class="btn-toolbar mb-4" role="toolbar" aria-label="Toolbar with button groups">
                         <form asp-controller="RiotApi" asp-action="GetMatchData"
-                              asp-route-url="url"
+                              asp-route-url="@item.TournamentCode"
                               asp-route-id="@item.Id"
                               asp-route-team1Id=" @item.Team1_Id"
                               asp-route-team2Id="@item.Team2_Id"
@@ -109,11 +109,11 @@
                               method="post">
 
                             <div class="btn-group">
-                                <button type="submit" class="btn btn-warning" name="submit">Wyszukaj</button>
+                                <button type="submit" class="btn btn-warning" name="submit">Aktualizuj</button>
                             </div>
-                            <div class="input-group">
+                            @*<div class="input-group">
                                 <input type="text" name="url" class="form-control" placeholder="wprowadź: swoj kod turniejowy" aria-describedby="btnGroupAddon" size="15" maxlength="79" />
-                            </div>
+                            </div>*@
                         </form>
                     </div>
                 </td>

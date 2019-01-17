@@ -53,7 +53,7 @@ namespace LOLHUB.Controllers
                     .Where(p => p.ConnectedSummonerEmail == LoggedUserEmail)
                     .FirstOrDefault();
 
-            if (checkPlayer.ConectedSummoners == null)
+            if (checkPlayer.ConectedSummoners == null )
             {
                 if (TempData["SummonerDontExists"] != null)
                 {
@@ -99,6 +99,8 @@ namespace LOLHUB.Controllers
 
                 return View(model);
             }
+
+
         }
 
         [Authorize(Roles = "Admin")]
@@ -191,14 +193,24 @@ namespace LOLHUB.Controllers
 
             if (_matchRepository.Matches.Where(m => m.gameid == matchId).Any())
             {
+                // Mecz o tym id znajduje się już w bazie.
                 return RedirectToAction("Index");
+            }
+
+            MatchDto result = null;
+            // mecze testowe przyjmują wartość ID nie większą niż 2k, reszta to dane z RiotGamesAPI
+            if (matchId > 1000 && matchId < 20000)
+            {
+                // Wygenerowanie losowych wartości dla meczu x, z druzyna 1 i 2
+                result = _riotApiService.CreateAndReturnMatchDataBasedOnId(matchId, team1Id, team2Id);
             }
             else
             {
-                var result = await _riotApiService.GetMatchDataBasedOnId(Int32.Parse(cuttedUrl));
-                bool ranked = true;
-                if (ranked == true)
-                {
+                // pobranie danych z RiotGamesAPI 
+                result = await _riotApiService.GetMatchDataBasedOnId(Int32.Parse(cuttedUrl));
+            }
+                    // musze to wrzucić do interfejsu, potem przemapowane dane {tylko intersujące nas dane} są zapisywane w bazie
+                    // mimo to i tak potem jeszcze rozdzielam je dla drużyn i graczy 
                     MatchSelectedData newMatch5v5 = new MatchSelectedData
                     {
                         gameid = result.gameid,
@@ -241,11 +253,10 @@ namespace LOLHUB.Controllers
                             }
                         }).ToList()
                     };
+                    //zapisywanie danych pobranych z RiotAPI do lokalnej bazy, musze się zastanowić czy to jest mi wogole potrzebne na stałe w bazie czy nie lepiej cały czas pytać o to api
+                    _matchRepository.SaveMatch(newMatch5v5);
 
-                    _matchRepository.SaveMatch(newMatch5v5); // nie wiem czy to mi jeszcze potrzebne skoro mam juz przemodelowane statystyki dla graczy 
-
-                    // Pętla uaktualniająca base dla wszystkich 10 graczy biorących udział w grze
-
+                    // Pętla uaktualniająca baze dla wszystkich graczy biorących udział w grze
                     for (int INDEX = 1; INDEX <= liczbaGraczy; INDEX++)
                     {
                         long SummonerId = newMatch5v5.participantIdentities.Where(p => p.participantId == INDEX)
@@ -260,8 +271,6 @@ namespace LOLHUB.Controllers
 
                         GameStatistic gameStatistic = new GameStatistic
                         {
-                            //GameStatisticId = ((newMatch5v5.Id) * 1000000) + INDEX,
-
                             MatchSelectedData = _matchRepository.Matches
                                 .Where(m => m.Id == newMatch5v5.Id).First(),
 
@@ -315,14 +324,11 @@ namespace LOLHUB.Controllers
 
                             DatePlayed = DateTime.Now
                         };
+                        //iteracyjne dodawanie statystyk dla każdego gracza biorącego udział w meczu, posiadającego konto w LOLHaven
                         _matchRepository.AddStatsForEachPlayers(gameStatistic);
                     }
-                   
+                    //Przekierowanie do akcji aktualizującej statystyki
                     return RedirectToAction("UploadGameStats","Tournament", new { id,team1Id,team2Id,TournamentId,TournamentLevel });
-                }
-                // return Ok(newMatch5v5);
-                return Ok(result);
-            }
         }
 
         [HttpPost]

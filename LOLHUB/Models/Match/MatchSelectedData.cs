@@ -21,7 +21,6 @@ namespace LOLHUB.Models.Match
         public string gameMode { get; set; }
         public List<ParticipantIdentity> participantIdentities { get; set; }
         public List<Participant> participants { get; set; }
-        public List<Drabinka> drabinkaId { get; set; }
         public long gameDuration { get; set; }
     }
 }

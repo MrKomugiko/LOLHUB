@@ -140,5 +140,28 @@ namespace LOLHUB.Controllers
             }
             return RedirectToAction("Manage");
         }
+        [Authorize]
+        [HttpPost]
+        public IActionResult ChangeTeamLeader(int id, int currentLeader, int newLeader)
+        {
+            _teamRepository.ChangeTeamLeader(id, currentLeader, newLeader);
+            return RedirectToAction("Manage", new { id });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult DeleteTeam(int id,string checkspelling)
+        {
+            if (_teamRepository.CheckIfCorrect(id, checkspelling))
+            {
+                _teamRepository.DeleteTeam(id);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                TempData["error"] = "Nazwa Drużyny nie zgadza się. Drużyna nie została usunięta.";
+                return RedirectToAction("Manage", new { id });
+            }
+        }
     }
 }

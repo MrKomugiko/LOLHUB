@@ -160,6 +160,22 @@ namespace LOLHUB.Controllers
                         }
                         pomin:
 
+                        var Prepared = PreparedGames
+                            .Where(p => (p.Team1 == teams.Where(t => t.Id == team1).First().Name || p.Team1 == teams.Where(t => t.Id == team2).First().Name) &&
+                                        (p.Team2 == teams.Where(t => t.Id == team1).First().Name || p.Team2 == teams.Where(t => t.Id == team2).First().Name))
+                            .Any();
+
+                        int tournamentCode;
+
+                        if (Prepared == false) { tournamentCode = (_drabinkaCtx.Drabinki.Count() + 1001); }
+                        else
+                        {
+                            tournamentCode = PreparedGames
+                         .Where(p => (p.Team1 == teams.Where(t => t.Id == team1).First().Name || p.Team1 == teams.Where(t => t.Id == team2).First().Name) &&
+                                     (p.Team2 == teams.Where(t => t.Id == team1).First().Name || p.Team2 == teams.Where(t => t.Id == team2).First().Name))
+                         .First().Id;
+                        }
+
                         Drabinka nowaDrabinka = new Drabinka()
                         {
 
@@ -173,10 +189,7 @@ namespace LOLHUB.Controllers
                             Team2_Name = teams.Where(t => t.Id == team2).First().Name,
                             TeamLeader2_Email = teams.Where(t => t.Id == team2).First().TeamLeader.ConnectedSummonerEmail,
 
-                            TournamentCode = PreparedGames
-                            .Where(p => (p.Team1 == teams.Where(t => t.Id == team1).First().Name || p.Team1 == teams.Where(t => t.Id == team2).First().Name) && 
-                                        (p.Team2 == teams.Where(t => t.Id == team1).First().Name || p.Team2 == teams.Where(t => t.Id == team2).First().Name))
-                            .First().Id,
+                            TournamentCode = tournamentCode,
 
                             Team1_Win = null,
                             Team2_Win = null
@@ -243,6 +256,22 @@ namespace LOLHUB.Controllers
                             team2 = TeamWinners[team2_index];
                         }
 
+                        var Prepared = PreparedGames
+                           .Where(p => (p.Team1 == teams.Where(t => t.Id == team1).First().Name || p.Team1 == teams.Where(t => t.Id == team2).First().Name) &&
+                                       (p.Team2 == teams.Where(t => t.Id == team1).First().Name || p.Team2 == teams.Where(t => t.Id == team2).First().Name))
+                           .Any();
+
+                        int tournamentCode;
+
+                        if (Prepared == false) { tournamentCode = (_drabinkaCtx.Drabinki.Count() + 1001); }
+                        else
+                        {
+                            tournamentCode = PreparedGames
+                         .Where(p => (p.Team1 == teams.Where(t => t.Id == team1).First().Name || p.Team1 == teams.Where(t => t.Id == team2).First().Name) &&
+                                     (p.Team2 == teams.Where(t => t.Id == team1).First().Name || p.Team2 == teams.Where(t => t.Id == team2).First().Name))
+                         .First().Id;
+                        }
+
                         Drabinka nowaDrabinka = new Drabinka()
                         {
                             Tournament_Id = id,
@@ -256,10 +285,7 @@ namespace LOLHUB.Controllers
                             Team2_Name = teams.Where(t => t.Id == team2).First().Name,
                             TeamLeader2_Email = teams.Where(t => t.Id == team2).First().TeamLeader.ConnectedSummonerEmail,
 
-                            TournamentCode = PreparedGames
-                            .Where(p => (p.Team1 == teams.Where(t => t.Id == team1).First().Name || p.Team1 == teams.Where(t => t.Id == team2).First().Name) &&
-                                        (p.Team2 == teams.Where(t => t.Id == team1).First().Name || p.Team2 == teams.Where(t => t.Id == team2).First().Name))
-                            .First().Id,
+                            TournamentCode = tournamentCode,
 
                             Team1_Win = null,
                             Team2_Win = null
@@ -326,6 +352,22 @@ namespace LOLHUB.Controllers
                             team2 = TeamWinners[team2_index];
                         }
 
+                        var Prepared = PreparedGames
+                           .Where(p => (p.Team1 == teams.Where(t => t.Id == team1).First().Name || p.Team1 == teams.Where(t => t.Id == team2).First().Name) &&
+                                       (p.Team2 == teams.Where(t => t.Id == team1).First().Name || p.Team2 == teams.Where(t => t.Id == team2).First().Name))
+                           .Any();
+
+                        int tournamentCode;
+
+                        if (Prepared == false) { tournamentCode = (_drabinkaCtx.Drabinki.Count() + 1001); }
+                        else
+                        {
+                            tournamentCode = PreparedGames
+                         .Where(p => (p.Team1 == teams.Where(t => t.Id == team1).First().Name || p.Team1 == teams.Where(t => t.Id == team2).First().Name) &&
+                                     (p.Team2 == teams.Where(t => t.Id == team1).First().Name || p.Team2 == teams.Where(t => t.Id == team2).First().Name))
+                         .First().Id;
+                        }
+
                         Drabinka nowaDrabinka = new Drabinka()
                         {
 
@@ -340,10 +382,7 @@ namespace LOLHUB.Controllers
                             Team2_Name = teams.Where(t => t.Id == team2).First().Name,
                             TeamLeader2_Email = teams.Where(t => t.Id == team2).First().TeamLeader.ConnectedSummonerEmail,
 
-                            TournamentCode = PreparedGames
-                            .Where(p => (p.Team1 == teams.Where(t => t.Id == team1).First().Name || p.Team1 == teams.Where(t => t.Id == team2).First().Name) &&
-                                        (p.Team2 == teams.Where(t => t.Id == team1).First().Name || p.Team2 == teams.Where(t => t.Id == team2).First().Name))
-                            .First().Id,
+                            TournamentCode = tournamentCode,
 
                             Team1_Win = null,
                             Team2_Win = null

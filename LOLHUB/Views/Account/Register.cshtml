@@ -26,6 +26,14 @@
                 <input asp-for="ConfirmPassword" class="form-control" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label asp-for="CreateTestAccount">
+                        <input asp-for="CreateTestAccount" />
+                        @Html.DisplayNameFor(m => m.CreateTestAccount)
+                    </label>
+                </div>
+            </div>
             <button type="submit" class="btn btn-default">Register</button>
         </form>
     </div>

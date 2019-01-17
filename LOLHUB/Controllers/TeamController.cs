@@ -163,5 +163,28 @@ namespace LOLHUB.Controllers
                 return RedirectToAction("Manage", new { id });
             }
         }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult LeaveTeam(int id, string user)
+        {
+            if(_teamRepository.LeaveTeam(id,user) == false)
+            {
+                TempData["error"] = "Będąc liderem drużyny, nie możesz jej opuścić, zmień lidera albo usuń drużynę.";
+                return RedirectToAction("Manage", new { id });
+            }
+                TempData["error"] = "Pomyślnie opuściłeś drużynę.";
+                return RedirectToAction("Index");
+
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult LeaveTournament(int id, int tournamentId)
+        {
+                _teamRepository.LeaveTournament(id, tournamentId);
+                return RedirectToAction("Index","Tournament");
+        }
+
     }
 }

@@ -10,20 +10,33 @@
     var teamId = "";
     if (Model == null)
     {
-        teamName = "Not In Team";
+
     }
     else
     {
         teamName = Model.Name;
         teamId = Model.Id.ToString();
-    }
-}
-@if (SignInManager.IsSignedIn(User))
-{
-            <li class="nav-item">
-                <a class="nav-link" asp-area="" asp-controller="Team" asp-action="Manage" asp-route-teamId="@teamId">Your Team:[@teamName]</a>
+
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <text style="font-weight:900"> [@teamName] </text>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" asp-area="" asp-controller="Team" asp-action="Manage" asp-route-teamId="@teamId">Profile</a>
+                    <div class="dropdown-divider"></div>
+                          <form asp-controller="Team"
+                                asp-action="LeaveTeam"
+                                asp-route-id="@teamId"
+                                asp-route-user="@UserManager.GetUserName(User)"
+                                method="post">
+                                <button class="dropdown-item" type="submit">
+                                    Leave Team
+                                </button>
+                         </form>
+                </div>
             </li>
-}
-else
-{
+        }
+    }
 }

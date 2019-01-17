@@ -32,5 +32,7 @@ namespace LOLHUB.Services
         void ChangeTeamLeader(int id, int currentLeader, int newLeader);
         bool CheckIfCorrect(int id, string check);
         void DeleteTeam(int id);
+        bool LeaveTeam(int id, string user);
+        void LeaveTournament(int id, int tournamentId);
     }
 }

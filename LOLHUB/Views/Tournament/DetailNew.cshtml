@@ -16,144 +16,167 @@
 </nav>
 <div class="tab-content" id="nav-tabContent">
     <div class="tab-pane fade show active" id="nav-szczegoly" role="tabpanel" aria-labelledby="nav-szczegoly-tab">
-
-        <h3>Szczegóły turnieju  @ViewBag.TournamentId # </h3>
-        @{
-            int TournamentId = @ViewBag.TournamentId;
-         }
-        
-        <p>
-            Turniej rozpoczyna się @foreach (var item in Model)
-            {
-                <text> @item.Tournament.StartDate.ToString();</text>
-
-                DateTime czasRozpoczecia = @item.Tournament.StartDate;
-                DateTime czasAktualny = DateTime.Now;
-                var pozostalyCzas = czasRozpoczecia - czasAktualny;
+        <div class="col-md-12">
+            <div class="col-md-2 text-left">
                 <br />
-                <text> Do rozpoczęcia pozostało @Math.Round(pozostalyCzas.TotalHours) godzin </text>
-                break;
-            }
-        </p>
+                <form asp-controller="Team" asp-action="LeaveTournament"
+                      asp-route-check="checkspelling"
+                      method="post">
+                    <button type="submit" class="btn btn-success"><b>[ Invite W.I.P ]</b></button>
+                </form>
+            </div>
+                <div class="col-md-8 text-center ">
+                    <br />
+                    <h3>Szczegóły turnieju  @ViewBag.TournamentId # </h3>
+                    @{
+                        int TournamentId = @ViewBag.TournamentId;
+                    }
 
-        <h3>Recent Matches</h3>
-        <div id="accordion">
-            @await Component.InvokeAsync("RecentMatches", new { tournamentId = TournamentId })
+                    <p>
+                        Turniej rozpoczyna się @foreach (var item in Model)
+                        {
+                            <text> @item.Tournament.StartDate.ToString();</text>
+
+                            DateTime czasRozpoczecia = @item.Tournament.StartDate;
+                            DateTime czasAktualny = DateTime.Now;
+                            var pozostalyCzas = czasRozpoczecia - czasAktualny;
+                            <br />
+                            <text> Do rozpoczęcia pozostało @Math.Round(pozostalyCzas.TotalHours) godzin </text>
+                            break;
+                        }
+                    </p>
+                </div>
+                <div class="col-md-2 text-right">
+                    @if (Model.Select(t=>t.TeamLeader.ConnectedSummonerEmail).ToList().Contains(User.Identity.Name) || User.IsInRole("Admin") || User.IsInRole("Moderator")) // tylko liderzy swoich druzyn moga dodac wynik meczu
+                    {
+                        <br />
+                        <form asp-controller="Team" asp-action="LeaveTournament"
+                              asp-route-id="@Model.Select(t => t.Id).Single()"
+                              asp-route-tournamentId="@Model.Select(t=>t.TournamentId).Single()"
+                              method="post">
+                            <button type="submit" class="btn btn-danger"><b>[ Leave ]</b></button>
+                        </form>
+                    }
+                    </div>
+                <div class="col-md-12 text-center">
+                    <h3>Recent Matches</h3>
+                    <div id="accordion">
+                        @await Component.InvokeAsync("RecentMatches", new { tournamentId = TournamentId })
+                    </div>
+                </div>
+            </div>
+
         </div>
+        <div class="tab-pane fade " id="nav-druzyny" role="tabpanel" aria-labelledby="nav-druzyny-tab">
 
-
-
-
-    </div>
-    <div class="tab-pane fade" id="nav-druzyny" role="tabpanel" aria-labelledby="nav-druzyny-tab">
-
-        <h3>Lista uczestniczących drużyn: </h3>
-        <table class="table table-hover table-striped">
-            <tr>
-                <th>Team ID</th>
-                <th>Team Name</th>
-                <th>Team Leader</th>
-                <th>Members Count</th>
-                <th>Team Profile</th>
-            </tr>
-
-            @foreach (var item in Model)
-            {
+            <h3>Lista uczestniczących drużyn: </h3>
+            <table class="table table-hover table-striped">
                 <tr>
-                    <td>@item.Id</td>
-                    <td>@item.Name</td>
-                    <td>@item.TeamLeader.ConectedSummoners.name</td>
-                    <td>@item.Players.Count()</td>
-                    <td>  <a asp-controller="Team" asp-action="Manage" asp-route-id="@item.Id">[profile]</a></td>
+                    <th>Team ID</th>
+                    <th>Team Name</th>
+                    <th>Team Leader</th>
+                    <th>Members Count</th>
+                    <th>Team Profile</th>
                 </tr>
 
-            }
-        </table>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.TeamLeader.ConectedSummoners.name</td>
+                        <td>@item.Players.Count()</td>
+                        <td>  <a asp-controller="Team" asp-action="Manage" asp-route-id="@item.Id">[profile]</a></td>
+                    </tr>
 
-    </div>
-    <div class="tab-pane fade" id="nav-cwiercfinaly" role="tabpanel" aria-labelledby="nav-cwiercfinaly-tab">
+                }
+            </table>
 
-        @await Component.InvokeAsync("Drabinka", new { id = TournamentId, level = 1 })
- 
+        </div>
+        <div class="tab-pane fade" id="nav-cwiercfinaly" role="tabpanel" aria-labelledby="nav-cwiercfinaly-tab">
 
-    </div>
-    <div class="tab-pane fade" id="nav-polfinaly" role="tabpanel" aria-labelledby="nav-polfinaly-tab">
-
-
-        <h3>Półfinaly</h3>
-        @await Component.InvokeAsync("Drabinka", new { id = TournamentId, level = 2 })
-
-
-    </div>
-    <div class="tab-pane fade" id="nav-finaly" role="tabpanel" aria-labelledby="nav-finaly-tab">
-
-        <h3>Finały</h3>
-        @await Component.InvokeAsync("Drabinka", new { id = TournamentId, level = 3 })
+            <h3>Cwiercfinaly</h3>
+            @await Component.InvokeAsync("Drabinka", new { id = TournamentId, level = 1 })
 
 
-    </div>
-    <div class="tab-pane fade" id="nav-podsumowanie" role="tabpanel" aria-labelledby="nav-podsumowanie-tab">
+        </div>
+        <div class="tab-pane fade" id="nav-polfinaly" role="tabpanel" aria-labelledby="nav-polfinaly-tab">
 
-        <h3>Podsumowanie</h3>
-        @await Component.InvokeAsync("AktualnyRankingTurnieju", new { id = TournamentId })
 
-    </div>
+            <h3>Półfinaly</h3>
+            @await Component.InvokeAsync("Drabinka", new { id = TournamentId, level = 2 })
+
+
+        </div>
+        <div class="tab-pane fade" id="nav-finaly" role="tabpanel" aria-labelledby="nav-finaly-tab">
+
+            <h3>Finały</h3>
+            @await Component.InvokeAsync("Drabinka", new { id = TournamentId, level = 3 })
+
+
+        </div>
+        <div class="tab-pane fade" id="nav-podsumowanie" role="tabpanel" aria-labelledby="nav-podsumowanie-tab">
+
+            <h3>Podsumowanie</h3>
+            @await Component.InvokeAsync("AktualnyRankingTurnieju", new { id = TournamentId })
+
+        </div>
         @if (User.IsInRole("Admin"))
         {
-    <div class="tab-pane fade" id="nav-administracja" role="tabpanel" aria-labelledby="nav-administracja-tab">
+            <div class="tab-pane fade" id="nav-administracja" role="tabpanel" aria-labelledby="nav-administracja-tab">
 
-        <h3>Administracja</h3>
-        <div>
-            <ul>
-                <li>
-                    <form asp-controller="Tournament" asp-action="ZmienStanTurnieju"
-                          asp-route-id="@TournamentId"
-                          asp-route-status="start"
-                          method="post">
-                        <button type="submit" class="btn btn-warning"><b>[Rozpocznij Turniej]</b></button>
-                    </form>
-                </li>
-                <li>
-                    <form asp-controller="Tournament" asp-action="ZmienStanTurnieju"
-                          asp-route-id="@TournamentId"
-                          asp-route-status="stop"
-                          method="post">
-                        <button type="submit" class="btn btn-danger"><b>[Zakończ Turniej]</b></button>
-                    </form>
-                </li>
-            </ul>
-            <ul>
-                <li>
-                    <form asp-controller="Tournament" asp-action="GenerujDrabinke"
-                          asp-route-id="@TournamentId"
-                          asp-route-level="1"
-                          method="post">
-                        <button type="submit" class="btn btn-primary"><b>[ Wygeneruj 1 grupe turniejową / Podgląd json ]</b></button>
-                    </form>
+                <h3>Administracja</h3>
+                <div>
+                    <ul>
+                        <li>
+                            <form asp-controller="Tournament" asp-action="ZmienStanTurnieju"
+                                  asp-route-id="@TournamentId"
+                                  asp-route-status="start"
+                                  method="post">
+                                <button type="submit" class="btn btn-warning"><b>[Rozpocznij Turniej]</b></button>
+                            </form>
+                        </li>
+                        <li>
+                            <form asp-controller="Tournament" asp-action="ZmienStanTurnieju"
+                                  asp-route-id="@TournamentId"
+                                  asp-route-status="stop"
+                                  method="post">
+                                <button type="submit" class="btn btn-danger"><b>[Zakończ Turniej]</b></button>
+                            </form>
+                        </li>
+                    </ul>
                     <ul>
                         <li>
                             <form asp-controller="Tournament" asp-action="GenerujDrabinke"
                                   asp-route-id="@TournamentId"
-                                  asp-route-level="2"
+                                  asp-route-level="1"
                                   method="post">
-                                <button type="submit" class="btn btn-primary"><b>[ Wygeneruj 2 grupe turniejową / Podgląd json ]</b></button>
+                                <button type="submit" class="btn btn-primary"><b>[ Wygeneruj 1 grupe turniejową / Podgląd json ]</b></button>
                             </form>
                             <ul>
                                 <li>
                                     <form asp-controller="Tournament" asp-action="GenerujDrabinke"
                                           asp-route-id="@TournamentId"
-                                          asp-route-level="3"
+                                          asp-route-level="2"
                                           method="post">
-                                        <button type="submit" class="btn btn-primary"><b>[ Wygeneruj 3 grupe turniejową / Podgląd json ]</b></button>
+                                        <button type="submit" class="btn btn-primary"><b>[ Wygeneruj 2 grupe turniejową / Podgląd json ]</b></button>
                                     </form>
+                                    <ul>
+                                        <li>
+                                            <form asp-controller="Tournament" asp-action="GenerujDrabinke"
+                                                  asp-route-id="@TournamentId"
+                                                  asp-route-level="3"
+                                                  method="post">
+                                                <button type="submit" class="btn btn-primary"><b>[ Wygeneruj 3 grupe turniejową / Podgląd json ]</b></button>
+                                            </form>
+                                        </li>
+                                    </ul>
                                 </li>
                             </ul>
                         </li>
                     </ul>
-                </li>
-            </ul>
-        </div>
+                </div>
 
-    </div>
+            </div>
         }
-</div>
+    </div>

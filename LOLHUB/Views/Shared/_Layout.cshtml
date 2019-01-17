@@ -63,8 +63,6 @@
                     <!--    Tylko admin: Zakładka [Aministracja]    -->
                     <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Tournament" asp-action="Index">Players&Tournaments</a></li>
                     <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Team" asp-action="Index">Teams List</a></li>
-                    <li class="nav-item"><a class="nav-link disabled">About</a></li>
-                    <li class="nav-item"><a class="nav-link disabled">Contact</a></li>
                 @if (User.Identity.IsAuthenticated)
                 {
                     @await Component.InvokeAsync("TeamPartial")

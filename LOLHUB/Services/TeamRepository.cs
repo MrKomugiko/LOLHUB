@@ -61,8 +61,20 @@ namespace LOLHUB.Services
             }
             _context.Players.UpdateRange(playerEntry);
             _context.SaveChanges();
+            //sprawdzenie czy drużyna widniała w jakimś rankingu
+            List<Ranking> rankingEntry = _context.Rankingi.Where(r => r.TeamId == id).ToList();
+            if(rankingEntry != null)
+            {
+                foreach(var team in rankingEntry)
+                {
+                    team.TeamId = null;
+                }
+
+                _context.Rankingi.UpdateRange(rankingEntry);
+            }
             //usunięcie drużyny
             Team teamEntry = _context.Teams.Where(t => t.Id == id).First();
+
             _context.Teams.Remove(teamEntry);
             _context.SaveChanges();
         }
@@ -170,6 +182,34 @@ namespace LOLHUB.Services
                 return true;
             }   
             return false;
+        }
+        public bool LeaveTeam(int id, string user)
+        {
+            if (user == _context.Teams.Include(t=>t.TeamLeader).Where(t => t.Id == id).Single().TeamLeader.ConnectedSummonerEmail)
+            {
+                return false;
+            }
+            else
+            {
+                Player playerEntry = _context.Players.Where(p => p.ConnectedSummonerEmail == user).Single();
+                playerEntry.MemberOfTeamId = null;
+                _context.Players.Update(playerEntry);
+                _context.SaveChanges();
+                return true;
+            }
+        }
+
+        public void LeaveTournament(int id,int tournamentId)
+        {
+            Team teamEntry = _context.Teams.Where(t => t.Id == id).Single();
+            teamEntry.TournamentId = null;
+            _context.Update(teamEntry);
+
+            Tournament tournamentEntry = _context.Tournaments.Where(t => t.TournamentId == tournamentId).Single();
+            tournamentEntry.Participants -= 1;
+            _context.Update(tournamentEntry);
+
+            _context.SaveChanges();
         }
     }
 }

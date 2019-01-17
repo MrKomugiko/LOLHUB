@@ -39,7 +39,7 @@
                   method="post">
                 <div class="form-group">
                     <label for="list">Wybierz nowego Lidera W.I.P</label>
-                    <select name="newLeader" id="list"  class="form-control text-center" style="height:35px" size="1" required>
+                    <select name="newLeader" id="list" class="form-control text-center" style="height:35px" size="1" required>
                         <option value="">Select new Team Leader</option>
                         @{
                             foreach (var players in Model.Players)
@@ -60,7 +60,7 @@
                   method="post">
                 <div class="form-group">
                     <label>Potwierdź usunięcie drużyny</label>
-                    <input name="checkspelling" placeholder="Potwierdź wprowadzając nazwę drużyny." class="form-control text-center" style="height:35px" required/>
+                    <input name="checkspelling" placeholder="Potwierdź wprowadzając nazwę drużyny." class="form-control text-center" style="height:35px" required />
                 </div>
                 <button type="submit" class="btn btn-danger"><b>[Delete your Team!]</b></button>
             </form>
@@ -128,24 +128,6 @@
     </div>
 
 </div>
-
-<h3>TODO:</h3>
-<h4>
-    <s>Zmiana nazwy</s><br />
-    <s>Zmiana opisu</s><br />
-    Zmiana typu ( dodam na czasie czy to druzyna 1v1,3v3,5v5, otwarta czy zamknięta, player+)<br />
-    Wysylanie zaproszeń ( jezeli druzyna zamknieta)<br />
-    Usuwanie Członkow (tylko teamLeader)<br />
-    <s>Historia Meczy</s><br />
-    <s>Statystyki Meczy</s><br />
-    *Podsumowanie wyników meczy z wyszczegolnieniem graczy ?<br />
-    Usunięcie Drużyny<br />
-    Zmiana TeamLidera<br />
-    *Wprowadzenie poziomow druzyny(punkty + ładujący się pasek ile brakuje do lvla [progi punktowe?])<br />
-    **Wydzielenie grup w drużynie 1v1 (tylko lider ?), 3v3 (glowna lista reszta to awaryjni członkowie?), 5v5<br />
-    ***Osiągnięcia<br />
-</h4>
-
 
  <script>
                     var win = @Model.Tournaments_Win;

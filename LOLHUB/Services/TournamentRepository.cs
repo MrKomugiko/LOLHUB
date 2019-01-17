@@ -2,6 +2,7 @@
 using LOLHUB.Models.TournamentViewModels;
 using LOLHUB.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -50,17 +51,26 @@ namespace LOLHUB.Models
             _context.SaveChanges();
         }
 
+        [HttpPost]
         public Tournament DeleteTournament(int tournamentId)
         {
-            Tournament dbEntry = _context.Tournaments
+            Tournament tournamentEntry = _context.Tournaments
                 .FirstOrDefault(t => t.TournamentId == tournamentId);
 
-            if (dbEntry != null)
+            if (tournamentEntry != null)
             {
-                _context.Tournaments.Remove(dbEntry);
+
+                List<Team> teamEntry = _context.Teams.Where(t => t.TournamentId == tournamentEntry.TournamentId).ToList();
+                foreach(var team in teamEntry)
+                {
+                    team.TournamentId = null;
+                }
+                _context.UpdateRange(teamEntry);
+
+                _context.Tournaments.Remove(tournamentEntry);
                 _context.SaveChanges();
             }
-            return dbEntry;
+            return tournamentEntry;
         }
 
         public Tournament TimeOut(int tournamentId)
@@ -90,8 +100,17 @@ namespace LOLHUB.Models
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             Player playerData = _playerCtx.Players.Where(p => p.ConnectedSummonerEmail == playerName).First();
             if (playerData.MemberOfTeamId == null) { return 4; }
-            Team teamData = _teamRepository.Teams.Where(t => t.TeamLeader.ConnectedSummonerEmail == playerName).Include(t => t.Tournament).Include(t => t.TeamLeader.ConectedSummoners).Include(p => p.Players).First();
+
+            Team teamData = _teamRepository.Teams
+                .Where(t => t.TeamLeader.ConnectedSummonerEmail == playerName)
+                .Include(t => t.Tournament)
+                .Include(t => t.TeamLeader)
+                .Include(p => p.Players)
+                .FirstOrDefault();
+
+            if(teamData == null) { return 111; }
             Tournament tournamentDataNew = _context.Tournaments.Where(t => t.TournamentId == tournamentId).First();
+
             
             bool TournamentStatus = tournamentDataNew.IsExpired;
             bool IsActive = _context.Tournaments.Where(t => t.TournamentId == tournamentId).First().IsActuallyPlayed;
@@ -127,7 +146,7 @@ namespace LOLHUB.Models
                         else if (teamData.TournamentId != tournamentId)
                         {//jeżeli team chce dołączyć do innego turnieju => zmieni miejsce
 
-                            if (playerData.MemberOfTeamId != null)
+                            if (playerData.Id == teamData.TeamLeader.Id)
                             {//zmiana turnieju przez lidera drużyny => jest ok
                                 Tournament tournamentDataOld = _context.Tournaments.Where(t => t.TournamentId == teamData.TournamentId).First();
                                 tournamentDataOld.Participants  -= 1;

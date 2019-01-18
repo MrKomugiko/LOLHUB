@@ -1,0 +1,62 @@
+﻿@model IEnumerable<LOLHUB.Models.INBOX.MessageStorage>
+
+<h2>Skrzynka Odbiorcza</h2>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                Temat
+            </th>
+            <th>
+                Data
+            </th>
+            <th>
+                Nadawca
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr data-toggle="modal" data-target="#@item.Id">
+            <td>
+                @Html.DisplayFor(modelItem => item.Temat)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataWyslania)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Player.ConectedSummoners.name)
+            </td>
+            <td>
+                <a asp-controller="Inbox" asp-action="sendMessage" asp-route-replyTo="@item.Player.ConnectedSummonerEmail" asp-route-name="@item.Player.ConectedSummoners.name">Odpowiedz</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Usun W.I.P</a>
+            </td>
+            <div class="modal" id="@item.Id">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">@Html.DisplayFor(modelItem=>item.Temat)</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            @Html.DisplayFor(modelItem => item.TrescWiadomosci)
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </tr>
+        }
+    </tbody>
+
+</table>
+    <!-- The Modal -->

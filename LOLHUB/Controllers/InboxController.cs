@@ -56,18 +56,12 @@ namespace LOLHUB.Controllers
             return View();
         }
 
-        [HttpGet]
-        public IActionResult RecieveMessages()
+        public int MessageTotalCount()
         {
-            List<int> messages = _inboxCtx.Wiadomosci.Where(m => m.Player.ConnectedSummonerEmail == _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value).Select(p => p.MessageStorage.Id).ToList();
-            int liczbawiadomosci = (messages.Count());
-            List<MessageStorage> model = new List<MessageStorage>();
-            while (liczbawiadomosci > 0)
-            {   
-                model.Add(_inboxCtx.SzczegolyWiadomosci.Include(p=>p.Player).Include(p=>p.Player.ConectedSummoners).Where(w => w.Id == messages[liczbawiadomosci-1]).Single());
-                liczbawiadomosci--;
-            }
-            return View(model);
+            int messages = _inboxCtx.Wiadomosci
+                    .Where(m => m.Player.ConnectedSummonerEmail == _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value)
+                    .Select(p => p.MessageStorage.Id).Count();
+            return messages;
         }
     }
 }

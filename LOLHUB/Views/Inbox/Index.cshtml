@@ -7,6 +7,5 @@
 <a asp-action="SendMessage" asp-controller="Inbox" class="btn btn-sm btn-success">
     Wyslij wiadomosc
 </a>
-<a asp-action="RecieveMessages" asp-controller="Inbox" class="btn btn-sm btn-info">
-    Sprawdz swoja skrzynke
-</a>
+@await Component.InvokeAsync("WiadOtrzymane");
+

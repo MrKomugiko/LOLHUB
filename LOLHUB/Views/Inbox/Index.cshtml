@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>INBOX</h2>
+
+<a asp-action="SendMessage" asp-controller="Inbox" class="btn btn-sm btn-success">
+    Wyslij wiadomosc
+</a>
+<a asp-action="RecieveMessages" asp-controller="Inbox" class="btn btn-sm btn-info">
+    Sprawdz swoja skrzynke
+</a>

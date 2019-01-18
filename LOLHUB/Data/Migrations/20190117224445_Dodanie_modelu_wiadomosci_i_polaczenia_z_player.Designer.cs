@@ -11,9 +11,10 @@ using System;
 namespace LOLHUB.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190117224445_Dodanie_modelu_wiadomosci_i_polaczenia_z_player")]
+    partial class Dodanie_modelu_wiadomosci_i_polaczenia_z_player
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,9 +70,7 @@ namespace LOLHUB.Migrations
                     b.Property<int>("MessageId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime?>("DataPrzeczytania");
-
-                    b.Property<int?>("MessageStorageId");
+                    b.Property<DateTime>("DataPrzeczytania");
 
                     b.Property<int?>("OdbiorcaId");
 
@@ -81,11 +80,13 @@ namespace LOLHUB.Migrations
 
                     b.Property<bool>("UsunietaPrzezOdbiorce");
 
+                    b.Property<int?>("ZawartoscIdId");
+
                     b.HasKey("MessageId");
 
-                    b.HasIndex("MessageStorageId");
-
                     b.HasIndex("OdbiorcaId");
+
+                    b.HasIndex("ZawartoscIdId");
 
                     b.ToTable("Wiadomosci");
                 });
@@ -101,31 +102,11 @@ namespace LOLHUB.Migrations
 
                     b.Property<string>("Temat");
 
-                    b.Property<string>("TrescWiadomosci");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NadawcaId");
 
                     b.ToTable("SzczegolyWiadomosci");
-                });
-
-            modelBuilder.Entity("LOLHUB.Models.INBOX.Wiadomosc", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Nadawca");
-
-                    b.Property<string>("Odbiorca");
-
-                    b.Property<string>("Temat");
-
-                    b.Property<string>("Tresc");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Wiadomosc");
                 });
 
             modelBuilder.Entity("LOLHUB.Models.Match.MatchSelectedData", b =>
@@ -452,13 +433,13 @@ namespace LOLHUB.Migrations
 
             modelBuilder.Entity("LOLHUB.Models.INBOX.Message", b =>
                 {
-                    b.HasOne("LOLHUB.Models.INBOX.MessageStorage", "MessageStorage")
-                        .WithMany()
-                        .HasForeignKey("MessageStorageId");
-
                     b.HasOne("LOLHUB.Models.Player", "Player")
                         .WithMany()
                         .HasForeignKey("OdbiorcaId");
+
+                    b.HasOne("LOLHUB.Models.INBOX.MessageStorage", "ZawartoscId")
+                        .WithMany()
+                        .HasForeignKey("ZawartoscIdId");
                 });
 
             modelBuilder.Entity("LOLHUB.Models.INBOX.MessageStorage", b =>

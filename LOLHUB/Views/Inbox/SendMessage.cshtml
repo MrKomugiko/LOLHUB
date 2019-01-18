@@ -1,0 +1,56 @@
+﻿@model LOLHUB.Models.INBOX.Wiadomosc
+
+@{
+    ViewData["Title"] = "SendMessage";
+}
+
+<h2>SendMessage</h2>
+
+<h4>Wiadomosc</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="SendMessage">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Temat" class="control-label"></label>
+                <input asp-for="Temat" class="form-control" />
+                <span asp-validation-for="Temat" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tresc" class="control-label"></label>
+                <input asp-for="Tresc" class="form-control" size="5" />
+                <span asp-validation-for="Tresc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="Nadawca" value="@User.Identity.Name" class="form-control" hidden />
+            </div>
+            @if (ViewBag.replyTo != null)
+            {
+            <div class="form-group">
+                <label asp-for="Odbiorca" class="control-label"></label>
+                <input value="@ViewBag.name" placeholder="@ViewBag.name" class="form-control" disabled />
+                <input asp-for="Odbiorca" value="@ViewBag.replyTo" class="form-control" hidden />
+                <span asp-validation-for="Odbiorca" class="text-danger" disabled></span>
+            </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <label asp-for="Odbiorca" class="control-label"></label>
+                    <input asp-for="Odbiorca" class="form-control" />
+                    <span asp-validation-for="Odbiorca" class="text-danger"></span>
+                </div>
+
+            }
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Wróć do Poczty</a>
+</div>
+

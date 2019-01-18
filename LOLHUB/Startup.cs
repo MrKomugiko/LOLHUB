@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using LOLHUB.Models.INBOX;
 
 namespace LOLHUB
 {
@@ -76,7 +77,8 @@ namespace LOLHUB
             services.AddSingleton<IGenerateCode, GenerateCode>();
 
             services.AddTransient<IEmailSender, EmailSender>();
-        
+            services.AddTransient<IInboxRepository,InboxRepository>();
+
             services.AddMvc(options =>
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());

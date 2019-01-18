@@ -38,12 +38,10 @@
             </div>
             <div class="navbar-collapse collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     @if (User.IsInRole("Member"))
                     {
-                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="RiotApi" asp-action="Index">Summoner Profile</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="RiotApi" asp-action="Index">Profile</a></li>
                     }
-                    <!--    Tylko admin: Zakładka [Aministracja]    -->
                     @if (User.Identity.IsAuthenticated)
                     {
                         if (User.IsInRole("Admin"))
@@ -61,12 +59,13 @@
                         }
                     }
                     <!--    Tylko admin: Zakładka [Aministracja]    -->
-                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Tournament" asp-action="Index">Players&Tournaments</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Team" asp-action="Index">Teams List</a></li>
-                @if (User.Identity.IsAuthenticated)
-                {
-                    @await Component.InvokeAsync("TeamPartial")
-                }
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Tournament" asp-action="Index">Tournaments</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Team" asp-action="Index">Teams</a></li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        @await Component.InvokeAsync("TeamPartial")
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Inbox" asp-action="Index">INBOX <span class="badge badge-primary">666</span></a></li>
+                    }
                 </ul>
 
                 @await Html.PartialAsync("_LoginPartial")

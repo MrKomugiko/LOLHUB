@@ -11,9 +11,10 @@ using System;
 namespace LOLHUB.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190118000359_Zmiana_nazwy_w_modelu_wiadomosci")]
+    partial class Zmiana_nazwy_w_modelu_wiadomosci
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,7 +70,7 @@ namespace LOLHUB.Migrations
                     b.Property<int>("MessageId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime?>("DataPrzeczytania");
+                    b.Property<DateTime>("DataPrzeczytania");
 
                     b.Property<int?>("MessageStorageId");
 
@@ -108,24 +109,6 @@ namespace LOLHUB.Migrations
                     b.HasIndex("NadawcaId");
 
                     b.ToTable("SzczegolyWiadomosci");
-                });
-
-            modelBuilder.Entity("LOLHUB.Models.INBOX.Wiadomosc", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Nadawca");
-
-                    b.Property<string>("Odbiorca");
-
-                    b.Property<string>("Temat");
-
-                    b.Property<string>("Tresc");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Wiadomosc");
                 });
 
             modelBuilder.Entity("LOLHUB.Models.Match.MatchSelectedData", b =>

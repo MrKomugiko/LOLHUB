@@ -1,0 +1,45 @@
+﻿@model IEnumerable<LOLHUB.Models.INBOX.MessageStorage>
+
+<h2>Skrzynka Odbiorcza</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    Temat
+                </th>
+                <th>
+                    Treść
+                </th>
+                <th>
+                    Data
+                </th>
+            <th>
+               Nadawca
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Temat)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrescWiadomosci)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataWyslania)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Player.ConectedSummoners.name)
+            </td>
+            <td>
+                <a asp-controller="Inbox" asp-action="sendMessage" asp-route-replyTo="@item.Player.ConnectedSummonerEmail" asp-route-name="@item.Player.ConectedSummoners.name">Odpowiedz</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Usun W.I.P</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

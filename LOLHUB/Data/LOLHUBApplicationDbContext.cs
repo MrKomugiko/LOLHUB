@@ -1,4 +1,5 @@
 ﻿using LOLHUB.Models;
+using LOLHUB.Models.INBOX;
 using LOLHUB.Models.Match;
 using LOLHUB.Models.TournamentViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,10 @@ namespace LOLHUB.Data
         public DbSet<Drabinka> Drabinki { get; set; }
         public DbSet<PlaysHistory> Histories { get; set; }
         public DbSet<Ranking> Rankingi { get; set; }
+
+        public DbSet<Message> Wiadomosci { get; set; }
+        public DbSet<MessageStorage> SzczegolyWiadomosci { get; set; }
+        public DbSet<LOLHUB.Models.INBOX.Wiadomosc> Wiadomosc { get; set; }
     }
 }
 

@@ -118,16 +118,16 @@ namespace LOLHUB
             app.UseXXssProtection(option => option.EnabledWithBlockMode());
             app.UseXfo(option => option.Deny());
 
-            app.UseCsp(opts => opts
-                .BlockAllMixedContent()
-                //.StyleSources(s => s.Self())
-                .FontSources(s => s.Self())
-                .FormActions(s => s.Self())
-                .FormActions(s => s.CustomSources("https://www.facebook.com/"))
-                .FrameAncestors(s => s.Self())
-                .ImageSources(s => s.Self())
-               // .ScriptSources(s => s.CustomSources("self","*.jquery.com", "*.bootstrapcdn.com", "*.cloudflare.com"))
-            );
+            //app.UseCsp(opts => opts
+            //    //.BlockAllMixedContent()
+            //    ////.StyleSources(s => s.Self())
+            //    //.FontSources(s => s.Self())
+            //    //.FormActions(s => s.Self())
+            //    //.FormActions(s => s.CustomSources("https://www.facebook.com/"))
+            //    //.FrameAncestors(s => s.Self())
+            //    //.ImageSources(s => s.Self())
+            //   // .ScriptSources(s => s.CustomSources("self","*.jquery.com", "*.bootstrapcdn.com", "*.cloudflare.com"))
+            //);
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions
             {

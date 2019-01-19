@@ -21,6 +21,15 @@ namespace LOLHUB.Services
         public IQueryable<Message> Wiadomosci => _context.Wiadomosci;
         public IQueryable<MessageStorage> SzczegolyWiadomosci => _context.SzczegolyWiadomosci;
 
+        public void SetMessageAsReaded(int messageId, bool v)
+        {
+            Message messageEntry = _context.Wiadomosci.Where(id => id.MessageId == messageId).Single();
+            messageEntry.Przeczytane = v;
+            messageEntry.DataPrzeczytania = DateTime.Now;
+            _context.Update(messageEntry);
+            _context.SaveChanges();
+        }
+
         public void WyslijNowaWiadomosc(Wiadomosc dane)
         {
             Player nadawca = _playerCtx.Players.Where(p => p.ConnectedSummonerEmail == dane.Nadawca).FirstOrDefault();

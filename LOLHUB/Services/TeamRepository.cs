@@ -185,6 +185,7 @@ namespace LOLHUB.Services
         }
         public bool LeaveTeam(int id, string user)
         {
+            string test = _context.Teams.Include(t => t.TeamLeader).Where(t => t.Id == id).Single().TeamLeader.ConnectedSummonerEmail;
             if (user == _context.Teams.Include(t=>t.TeamLeader).Where(t => t.Id == id).Single().TeamLeader.ConnectedSummonerEmail)
             {
                 return false;

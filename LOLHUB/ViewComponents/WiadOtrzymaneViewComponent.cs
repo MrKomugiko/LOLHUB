@@ -29,7 +29,22 @@ namespace LOLHUB.ViewComponents
                     .Where(m => m.Player.ConnectedSummonerEmail == _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value)
                     .Select(p => p.MessageStorage.Id).ToListAsync();
                 var items = await GetItemsAsync(messages);
-                return View(items.OrderByDescending(i=>i.DataWyslania));
+
+
+            List<Message> allMessages = _inboxCtx.Wiadomosci.Include(w => w.Player)
+               .Where(m => m.Player.ConnectedSummonerEmail == _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value)
+               .ToList();    
+
+            Dictionary<int, bool> MessagesStatus = new Dictionary<int, bool>();
+
+            foreach (var item in allMessages)
+            {
+                MessagesStatus.Add(item.MessageId, item.Przeczytane);
+            }
+
+            ViewBag.MessageReadStatus = MessagesStatus;
+
+            return View(items.OrderByDescending(i=>i.DataWyslania));
             }
 
         private Task<List<MessageStorage>> GetItemsAsync(List<int> messages)

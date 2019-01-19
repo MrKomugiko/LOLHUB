@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LOLHUB.Data;
 using LOLHUB.Models.INBOX;
 using LOLHUB.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -56,12 +57,20 @@ namespace LOLHUB.Controllers
             return View();
         }
 
+        [Authorize]
         public int MessageTotalCount()
         {
-            int messages = _inboxCtx.Wiadomosci
+            int messages = _inboxCtx.Wiadomosci.Include(w=>w.Player)
                     .Where(m => m.Player.ConnectedSummonerEmail == _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value)
                     .Select(p => p.MessageStorage.Id).Count();
             return messages;
+        }
+        [Authorize]
+        [HttpGet]
+        public IActionResult MessageRead([FromQuery] int messageId)
+        {
+             _inboxCtx.SetMessageAsReaded(messageId,true);
+            return Ok();
         }
     }
 }

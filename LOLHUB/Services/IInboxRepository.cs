@@ -12,5 +12,6 @@ namespace LOLHUB.Services
         IQueryable<MessageStorage> SzczegolyWiadomosci { get; }
 
         void WyslijNowaWiadomosc(Wiadomosc dane);
+        void SetMessageAsReaded(int messageId, bool v);
     }
 }

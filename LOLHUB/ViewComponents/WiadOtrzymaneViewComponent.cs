@@ -44,12 +44,12 @@ namespace LOLHUB.ViewComponents
 
             ViewBag.MessageReadStatus = MessagesStatus;
 
-            return View(items.OrderByDescending(i=>i.DataWyslania));
+            return View(items);
             }
 
         private Task<List<MessageStorage>> GetItemsAsync(List<int> messages)
             {
-            return _inboxCtx.SzczegolyWiadomosci.Include(p => p.Player).Include(p => p.Player.ConectedSummoners).Where(w => messages.Contains(w.Id)).ToListAsync();       
+            return _inboxCtx.SzczegolyWiadomosci.Include(p => p.Player).Include(p => p.Player.ConectedSummoners).Where(w => messages.Contains(w.Id)).OrderByDescending(m=>m.DataWyslania.ToUniversalTime()).ToListAsync();       
             }
     }
 }

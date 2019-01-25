@@ -28,37 +28,37 @@
     </tr>
     @foreach (var item in Model)
     {
-    <tr>
-        <td class="text-right">@item.TournamentId</td>
-        <td>@item.Name</td>
-        <td class="text-left">@item.StartDate.ToString("D")</td>
-        <td class="text-left">@item.EndDate.ToString("D")</td>
-        <td class="text-center">@item.IsExpired</td>
-        <td class="text-center">
+        <tr>
+            <td class="text-right">@item.TournamentId</td>
+            <td>@item.Name</td>
+            <td class="text-left">@item.StartDate.ToString("D")</td>
+            <td class="text-left">@item.EndDate.ToString("D")</td>
+            <td class="text-center">@item.IsExpired</td>
+            <td class="text-center">
 
-            <form asp-action="Delete" method="post">
-                <a asp-action="Edit" class="btn btn-sm btn-warning"
-                   asp-route-tournamentId="@item.TournamentId">
-                    Edytuj
-                </a>
+                <form asp-action="Delete" method="post">
+                    <a asp-action="Edit" class="btn btn-sm btn-warning"
+                       asp-route-tournamentId="@item.TournamentId">
+                        Edytuj
+                    </a>
 
-                <input type="hidden" name="TournamentId" value="@item.TournamentId" />
-                <button type="submit" class="btn btn-danger btn-sm">
-                    Usuń
-                </button>
-            </form>
-        </td>
-        <td class="text-center">
+                    <input type="hidden" name="TournamentId" value="@item.TournamentId" />
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        Usuń
+                    </button>
+                </form>
+            </td>
+            <td class="text-center">
 
-            <form asp-action="TimeOut" method="post">
-                <input type="hidden" name="TournamentId" value="@item.TournamentId" />
-                <button type="submit" class="btn btn-info btn-sm">
-                    Zakończ
-                </button>
-            </form>
-        </td>
+                <form asp-action="TimeOut" method="post">
+                    <input type="hidden" name="TournamentId" value="@item.TournamentId" />
+                    <button type="submit" class="btn btn-info btn-sm">
+                        Zakończ
+                    </button>
+                </form>
+            </td>
 
-    </tr>}
+        </tr>}
 </table>
 
 <dir class="btn-group-justified">  <a asp-action="Create" class="btn btn-primary">Dodaj Turniej</a></dir>
@@ -71,5 +71,429 @@
     </dir>
 }
 
+<style>
+    #chart_container {
+        width: 250px;
+        height: 250px;
+        border: 5px solid #ddd;
+        padding: 2px;
+    }
+</style>
 
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/Chart.min.js"></script>
+<script src="~/js/chartjs-plugin-doughnutlabel.min.js"></script>
+<script>
+    $(document).ready(function () {
+        @{
+            DateTime poczatek = DateTime.Now.AddHours(-6);
+            DateTime koniec = DateTime.Now;
+         }
+        $.ajax({
+            url: "https://lolhaven.azurewebsites.net/api/Admin/ServerUsageData/@poczatek/@koniec",
+            url: "https://localhost:44344/api/Admin/ServerUsageData/@poczatek/@koniec",
+            method: "GET",
+            success: function (data) {
+                            console.log("Poprawnie pobrane dane o użyciu procesora");
+                var i = 0;
+                var blankCounter = [];
+                            var CzasStart = [];
+                            var AvgCpuUsage = [];
+                            
+                for (var i in data) {
+                    blankCounter.push("");
+                    CzasStart.push(data[i].start_time);
+                                AvgCpuUsage.push(data[i].avg_cpu_percent);
+                                i++;
+                            }
 
+                            var chartdata = {
+                    labels: blankCounter,
+                    datasets: [
+                        {
+                            label: ' AVG CPU Usage [ Last ~6 Hours ] ',
+                            fillL: true,
+                            backgroundColor: 'rgba(50, 211, 56,0.4)',
+                            borderColor: 'rgba(34, 163, 39)',
+                            hoverBackgroundColor: 'rgb(34, 163, 39)',
+                            hoverBorderColor: 'rgb(34, 163, 39)',
+                            data: AvgCpuUsage
+                        }
+                    ]
+                };
+
+                        var ctx = $("#mycanvas");
+
+                        var barGraph = new Chart(ctx, {
+                            type: 'bar',
+                            data: chartdata
+                });
+            },
+            error: function (data) {
+                    console.log(data);
+                }
+            });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: "https://lolhaven.azurewebsites.net/api/Admin/ServerUsageData",
+            url: "https://localhost:44344/api/Admin/ServerUsageData",
+            method: "GET",
+            success: function (data) {
+                var i = 0;
+                var Storage = [];
+                for (var i in data) {
+                    Storage.push(data[i].storage_in_megabytes);
+                    i++;
+                }
+                var current = Storage[i - 1];
+                var freeSpace = 2048 - current;
+                var procent = (parseFloat((Storage[i - 1] / 2048) * 100).toPrecision(2));
+
+                console.log("Aktualna wielkość bazy => " + Storage[i - 1] + " MB / 2 GB");
+                console.log("Zajęte miejsce to => " + procent + " % miejsca");
+
+                var ctx = document.getElementById('DatabaseSizeProgressBar2').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["Free Space", "Current Size"],
+                        datasets: [{
+                            label: "Database current capacity",
+                            backgroundColor: ["rgba(54, 162, 235,.5)", "rgba(255, 99, 132,.5)"],
+                            borderColor: ["rgba(1,1,1,0)", "rgb(255, 99, 132)"],
+                            data: [freeSpace, current]
+                        }]
+                    },
+                    options: {
+                        aspectRatio: 1,
+                        responsive: true,
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            fontSize: 20,
+                            text: 'Database Capacity'
+                        },
+                        animation: {
+                            animateRotate: true
+                        },
+                        plugins: {
+                            doughnutlabel: {
+                                labels: [
+                                    {
+                                        text: procent + "%",
+                                        font: {
+                                            size: '70'
+                                        }
+                                    },
+                                ]
+                            }
+                        }
+                    }
+                });
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    });
+</script>
+
+<style>
+    * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .bg-danger {
+        background-color: #f2dede;
+    }
+
+    .panel-stat3 {
+        position: relative;
+        overflow: hidden;
+        padding: 25px 20px;
+        margin-bottom: 20px;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 10px;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+    }
+
+    .bg-danger {
+        background-color: #fc8675 !important;
+        color: #fff !important;
+    }
+
+    .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+        position: relative;
+        min-height: 1px;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12 {
+        float: left;
+    }
+
+    .col-sm-6 {
+        width: 50%;
+    }
+
+    .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+        float: left;
+    }
+
+    .col-md-3 {
+        width: 25%;
+    }
+
+    .row {
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+
+    .padding-md {
+        padding: 20px !important;
+    }
+
+    #main-container {
+        position: relative;
+        min-height: 800px;
+        padding-top: 45px;
+        margin-left: 194px;
+    }
+
+    #wrapper {
+        position: relative;
+        overflow: hidden;
+        min-height: 800px;
+        background-color: #f9f9f9;
+    }
+
+    body {
+        margin: 0;
+    }
+
+    body {
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-size: 14px;
+        line-height: 1.4285;
+        color: #333;
+        background-color: #fff;
+    }
+
+    body {
+        padding-top: 0px;
+        font-size: 12px;
+        color: #777;
+        background: #f9f9f9;
+        font-family: "Open Sans",sans-serif;
+    }
+
+    html {
+        font-family: sans-serif;
+        -ms-text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    html {
+        font-size: 62.5%;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+    h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+        font-family: inherit;
+        font-weight: 500;
+        line-height: 1.1;
+        color: inherit;
+    }
+
+    h1, .h1, h2, .h2, h3, .h3 {
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+
+    h2, .h2 {
+        font-size: 30px;
+    }
+
+    .m-top-none {
+        margin-top: 0px;
+    }
+
+    h4, .h4, h5, .h5, h6, .h6 {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    h5, .h5 {
+        font-size: 14px;
+    }
+
+    .fa {
+        display: inline-block;
+        font-family: FontAwesome;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .fa-lg {
+        font-size: 1.33em;
+        line-height: 0.75em;
+        vertical-align: -15%;
+    }
+
+    .m-left-xs {
+        margin-left: 5px;
+    }
+
+    .panel-stat3 .stat-icon {
+        position: absolute;
+        top: 20px;
+        right: 10px;
+        font-size: 30px;
+        opacity: 0.3;
+    }
+
+    .panel-stat3 .refresh-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        transition: all .2s ease;
+        -webkit-transition: all .2s ease;
+        -moz-transition: all .2s ease;
+        -ms-transition: all .2s ease;
+        -o-transition: all .2s ease;
+        color: rgba(0, 0, 0, 0.3);
+    }
+
+    .loading-overlay {
+        position: absolute;
+        display: none;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        background: rgba(0,0,0,.4);
+        text-align: center;
+    }
+
+    .fa-spin {
+        -webkit-animation: spin 2s infinite linear;
+        -moz-animation: spin 2s infinite linear;
+        -o-animation: spin 2s infinite linear;
+        animation: spin 2s infinite linear;
+    }
+
+    .loading-overlay .loading-icon {
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        color: #fff;
+        animation: spin .8s infinite linear;
+        -webkit-animation: spin .8s infinite linear;
+        -moz-animation: spin .8s infinite linear;
+        -ms-animation: spin .8s infinite linear;
+        -o-animation: spin .8s infinite linear;
+    }
+
+    .fa-3x {
+        font-size: 3em;
+    }
+</style>
+
+<div class="padding-md">
+    <div class="row">
+        <div class="col-sm-6 col-md-3">
+            <div class="panel-stat3 bg-danger">
+                <h2 class="m-top-none" id="userCount">???</h2>
+                <h5>Registered users</h5>
+                <i class="fa fa-arrow-circle-o-up fa-lg"></i><span class="m-left-xs">5% Higher than last week</span>
+                <div class="stat-icon">
+                    <i class="fa fa-user fa-3x"></i>
+                </div>
+                <div class="refresh-button">
+                    <i class="fa fa-refresh"></i>
+                </div>
+                <div class="loading-overlay">
+                    <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="panel-stat3 bg-info">
+                <h2 class="m-top-none" id="TotalPoints">???</h2>
+                <h5>Distibuted Points</h5>
+                <i class="fa fa-arrow-circle-o-up fa-lg"></i><span class="m-left-xs">5% Higher than last week</span>
+                <div class="stat-icon">
+                    <i class="fa fa-user fa-3x"></i>
+                </div>
+                <div class="refresh-button">
+                    <i class="fa fa-refresh"></i>
+                </div>
+                <div class="loading-overlay">
+                    <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="panel-stat3 bg-success">
+                <h2 class="m-top-none" id="TournamnetsCount">???</h2>
+                <h5>Tournaments</h5>
+                <i class="fa fa-arrow-circle-o-up fa-lg"></i><span class="m-left-xs">5% Higher than last week</span>
+                <div class="stat-icon">
+                    <i class="fa fa-user fa-3x"></i>
+                </div>
+                <div class="refresh-button">
+                    <i class="fa fa-refresh"></i>
+                </div>
+                <div class="loading-overlay">
+                    <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="panel-stat3 bg-danger">
+                <h2 class="m-top-none" id="MatchesPlayed">???</h2>
+                <h5>Matches Played</h5>
+                <i class="fa fa-arrow-circle-o-up fa-lg"></i><span class="m-left-xs">5% Higher than last week</span>
+                <div class="stat-icon">
+                    <i class="fa fa-user fa-3x"></i>
+                </div>
+                <div class="refresh-button">
+                    <i class="fa fa-refresh"></i>
+                </div>
+                <div class="loading-overlay">
+                    <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
+                </div>
+            </div>
+        </div>
+            <div class="card col-lg-8">
+                <center>
+                    <div class="card-body">
+                        <canvas id="mycanvas" height="100"></canvas>
+                    </div>
+                </center>
+            </div>
+
+            <div class="col-lg-4">
+                <center>
+                    <div id="chart_container">
+                        <canvas id="DatabaseSizeProgressBar2">  </canvas>
+                    </div>
+                </center>
+            </div>
+
+    </div>
+</div>

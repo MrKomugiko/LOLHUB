@@ -33,6 +33,8 @@ namespace LOLHUB
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
+
             services.AddDbContext<LOLHUBIdentityDbContext>(options =>
                 options.UseSqlServer(Configuration.
                     GetConnectionString("IdentityConnection")));
@@ -40,6 +42,7 @@ namespace LOLHUB
             services.AddDbContext<LOLHUBApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ApplicationConnection")));
 
+            
             services.AddIdentity<ApplicationUser, IdentityRole>(config =>
             {
                 config.SignIn.RequireConfirmedEmail = true;
@@ -118,16 +121,18 @@ namespace LOLHUB
             app.UseXXssProtection(option => option.EnabledWithBlockMode());
             app.UseXfo(option => option.Deny());
 
-            //app.UseCsp(opts => opts
-            //    //.BlockAllMixedContent()
-            //    ////.StyleSources(s => s.Self())
-            //    //.FontSources(s => s.Self())
-            //    //.FormActions(s => s.Self())
-            //    //.FormActions(s => s.CustomSources("https://www.facebook.com/"))
-            //    //.FrameAncestors(s => s.Self())
-            //    //.ImageSources(s => s.Self())
-            //   // .ScriptSources(s => s.CustomSources("self","*.jquery.com", "*.bootstrapcdn.com", "*.cloudflare.com"))
-            //);
+            app.UseCsp(opts => opts
+            .BlockAllMixedContent()  // blokowanie ładowania strony po http jezeli jest https
+            ////.StyleSources(s => s.Self())
+            //.FontSources(s => s.Self())
+            .FormActions(s => s.Self())
+            .FormActions(s => s.CustomSources("https://www.facebook.com/")) // wywoływanie forumalrzy innych dostawców ( logowanie przez fb)
+            //.FrameAncestors(s => s.Self())
+            //.ImageSources(s => s.Self()) // dozwolone obrazy z serwera aplikacji
+            .ScriptSources(s => s.Self()) // dozwolone jest korzystanie ze skryptow znajdujacych sie na serwerze apliakcji
+            .ScriptSources(s => s.UnsafeInline()) // kod javascript w kodzie html a nie w osobnym pliku
+                .ScriptSources(s => s.CustomSources("*.jquery.com", "*.bootstrapcdn.com", "*.cloudflare.com")) // skrypty z stron 3cich o takich domenach sa dozwolone
+            );
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions
             {

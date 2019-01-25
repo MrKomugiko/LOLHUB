@@ -3,9 +3,109 @@
 @{
     ViewData["Title"] = "Manage";
 }
+<!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 
-<h2 style="text-align:center">Team Dashboard</h2>
+<h2 class="text-center">@Model.Name</h2>
+   <div class="container-fluid">
+       <div class="row">
+           <div class="col">
+               <div class="card" style="height:215px">
+                   <div class="card-body">
+                       <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#1</span></h6</h4>
 
+                       <h6 class="card-subtitle mb-2 text-muted pull-left"><b>[ ADC ]</b></h6>
+                       <h6 class="card-subtitle mb-2 text-muted right text-right">Team Leader</h6>
+                       <h5>takie tam o graczu, jego KDA, liczba gier e tej drużynie , data dołączenia</h5>
+                   </div>
+
+                   <div class="card-footer text-muted">
+                       <a href="#" class="card-link bottom pull-left">Profile</a>
+                       <a href="#" class="card-link pull-right">Message</a>
+                   </div>
+               </div>
+           </div>
+           <div class="col">
+               <div class="card" style="height:215px;">
+                   @*<div class="card-body">
+                    <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
+
+                </div>*@
+                   <br /><br /><br />
+                   <br />
+                   <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
+
+                   @*<div class="card-footer text-muted">
+                    <a href="#" class="card-link bottom pull-left">Profile</a>
+                    <a href="#" class="card-link pull-right">Message</a>
+                </div>*@
+                   <br />
+                   <br /><br /><br />
+               </div>
+           </div>
+           <div class="col">
+               <div class="card" style="height:215px;">
+                   @*<div class="card-body">
+                    <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
+
+                </div>*@
+                   <br /><br /><br />
+                   <br />
+                   <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
+
+                   @*<div class="card-footer text-muted">
+                    <a href="#" class="card-link bottom pull-left">Profile</a>
+                    <a href="#" class="card-link pull-right">Message</a>
+                </div>*@
+                   <br />
+                   <br /><br /><br />
+               </div>
+           </div>
+           <div class="col">
+               <div class="card" style="height:215px;">
+                   @*<div class="card-body">
+                    <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
+
+                </div>*@
+                   <br /><br /><br />
+                   <br />
+                   <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
+
+                   @*<div class="card-footer text-muted">
+                    <a href="#" class="card-link bottom pull-left">Profile</a>
+                    <a href="#" class="card-link pull-right">Message</a>
+                </div>*@
+                   <br />
+                   <br /><br /><br />
+               </div>
+           </div>
+           <div class="col">
+               <div class="card" style="height:215px;">
+                   @*<div class="card-body">
+                    <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
+
+                </div>*@
+                   <br /><br /><br />
+                   <br />
+                   <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
+
+                   @*<div class="card-footer text-muted">
+                    <a href="#" class="card-link bottom pull-left">Profile</a>
+                    <a href="#" class="card-link pull-right">Message</a>
+                </div>*@
+                   <br />
+                   <br /><br /><br />
+               </div>
+           </div>
+
+       </div>
+    </div>
+<br />
+
+<!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 <div class="row">
 
     @if (User.Identity.Name == Model.TeamLeader.ConnectedSummonerEmail || User.IsInRole("Admin") || User.IsInRole("Moderator")) // tylko liderzy swoich druzyn moga dodac wynik meczu
@@ -129,7 +229,9 @@
 
 </div>
 
- <script>
+<script src="~/js/Chart.min.js"></script>
+<script src="~/js/chartjs-plugin-doughnutlabel.min.js"></script>
+<script>
                     var win = @Model.Tournaments_Win;
                     var total = @Model.Participate_in_Tournaments;
                     var lose = total - win;
@@ -176,4 +278,4 @@
                             }
                         }
                     });
-                    </script>
+</script>

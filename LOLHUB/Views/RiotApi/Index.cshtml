@@ -52,114 +52,116 @@
     }
     else
     {
-        <p class="text-info">Twoje konto jest już sparowane z aplikacją LOLHUB :)</p>
-
-
-        <h4>Statystkiki ostatnich rozegranych meczy:</h4>
-
-        <table class="table table-striped table-bordered table-lg">
-            <tr>
-                @*<th class="text-left">Id</th>*@
-                <th class="text-left">MatchId</th>
-                <th class="text-left">SummonerName</th>
-                <th class="text-left">Kills</th>
-                <th class="text-left">Deaths</th>
-                <th class="text-left">Assists</th>
-                <th class="text-left">ChampionId</th>
-                <th class="text-left">Win</th>
-                <th class="text-left">GameDuration</th>
-            </tr>
-            @foreach (var MatchStats in Model.GameStatistics)
-            {
+        if (User.Identity.Name != Model.Summoner.FirstOrDefault().ConectedAccount.ToString())
+        {
+            <h3 class="warning text-warning" >Wybrane konto jest już sparowane z aplikacją LOLHaven.</h3>
+        }
+        else
+        {
+            <h3 class="success text-success">Konto poprawnie połączone z aplikacją LOLHaven :)</h3>
+            <h4>Statystkiki ostatnich rozegranych meczy:</h4>
+            <table class="table table-striped table-bordered table-lg">
                 <tr>
-                    @*<td class="text-left">@MatchStats.Id</td>*@
-                    <td class="text-left">@MatchStats.MatchSelectedData.Id</td>
-                    <td class="text-left">@MatchStats.SummonerName</td>
-                    <td class="text-left">@MatchStats.Kills</td>
-                    <td class="text-left">@MatchStats.Deaths</td>
-                    <td class="text-left">@MatchStats.Assists</td>
-                    <td class="text-left">@MatchStats.ChampionId</td>
-                    <td class="text-left">@MatchStats.Win</td>
-                    <td class="text-left">
+                    <th class="text-left">MatchId</th>
+                    <th class="text-left">SummonerName</th>
+                    <th class="text-left">Kills</th>
+                    <th class="text-left">Deaths</th>
+                    <th class="text-left">Assists</th>
+                    <th class="text-left">ChampionId</th>
+                    <th class="text-left">Win</th>
+                    <th class="text-left">GameDuration</th>
+                </tr>
+                @foreach (var MatchStats in Model.GameStatistics)
+                {
+                    <tr>
+                        @*<td class="text-left">@MatchStats.Id</td>*@
+                        <td class="text-left">@MatchStats.MatchSelectedData.Id</td>
+                        <td class="text-left">@MatchStats.SummonerName</td>
+                        <td class="text-left">@MatchStats.Kills</td>
+                        <td class="text-left">@MatchStats.Deaths</td>
+                        <td class="text-left">@MatchStats.Assists</td>
+                        <td class="text-left">@MatchStats.ChampionId</td>
+                        <td class="text-left">@MatchStats.Win</td>
+                        <td class="text-left">
+                            @{
+                                long seconds = 0;
+                                if ((MatchStats.GameDuration % 60) < 9) { seconds = (MatchStats.GameDuration % 60) * 10; }
+                                else { seconds = (MatchStats.GameDuration % 60); }
+                                string GameDurationInMinutes = (MatchStats.GameDuration / 60 + ":" + seconds);
+                            }
+                            @GameDurationInMinutes.ToString() min
+                        </td>
+                    </tr>
+                }
+
+            </table>
+
+            <table class="table table-striped table-bordered table-lg">
+                <tr>
+                    <th>K/D/A</th>
+                    <th>Win %</th>
+                    <th>Game Played</th>
+                    <th>Favorite champion</th>
+                </tr>
+                <tr>
+                    <td>
                         @{
-                            long seconds = 0;
-                            if ((MatchStats.GameDuration % 60) < 9) { seconds = (MatchStats.GameDuration % 60) * 10; }
-                            else { seconds = (MatchStats.GameDuration % 60); }
-                            string GameDurationInMinutes = (MatchStats.GameDuration / 60 + ":" + seconds);
+                            double kill = @Model.GameStatistics.Select(g => g.Kills).Sum();
+                            double assists = @Model.GameStatistics.Select(g => g.Assists).Sum();
+                            double deaths = @Model.GameStatistics.Select(g => g.Deaths).Sum();
+                            double kda = ((kill + assists) / deaths);
                         }
-                        @GameDurationInMinutes.ToString() min
+                        @Math.Round(kda, 2)
+                    </td>
+                    <td>
+                        @{
+                            int Win = Model.GameStatistics.Where(g => g.Win == true).Count();
+                            int GamesPlayed = Model.GameStatistics.Count();
+                            float WinRatio = 0;
+                            if (GamesPlayed > 0)
+                            {
+                                WinRatio = (Win * 100) / GamesPlayed;
+                            }
+                        }
+
+                        @WinRatio %
+                    </td>
+                    <td>@Model.GameStatistics.Select(g => g.GameId).Count()</td>
+                    <td>
+                        @{if (Model.GameStatistics.Select(g => g.GameId).Count() > 0)
+                            {
+                                Model.GameStatistics.GroupBy(g => g.ChampionId).OrderByDescending(g => g.Count()).Select(g => g.Key).First();
+                            }
+                        }
+
                     </td>
                 </tr>
-            }
+            </table>
 
-        </table>
+            <style>
+                #chart_container {
+                    width: 300px;
+                    height: 300px;
+                    border: 5px solid #ddd;
+                    padding: 2px;
+                    border-radius: 25px;
+                }
 
-        <table class="table table-striped table-bordered table-lg">
-            <tr>
-                <th>K/D/A</th>
-                <th>Win %</th>
-                <th>Game Played</th>
-                <th>Favorite champion</th>
-            </tr>
-            <tr>
-                <td>
-                    @{
-                        double kill = @Model.GameStatistics.Select(g => g.Kills).Sum();
-                        double assists = @Model.GameStatistics.Select(g => g.Assists).Sum();
-                        double deaths = @Model.GameStatistics.Select(g => g.Deaths).Sum();
-                        double kda = ((kill + assists) / deaths);
-                    }
-                    @Math.Round(kda, 2)
-                </td>
-                <td>
-                    @{
-                        int Win = Model.GameStatistics.Where(g => g.Win == true).Count();
-                        int GamesPlayed = Model.GameStatistics.Count();
-                        float WinRatio = 0;
-                        if (GamesPlayed > 0)
-                        {
-                            WinRatio = (Win * 100) / GamesPlayed;
-                        }
-                    }
-
-                    @WinRatio %
-                </td>
-                <td>@Model.GameStatistics.Select(g => g.GameId).Count()</td>
-                <td>
-                    @{if (Model.GameStatistics.Select(g => g.GameId).Count() > 0)
-                        {
-                            Model.GameStatistics.GroupBy(g => g.ChampionId).OrderByDescending(g => g.Count()).Select(g => g.Key).First();
-                        }
-                    }
-
-                </td>
-            </tr>
-        </table>
-
-
-        <script src="chartjs-plugin-doughnutlabel.min.js"></script>
-        <style>
-            #chart_container {
-                width: 300px;
-                height: 300px;
-                border: 5px solid #ddd;
-                padding: 2px;
-                border-radius: 25px;
-            }
-            #bar_chart {
-
-                display:block;
-            }
-        </style>
-        <div id="dashboard">
-            <div id="chart_container">    
-                <canvas id="bar_chart"></canvas>
-                <script >
+                #bar_chart {
+                    display: block;
+                }
+            </style>
+            <div id="dashboard">
+                <div id="chart_container">
+                    <canvas id="bar_chart"></canvas>
+                    <script src="~/js/Chart.min.js"></script>
+                    <script src="~/js/chartjs-plugin-doughnutlabel.min.js"></script>
+                    <script>
                     var win = @ViewBag.WinMatches;
                     var total = @ViewBag.MatchCount;
                     var lose = total - win;
                     var procent = (win * 100) / total + "%";
-                        
+
                     var ctx = document.getElementById('bar_chart').getContext('2d');
                     var chart = new Chart(ctx, {
                         type: 'doughnut',
@@ -201,32 +203,9 @@
                             }
                         }
                     });
-                </script>
+                    </script>
+                </div>
             </div>
-        </div>
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        }
     }
 }

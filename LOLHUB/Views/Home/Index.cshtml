@@ -1,6 +1,6 @@
 ﻿@{
-        ViewData["Title"] = "Home Page";
-    }
+    ViewData["Title"] = "Home Page";
+}
 
 @if (User.Identity.IsAuthenticated)
 {
@@ -16,75 +16,26 @@
             </div>
         </form>
     </div>
-    <br />
 
-    @*<br />
-        <h3> ![TEST] Wyszukaj dane meczu wartośc z url </h3>
-        <p><b><i>https://matchhistory.eune.leagueoflegends.com/pl/#match-details/EUN1/2053306960/200792183</i></b></p>
-        <p>automatycznie wyciąga z url gameId,[...]/#match-details/EUN1/<b>2053306960</b></p>
-
-        <div class="btn-toolbar mb-4" style="margin-top:25px" role="toolbar" aria-label="Toolbar with button groups">
-            <form asp-controller="RiotApi" asp-action="GetMatchData" asp-route-url="url" method="post">
-                <div class="btn-group">
-                    <button type="submit" class="btn btn-warning" name="submit">Wyszukaj</button>
-                </div>
-                <div class="input-group">
-                    <input type="text" name="url" class="form-control" placeholder="wprowadź: adres rozegranego meczu" aria-describedby="btnGroupAddon" size="79" maxlength="79" />
-                </div>
-            </form>
-        </div>*@
     if (User.IsInRole("Admin"))
     {
         <div>
-            <br />
-            <b>TODO:</b>
-            <ol>
-                <li><s>Pobieranie i mapowanie modelu meczu z api riotu</s></li>
-                <li><s>Dodawanie modelu z wybranymi danymi do bazy</s></li>
-                <li>
-                    <s>
-                        Utworzenie tabeli zawierającej historie gier dla danego gracza ( account(summoner id) <=> game id )<br />
-                        Załadowanie statystyk rozegranych meczy w profil summoner
-                    </s>
-                </li>
-                <li>Sprawdzanie kto jest online</li>
-                <li>Parowanie drużyn </li>
-                <li>Zgłaszanie gotowosci</li>
-                <li>
-                    Ogarnięcie uruchomienia zadania w tle, <br />
-                    które doda wynik meczu dla tej konkretnej pary,<br />
-                    lub gracze sami zakończą mecz guzikiem :P
-                </li>
-                <li>
-                    Aktualizowanie profili o mecze wygrane/przegrane, <br />
-                    albo tylko sme statystyki (KDA, champ, ?itemki)
-                </li>
-            </ol>
-        </div>
-        <div>
-            <p>w turnieju, z graczami, wpisanie url , przekonwertuje dane na stattystyki odbytego meczu , podział na druzyne czerwona i niebieska , ko wygrał etc ? </p>
+            W sumie nic tu nie ma xD
         </div>
     }
-
-
-
-
-
-
-
 }
 else
 {
-    <div class="btn-toolbar mb-4" style="margin-top:25px" role="toolbar" aria-label="Toolbar with button groups">
-        <form action="" method="post">
-            <div class="btn-group">
-                <button type="submit" class="btn btn-warning" name="submit">Wyszukaj</button>
-            </div>
-            <div class="input-group">
-                <input readonly="readonly" type="text" name="nickname" class="form-control" placeholder="Wprowadź nazwę swojego przywoływacza" aria-describedby="btnGroupAddon" size="30" maxlength="30" />
-            </div>
-        </form>
-    </div>
+<div class="btn-toolbar mb-4" style="margin-top:25px" role="toolbar" aria-label="Toolbar with button groups">
+    <form action="" method="post">
+        <div class="btn-group">
+            <button type="submit" class="btn btn-warning" name="submit">Wyszukaj</button>
+        </div>
+        <div class="input-group">
+            <input readonly="readonly" type="text" name="nickname" class="form-control" placeholder="Wprowadź nazwę swojego przywoływacza" aria-describedby="btnGroupAddon" size="30" maxlength="30" />
+        </div>
+    </form>
+</div>
 }
 
 

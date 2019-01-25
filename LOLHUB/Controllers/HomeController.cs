@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using LOLHUB.Models;
 using Microsoft.Extensions.Configuration;
 using LOLHUB.Models.HomeViewModel;
+using System.Data.SqlClient;
 
 namespace LOLHUB.Controllers
 {
-    public class HomeController : Controller { 
-    
+    public class HomeController : Controller {
+
         public IActionResult Index()
         {
             return View();

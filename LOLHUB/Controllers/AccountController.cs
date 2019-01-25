@@ -271,7 +271,9 @@ namespace LOLHUB.Controllers
                         {
                             ConectedSummoners = _summonerRepository.SummonerInfos.Where(s => s.name == testUserName).FirstOrDefault(),
                             FirstName = testUserName,
-                            ConnectedSummonerEmail = user.Email
+                            ConnectedSummonerEmail = user.Email,
+                            Created = DateTime.Now
+                            
                         };
                         _playerRepository.CreateBasicPlayer(testPlayer);
                     }
@@ -292,7 +294,8 @@ namespace LOLHUB.Controllers
                         {
                             ConectedSummoners = null,
                             FirstName = null,
-                            ConnectedSummonerEmail = user.Email
+                            ConnectedSummonerEmail = user.Email,
+                            Created = DateTime.Now
                         };
                         _playerRepository.CreateBasicPlayer(player);
                     }

@@ -10,6 +10,7 @@
         <a class="btn btn-primary" asp-controller="Team" asp-action="CreateTeam">Create a Team</a>
     </div>
 }
+<container>
     <table class="table table-hover">
         <thead>
             <tr>
@@ -35,7 +36,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.Team.OrderByDescending(t=>t.Points))
+            @foreach (var item in Model.Team.OrderByDescending(t => t.Points))
             {
                 <tr>
                     <td>
@@ -82,19 +83,19 @@
                     </td>
 
                     <td>
-                           @{ 
-                               float procentWin = 0;
-                               if (item.Tournaments_Win > 0)
-                               {
-                                  procentWin = (Int64)(((item.Tournaments_Win * 100) / item.Participate_in_Tournaments));
-                               }
-
+                        @{
+                            float procentWin = 0;
+                            if (item.Tournaments_Win > 0)
+                            {
+                                procentWin = (Int64)(((item.Tournaments_Win * 100) / item.Participate_in_Tournaments));
                             }
 
-                               @procentWin %
+                        }
+
+                        @procentWin %
                     </td>
                     <td>
-                        <form asp-controller="Team" asp-action="Manage" asp-route-teamId="@item.Id" method="get" class="text-left"> 
+                        <form asp-controller="Team" asp-action="Manage" asp-route-teamId="@item.Id" method="get" class="text-left">
                             <button type="submit" class="btn btn-primary"><b>Profile</b></button>
                         </form>
                     </td>
@@ -112,3 +113,17 @@
             }
         </tbody>
     </table>
+</container>
+<container class="text-center">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled"> <a class="page-link" href="#" tabindex="-1">Previous</a> </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </nav>
+</container>

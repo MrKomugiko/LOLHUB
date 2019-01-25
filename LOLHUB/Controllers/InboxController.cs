@@ -62,7 +62,7 @@ namespace LOLHUB.Controllers
         {
             int messages = _inboxCtx.Wiadomosci.Include(w=>w.Player)
                     .Where(m => m.Player.ConnectedSummonerEmail == _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value)
-                    .Select(p => p.MessageStorage.Id).Count();
+                    .Where(m=>m.Przeczytane==false).Count();
             return messages;
         }
         [Authorize]

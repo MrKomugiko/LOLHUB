@@ -42,7 +42,7 @@ namespace LOLHUB.Controllers
         private IGenerateCode _code;
 
         [Authorize(Roles = "Member, Admin")]
-        [Route("v1/riotapi/profile")]
+        [Route("/profile")]
         public ActionResult Index()
         {
             //wyszukanie id gracza według emailu zalogowanego konta 
@@ -75,7 +75,7 @@ namespace LOLHUB.Controllers
                         GameStatistics = _matchRepository.GameStatistics.Include(m => m.MatchSelectedData)
                         .Where(p => p.SummonerId == RecentID)
                     };
-                    
+                    ViewBag.IsAlreadyConnected = model.Summoner.Select(s => s.IsVerified);
                     return View(model);
                 }
             }

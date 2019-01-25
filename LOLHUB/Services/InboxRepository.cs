@@ -41,7 +41,7 @@ namespace LOLHUB.Services
                 Temat = dane.Temat,
                 TrescWiadomosci = dane.Tresc,
                 NadawcaId = nadawca.Id,
-                DataWyslania = DateTime.Now
+                DataWyslania = DateTime.Now.ToUniversalTime()
             };
             _context.SzczegolyWiadomosci.Add(szczegoly);
             _context.SaveChanges();

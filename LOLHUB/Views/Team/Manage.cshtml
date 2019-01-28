@@ -27,18 +27,21 @@
            <div class="col">
                <div class="card" style="height:215px;">
                    @*<div class="card-body">
-                    <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
-                    <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
+            <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
+            <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
 
-                </div>*@
+        </div>*@
                    <br /><br /><br />
                    <br />
-                   <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
+                   @if (User.Identity.Name == Model.TeamLeader.ConnectedSummonerEmail || User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                   {
+                       <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
+                   }
 
                    @*<div class="card-footer text-muted">
-                    <a href="#" class="card-link bottom pull-left">Profile</a>
-                    <a href="#" class="card-link pull-right">Message</a>
-                </div>*@
+            <a href="#" class="card-link bottom pull-left">Profile</a>
+            <a href="#" class="card-link pull-right">Message</a>
+        </div>*@
                    <br />
                    <br /><br /><br />
                </div>
@@ -46,18 +49,21 @@
            <div class="col">
                <div class="card" style="height:215px;">
                    @*<div class="card-body">
-                    <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
-                    <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
+            <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
+            <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
 
-                </div>*@
+        </div>*@
                    <br /><br /><br />
                    <br />
-                   <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
+                   @if (User.Identity.Name == Model.TeamLeader.ConnectedSummonerEmail || User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                   {
+                       <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
+                   }
 
                    @*<div class="card-footer text-muted">
-                    <a href="#" class="card-link bottom pull-left">Profile</a>
-                    <a href="#" class="card-link pull-right">Message</a>
-                </div>*@
+            <a href="#" class="card-link bottom pull-left">Profile</a>
+            <a href="#" class="card-link pull-right">Message</a>
+        </div>*@
                    <br />
                    <br /><br /><br />
                </div>
@@ -65,18 +71,21 @@
            <div class="col">
                <div class="card" style="height:215px;">
                    @*<div class="card-body">
-                    <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
-                    <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
+            <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
+            <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
 
-                </div>*@
+        </div>*@
                    <br /><br /><br />
                    <br />
-                   <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
+                   @if (User.Identity.Name == Model.TeamLeader.ConnectedSummonerEmail || User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                   {
+                       <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
+                   }
 
                    @*<div class="card-footer text-muted">
-                    <a href="#" class="card-link bottom pull-left">Profile</a>
-                    <a href="#" class="card-link pull-right">Message</a>
-                </div>*@
+            <a href="#" class="card-link bottom pull-left">Profile</a>
+            <a href="#" class="card-link pull-right">Message</a>
+        </div>*@
                    <br />
                    <br /><br /><br />
                </div>
@@ -84,18 +93,20 @@
            <div class="col">
                <div class="card" style="height:215px;">
                    @*<div class="card-body">
-                    <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
-                    <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
+            <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
+            <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
 
-                </div>*@
+        </div>*@
                    <br /><br /><br />
                    <br />
-                   <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
-
-                   @*<div class="card-footer text-muted">
-                    <a href="#" class="card-link bottom pull-left">Profile</a>
-                    <a href="#" class="card-link pull-right">Message</a>
-                </div>*@
+                   @if (User.Identity.Name == Model.TeamLeader.ConnectedSummonerEmail || User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                        {
+                            <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
+                        }
+                       @*<div class="card-footer text-muted">
+                <a href="#" class="card-link bottom pull-left">Profile</a>
+                <a href="#" class="card-link pull-right">Message</a>
+            </div>*@
                    <br />
                    <br /><br /><br />
                </div>

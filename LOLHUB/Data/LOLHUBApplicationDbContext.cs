@@ -29,7 +29,8 @@ namespace LOLHUB.Data
 
         public DbSet<Message> Wiadomosci { get; set; }
         public DbSet<MessageStorage> SzczegolyWiadomosci { get; set; }
-        public DbSet<LOLHUB.Models.INBOX.Wiadomosc> Wiadomosc { get; set; }
+        public DbSet<ZaproszenieDoTeamu> ZaproszenieDoTeamu { get; set; }
+        //public DbSet<ZaproszenieDoZnajomych> ZaproszeniaDoZnajomych { get; set; }
     }
 }
 

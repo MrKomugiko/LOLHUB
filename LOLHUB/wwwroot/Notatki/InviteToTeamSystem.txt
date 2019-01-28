@@ -1,0 +1,25 @@
+﻿System Zaproszeń do Teamu, wraz z powiadomieniami po stronie graczy
+ 
+ Sposób działania: Team Leader wysyła prośbę o dołączenie do drużyny wybranemu wcześniej graczowi
+ Gracz otrzymuje nowe powiadomienie z informacją, że został zaproszony  do drużyny, po czym wysyła informacje zwrotną Accept/Decline
+
+ Tabela Players musi zawierać  liste wszystkich zaproszeń do niego skierowanych ( później też i zaproszenia do znajomych )
+ List<Zaproszenia> {
+	 public int Id {get;set;} // id zaproszenia
+	 public string TypZaproszenia {get;set;} // Team,Friends,Tournament?
+	 public int? TeamId {get;set;}	// info do jakiej druzyny zapro
+	 public int? PlayerId {get;set;} // info o dodanie do frienda
+	 public bool Odpowiedz {get;set;} // Zmiana jezeli zaakceptuje
+ }
+
+ po zaakceptowaniu zaproszenia przez gracza = zaktualizowana zostaje lista członków drużyny 
+ drużyny do której odnosiło się zaproszenie 
+
+ Jeżeli w drużynie już brakuje miejsc, zostanie użytkownikowi wyświetlona wiadomość, zaproszenie wygasło / brak wolnych miejsc
+
+ Przyjaciele/szybki dostęp(wiadomości itp.) Player musi zawierać Listę przyjaciół 
+ List<Friends>{
+	 public int Id {get;set;}
+	 public int PlayerId {get;set;} // FK
+	 public Player Player {get;set;} // JEden z graczy oznaczonych jako friend
+ }

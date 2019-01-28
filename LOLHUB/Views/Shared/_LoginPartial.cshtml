@@ -9,10 +9,10 @@
     <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
         <ul class="navbar-nav mr-auto navbar-left">
             <li class="nav-item">
-                <a class="nav-link" asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                <a class="nav-link"style="padding-top:25px;" asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
             </li>
             <li class="nav-item">
-                <button type="submit" class="btn btn-link navbar-btn nav-link">Log out</button>
+                <button type="submit" class="btn btn-link navbar-btn nav-link" style="padding-top:16px;">Log out</button>
             </li>
         </ul>
     </form>
@@ -20,7 +20,7 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
-        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Log in</a></li>
+        <li class="nav-item"><a class="nav-link" style="padding-top:25px;" asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
+        <li class="nav-item"><a class="nav-link" style="padding-top:25px;" asp-area="" asp-controller="Account" asp-action="Login">Log in</a></li>
     </ul>
 }

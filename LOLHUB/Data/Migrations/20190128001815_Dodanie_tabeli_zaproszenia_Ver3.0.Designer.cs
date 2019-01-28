@@ -11,9 +11,10 @@ using System;
 namespace LOLHUB.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190128001815_Dodanie_tabeli_zaproszenia_Ver3.0")]
+    partial class Dodanie_tabeli_zaproszenia_Ver30
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -394,17 +395,35 @@ namespace LOLHUB.Migrations
 
                     b.Property<bool?>("Answer");
 
-                    b.Property<int?>("PlayerId");
-
                     b.Property<int?>("TeamId");
+
+                    b.Property<int?>("ZaproszeniaDoTeamu");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlayerId");
-
                     b.HasIndex("TeamId");
 
-                    b.ToTable("ZaproszenieDoTeamu");
+                    b.HasIndex("ZaproszeniaDoTeamu");
+
+                    b.ToTable("ZaproszeniaDoTeamu");
+                });
+
+            modelBuilder.Entity("LOLHUB.Models.ZaproszenieDoZnajomych", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool?>("Answer");
+
+                    b.Property<int?>("PlayerId");
+
+                    b.Property<int?>("ZaproszeniaDoZnajomych");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ZaproszeniaDoZnajomych");
+
+                    b.ToTable("ZaproszeniaDoZnajomych");
                 });
 
             modelBuilder.Entity("RiotApi.Models.SummonerInfoModel", b =>
@@ -544,13 +563,20 @@ namespace LOLHUB.Migrations
 
             modelBuilder.Entity("LOLHUB.Models.ZaproszenieDoTeamu", b =>
                 {
-                    b.HasOne("LOLHUB.Models.Player")
-                        .WithMany("Zaproszenia_Team")
-                        .HasForeignKey("PlayerId");
-
                     b.HasOne("LOLHUB.Models.Team", "Team")
                         .WithMany()
                         .HasForeignKey("TeamId");
+
+                    b.HasOne("LOLHUB.Models.Player")
+                        .WithMany("ZaproszenieDoTeamuIds")
+                        .HasForeignKey("ZaproszeniaDoTeamu");
+                });
+
+            modelBuilder.Entity("LOLHUB.Models.ZaproszenieDoZnajomych", b =>
+                {
+                    b.HasOne("LOLHUB.Models.Player", "Player")
+                        .WithMany("ZaproszenieDoZnajomychIds")
+                        .HasForeignKey("ZaproszeniaDoZnajomych");
                 });
 #pragma warning restore 612, 618
         }

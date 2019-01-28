@@ -91,6 +91,12 @@ namespace LOLHUB
                 options.Filters.Add(new RequireHttpsAttribute());
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("LOLHaven_Debug",
+                    builder => builder.WithOrigins("https://LOLHaven.azurewebsites.net", "https://localhost:44344"));
+            });
+
             services.AddDistributedMemoryCache();
             services.AddSession();
 
@@ -107,32 +113,35 @@ namespace LOLHUB
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+
+                app.UseCors("LOLHaven_Debug");
             }
             else
             {
+                app.UseCors("LOLHaven_Debug");
                 app.UseExceptionHandler("/Home/Error");
+
+                app.UseHsts(hsts => hsts.MaxAge(365).IncludeSubdomains());
+                app.UseXContentTypeOptions();
+                app.UseReferrerPolicy(opts => opts.NoReferrer());
+                app.UseXXssProtection(option => option.EnabledWithBlockMode());
+                app.UseXfo(option => option.Deny());
+
+                app.UseCsp(opts => opts
+                .BlockAllMixedContent()  // blokowanie ładowania strony po http jezeli jest https
+                ////.StyleSources(s => s.Self())
+                //.FontSources(s => s.Self())
+                .FormActions(s => s.Self())
+                .FormActions(s => s.CustomSources("https://www.facebook.com/")) // wywoływanie forumalrzy innych dostawców ( logowanie przez fb)
+                 //.FrameAncestors(s => s.Self())
+                 //.ImageSources(s => s.Self()) // dozwolone obrazy z serwera aplikacji
+                .ScriptSources(s => s.Self()) // dozwolone jest korzystanie ze skryptow znajdujacych sie na serwerze apliakcji
+                .ScriptSources(s => s.UnsafeInline()) // kod javascript w kodzie html a nie w osobnym pliku
+                .ScriptSources(s => s.CustomSources("*.jquery.com", "*.bootstrapcdn.com", "*.cloudflare.com")) // skrypty z stron 3cich o takich domenach sa dozwolone
+                );
             }
             var options = new RewriteOptions().AddRedirectToHttps();
 
-
-            app.UseHsts(hsts => hsts.MaxAge(365).IncludeSubdomains());
-            app.UseXContentTypeOptions();
-            app.UseReferrerPolicy(opts => opts.NoReferrer());
-            app.UseXXssProtection(option => option.EnabledWithBlockMode());
-            app.UseXfo(option => option.Deny());
-
-            app.UseCsp(opts => opts
-            .BlockAllMixedContent()  // blokowanie ładowania strony po http jezeli jest https
-            ////.StyleSources(s => s.Self())
-            //.FontSources(s => s.Self())
-            .FormActions(s => s.Self())
-            .FormActions(s => s.CustomSources("https://www.facebook.com/")) // wywoływanie forumalrzy innych dostawców ( logowanie przez fb)
-            //.FrameAncestors(s => s.Self())
-            //.ImageSources(s => s.Self()) // dozwolone obrazy z serwera aplikacji
-            .ScriptSources(s => s.Self()) // dozwolone jest korzystanie ze skryptow znajdujacych sie na serwerze apliakcji
-            .ScriptSources(s => s.UnsafeInline()) // kod javascript w kodzie html a nie w osobnym pliku
-                .ScriptSources(s => s.CustomSources("*.jquery.com", "*.bootstrapcdn.com", "*.cloudflare.com")) // skrypty z stron 3cich o takich domenach sa dozwolone
-            );
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -142,9 +151,7 @@ namespace LOLHUB
             });
 
             app.UseAuthentication();
-
             app.UseSession();
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

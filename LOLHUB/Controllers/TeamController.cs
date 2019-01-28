@@ -186,5 +186,6 @@ namespace LOLHUB.Controllers
                 return RedirectToAction("Index","Tournament");
         }
 
+
     }
 }

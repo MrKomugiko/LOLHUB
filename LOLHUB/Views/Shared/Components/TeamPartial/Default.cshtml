@@ -19,22 +19,22 @@
 
         @if (SignInManager.IsSignedIn(User))
         {
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown" style="padding-top:10px;">
                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <text style="font-weight:900"> [@teamName] </text>
+                    <text style="font-weight:600"> [@teamName] </text>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" asp-area="" asp-controller="Team" asp-action="Manage" asp-route-teamId="@teamId">Profile</a>
                     <div class="dropdown-divider"></div>
-                          <form asp-controller="Team"
-                                asp-action="LeaveTeam"
-                                asp-route-id="@teamId"
-                                asp-route-user="@UserManager.GetUserName(User)"
-                                method="post">
-                                <button class="dropdown-item" type="submit">
-                                    Leave Team
-                                </button>
-                         </form>
+                    <form asp-controller="Team"
+                          asp-action="LeaveTeam"
+                          asp-route-id="@teamId"
+                          asp-route-user="@UserManager.GetUserName(User)"
+                          method="post">
+                        <button class="dropdown-item danger text-danger" type="submit">
+                            <b> Leave Team </b>
+                        </button>
+                    </form>
                 </div>
             </li>
         }

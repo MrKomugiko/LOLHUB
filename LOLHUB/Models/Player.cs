@@ -23,9 +23,13 @@ namespace LOLHUB.Models
         public string Telephone { get; set; }
         public DateTime Created { get; set; }
 
-        public string ConnectedSummonerEmail { get; set; } 
+        public string ConnectedSummonerEmail { get; set; }
         public virtual SummonerInfoModel ConectedSummoners { get; set; }
 
         public ICollection<PlaysHistory> Histories { get; set; }
+
+        public List<ZaproszenieDoTeamu> Zaproszenia_Team { get;set;}
+
+       // public ICollection<int> Zaproszenia_Friend { get; set; }
     }
 }

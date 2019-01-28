@@ -11,9 +11,10 @@ using System;
 namespace LOLHUB.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190127233832_Dodanie_tabeli_zaproszenia_Ver2.0")]
+    partial class Dodanie_tabeli_zaproszenia_Ver20
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -407,6 +408,22 @@ namespace LOLHUB.Migrations
                     b.ToTable("ZaproszenieDoTeamu");
                 });
 
+            modelBuilder.Entity("LOLHUB.Models.ZaproszenieDoZnajomych", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool?>("Answer");
+
+                    b.Property<int?>("PlayerId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("ZaproszenieDoZnajomych");
+                });
+
             modelBuilder.Entity("RiotApi.Models.SummonerInfoModel", b =>
                 {
                     b.Property<int>("SummonerInfoID")
@@ -545,12 +562,19 @@ namespace LOLHUB.Migrations
             modelBuilder.Entity("LOLHUB.Models.ZaproszenieDoTeamu", b =>
                 {
                     b.HasOne("LOLHUB.Models.Player")
-                        .WithMany("Zaproszenia_Team")
+                        .WithMany("ZaproDoTeamu")
                         .HasForeignKey("PlayerId");
 
                     b.HasOne("LOLHUB.Models.Team", "Team")
                         .WithMany()
                         .HasForeignKey("TeamId");
+                });
+
+            modelBuilder.Entity("LOLHUB.Models.ZaproszenieDoZnajomych", b =>
+                {
+                    b.HasOne("LOLHUB.Models.Player", "Player")
+                        .WithMany("ZaproDoZnajomych")
+                        .HasForeignKey("PlayerId");
                 });
 #pragma warning restore 612, 618
         }

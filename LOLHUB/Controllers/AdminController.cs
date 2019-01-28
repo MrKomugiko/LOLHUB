@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using LOLHUB.Data;
@@ -8,6 +9,7 @@ using LOLHUB.Models;
 using LOLHUB.Models.AdminViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace LOLHUB.Controllers
@@ -124,6 +126,7 @@ namespace LOLHUB.Controllers
         [Route("api/Admin/ServerUsageData/{start}/{end}")]
         public IActionResult ServerUsageData(string start, string end )
         {
+            CultureInfo provider = CultureInfo.InvariantCulture;
             var DatabaseInfo = new List<DatabaseUsage>();
             var teraz = DateTime.Now.ToUniversalTime(); // sprawdzenie czy czyjas godzina sie zgadza z godzina na serwerze
 
@@ -133,10 +136,11 @@ namespace LOLHUB.Controllers
                 string commandString = "";
                 string poczatek = "";
                 string koniec = "";
-                DateTime Poczatek = Convert.ToDateTime(start);
-                DateTime Koniec = Convert.ToDateTime(end);
+
                 if (start!=null && end != null)
                 {
+                    DateTime Poczatek = DateTime.ParseExact(start, "yyyyMMddHHmmss",provider);
+                    DateTime Koniec = DateTime.ParseExact(end, "yyyyMMddHHmmss", provider);
                     if(teraz < Koniec)
                     {
                         DateTime Poczatek2= Poczatek.AddHours(-2);
@@ -218,6 +222,81 @@ namespace LOLHUB.Controllers
 
             return Sum;
         }
- 
+
+
+
+        #region Zapraszanie Gracza do drużyny
+        [AllowAnonymous]
+            [HttpGet]
+            [Route("/api/Admin/Invite_Player_To_Team")]
+            [Route("/api/Admin/Invite_Player_To_Team/{TeamId}/{PlayerId}")]
+            //  [ PlayerId => ID gracza do którego wysyłane jest zaproszenie ]
+            //  [ TeamId => ID drużyny do której gracz zostaje zaproszony ]
+            public IActionResult Invite_Player_To_Team(int PlayerId,int TeamId)
+            {
+                // Warunek sprawdzający czy gracz ma w swoich zaproszeniach juz id teamu a nadal nie oddał głosu (Answer == null)
+                List<ZaproszenieDoTeamu> zaproszeniaUZytkownikaDlaPodanejDruzyny = _context.Players
+                    .Where(p=>p.Id==PlayerId)
+                    .Include(p => p.Zaproszenia_Team)
+                    .Select(z => z.Zaproszenia_Team.Where(t => t.TeamId == TeamId).ToList())
+                    .First();
+
+                if (zaproszeniaUZytkownikaDlaPodanejDruzyny.Where(z => z.Answer == null).Count() >=1)
+                {
+                //dont send again same invite, jsut wait for respond from user side
+                return Ok("Zaproszenie zostało juz wcześniej wysłane, czeka za akceptacją.");
+                }
+                else
+                {
+                    // user dont have yet your invitation, send it
+                    //create invitation
+                    ZaproszenieDoTeamu newInvite = new ZaproszenieDoTeamu
+                    {
+                        Answer = null,
+                        TeamId = TeamId,
+                        Team = _context.Teams.Where(t => t.Id == TeamId).First()
+                    };
+                    _context.ZaproszenieDoTeamu.Add(newInvite);
+                    _context.SaveChanges();
+
+                    Player Player = _context.Players
+                        .Include(p => p.Zaproszenia_Team)
+                        .Where(p => p.Id == PlayerId)
+                        .Single();
+                
+                    //zaktualizuj listę powiadomień użytkownika o nowy wpis -> twoje zaproszenie
+                    Player.Zaproszenia_Team.Add(newInvite);
+                    _context.Update(Player);
+                    _context.SaveChanges();
+                }
+                return Ok("Zaproszenie zostało wysłane poprawnie.");
+            }
+        #endregion
+        #region Wyświetlanie posiadanych zaproszeń
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("/api/Admin/MyInvites")]
+        [Route("/api/Admin/MyInvites/{PlayerId}")]
+        //  [ PlayerId => ID gracza do którego zaproszenia zostaną zwrócone ]
+        public List<ZaproszenieDoTeamu> MyInvites(int PlayerId)
+        {
+            Player Player = _context.Players.Where(p => p.Id == PlayerId).Include(p=>p.Zaproszenia_Team).Single();
+
+            List<ZaproszenieDoTeamu> Data = new List<ZaproszenieDoTeamu>();
+            foreach(ZaproszenieDoTeamu item in Player.Zaproszenia_Team)
+            {
+                Data.Add(new ZaproszenieDoTeamu
+                {
+                    Id = item.Id,
+                    Answer = item.Answer,
+                    TeamId = item.TeamId,
+                    Team = _context.Teams.Where(t => t.Id == item.TeamId).First()
+                }); 
+            };
+
+            return Data;
+        }
+        #endregion
+
     }
 }

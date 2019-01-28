@@ -11,9 +11,10 @@ using System;
 namespace LOLHUB.Migrations
 {
     [DbContext(typeof(LOLHUBApplicationDbContext))]
-    partial class LOLHUBApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190127213936_Dodanie_tabeli_zaproszenia_Ver1.0")]
+    partial class Dodanie_tabeli_zaproszenia_Ver10
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,6 +109,24 @@ namespace LOLHUB.Migrations
                     b.HasIndex("NadawcaId");
 
                     b.ToTable("SzczegolyWiadomosci");
+                });
+
+            modelBuilder.Entity("LOLHUB.Models.INBOX.Wiadomosc", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Nadawca");
+
+                    b.Property<string>("Odbiorca");
+
+                    b.Property<string>("Temat");
+
+                    b.Property<string>("Tresc");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Wiadomosc");
                 });
 
             modelBuilder.Entity("LOLHUB.Models.Match.MatchSelectedData", b =>
@@ -387,16 +406,18 @@ namespace LOLHUB.Migrations
                     b.ToTable("Drabinki");
                 });
 
-            modelBuilder.Entity("LOLHUB.Models.ZaproszenieDoTeamu", b =>
+            modelBuilder.Entity("LOLHUB.Models.Zaproszenie", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<bool?>("Answer");
+                    b.Property<bool>("Answer");
 
                     b.Property<int?>("PlayerId");
 
                     b.Property<int?>("TeamId");
+
+                    b.Property<string>("Type");
 
                     b.HasKey("Id");
 
@@ -404,7 +425,7 @@ namespace LOLHUB.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("ZaproszenieDoTeamu");
+                    b.ToTable("Zaproszenie");
                 });
 
             modelBuilder.Entity("RiotApi.Models.SummonerInfoModel", b =>
@@ -542,10 +563,10 @@ namespace LOLHUB.Migrations
                         .HasForeignKey("TournamentId");
                 });
 
-            modelBuilder.Entity("LOLHUB.Models.ZaproszenieDoTeamu", b =>
+            modelBuilder.Entity("LOLHUB.Models.Zaproszenie", b =>
                 {
-                    b.HasOne("LOLHUB.Models.Player")
-                        .WithMany("Zaproszenia_Team")
+                    b.HasOne("LOLHUB.Models.Player", "Player")
+                        .WithMany("Zaproszenia")
                         .HasForeignKey("PlayerId");
 
                     b.HasOne("LOLHUB.Models.Team", "Team")

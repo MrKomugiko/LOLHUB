@@ -109,13 +109,22 @@ namespace LOLHUB.Services
             }else
                 return false;
         }
+        public bool CheckIfUserAlreadyInTeam(int PlayerId)
+        {
+            if (_context.Players.Where(p => p.Id == PlayerId).Single().MemberOfTeamId == null)
+            {
+                return false; //  znajduje sie aktualnie w zadnej druzynie
+            }
+            else
+                return true; //jest juz w jakiejs druzynienie
+        }
         public bool CheckIfTeamLeaderWantLeaveHisOwnTeam(int teamId)
         {
             var playerName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             if (_context.Teams
                     .Where(t => t.Id == teamId)
                     .Include(p=>p.TeamLeader)
-                    .Where(p=>p.TeamLeader.ConnectedSummonerEmail == playerName) // pobierze lidera druzyny do ktorej lider che dolaczyc, są inne, więc nie mzoe sie ruszyc ze swojej druzyny ?
+                    .Where(p=>p.TeamLeader.ConnectedSummonerEmail == playerName) 
                     .Any())
             {
                 return false;

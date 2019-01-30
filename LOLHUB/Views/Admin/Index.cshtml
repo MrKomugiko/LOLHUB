@@ -488,14 +488,3 @@
         </form>
     </dir>
 }
-
-@{
-    List<ZaproszenieDoTeamu> listaZaproszeń = ViewBag.MojeZaproszenia;
-    foreach(ZaproszenieDoTeamu item in listaZaproszeń)
-    {
-     <div>
-         <p>@item.Answer</p>
-         <p>@item.Team.Name</p>
-     </div>
-    }
-}

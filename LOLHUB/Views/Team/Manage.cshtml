@@ -6,203 +6,180 @@
 <!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 
 <h2 class="text-center">@Model.Name</h2>
-   <div class="container-fluid">
-       <div class="row">
-           <div class="col">
-               <div class="card" style="height:215px">
-                   <div class="card-body">
-                       <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#1</span></h6</h4>
-
-                       <h6 class="card-subtitle mb-2 text-muted pull-left"><b>[ ADC ]</b></h6>
-                       <h6 class="card-subtitle mb-2 text-muted right text-right">Team Leader</h6>
-                       <h5>takie tam o graczu, jego KDA, liczba gier e tej drużynie , data dołączenia</h5>
-                   </div>
-
-                   <div class="card-footer text-muted">
-                       <a href="#" class="card-link bottom pull-left">Profile</a>
-                       <a href="#" class="card-link pull-right">Message</a>
-                   </div>
-               </div>
-           </div>
-           <div class="col">
-               <div class="card" style="height:215px;">
-                   @*<div class="card-body">
-            <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
-            <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
-
-        </div>*@
-                   <br /><br /><br />
-                   <br />
-                   @if (User.Identity.Name == Model.TeamLeader.ConnectedSummonerEmail || User.IsInRole("Admin") || User.IsInRole("Moderator"))
-                   {
-                       <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
-                   }
-
-                   @*<div class="card-footer text-muted">
-            <a href="#" class="card-link bottom pull-left">Profile</a>
-            <a href="#" class="card-link pull-right">Message</a>
-        </div>*@
-                   <br />
-                   <br /><br /><br />
-               </div>
-           </div>
-           <div class="col">
-               <div class="card" style="height:215px;">
-                   @*<div class="card-body">
-            <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
-            <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
-
-        </div>*@
-                   <br /><br /><br />
-                   <br />
-                   @if (User.Identity.Name == Model.TeamLeader.ConnectedSummonerEmail || User.IsInRole("Admin") || User.IsInRole("Moderator"))
-                   {
-                       <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
-                   }
-
-                   @*<div class="card-footer text-muted">
-            <a href="#" class="card-link bottom pull-left">Profile</a>
-            <a href="#" class="card-link pull-right">Message</a>
-        </div>*@
-                   <br />
-                   <br /><br /><br />
-               </div>
-           </div>
-           <div class="col">
-               <div class="card" style="height:215px;">
-                   @*<div class="card-body">
-            <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
-            <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
-
-        </div>*@
-                   <br /><br /><br />
-                   <br />
-                   @if (User.Identity.Name == Model.TeamLeader.ConnectedSummonerEmail || User.IsInRole("Admin") || User.IsInRole("Moderator"))
-                   {
-                       <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
-                   }
-
-                   @*<div class="card-footer text-muted">
-            <a href="#" class="card-link bottom pull-left">Profile</a>
-            <a href="#" class="card-link pull-right">Message</a>
-        </div>*@
-                   <br />
-                   <br /><br /><br />
-               </div>
-           </div>
-           <div class="col">
-               <div class="card" style="height:215px;">
-                   @*<div class="card-body">
-            <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#3</span></h6</h4>
-            <h6 class="card-subtitle mb-2 text-muted">Team Leader || Position: ADC</h6>
-
-        </div>*@
-                   <br /><br /><br />
-                   <br />
-                   @if (User.Identity.Name == Model.TeamLeader.ConnectedSummonerEmail || User.IsInRole("Admin") || User.IsInRole("Moderator"))
-                        {
-                            <div class="card-body center-block"><button class="btn btn-success">INVITE Player</button></div>
-                        }
-                       @*<div class="card-footer text-muted">
-                <a href="#" class="card-link bottom pull-left">Profile</a>
-                <a href="#" class="card-link pull-right">Message</a>
-            </div>*@
-                   <br />
-                   <br /><br /><br />
-               </div>
-           </div>
-
-       </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="card" style="height:215px">
+                <div class="card-body">
+                    <h4 class="card-title"><b>@Model.TeamLeader.ConectedSummoners.name</b><span class="pull-right">#1</span></h4>
+                    <h6 class="card-subtitle mb-2 text-muted pull-left"><b>[ ADC ]</b></h6>
+                    <h6 class="card-subtitle mb-2 text-muted right text-right">Team Leader</h6>
+                    <h5>takie tam o graczu, jego KDA, liczba gier w tej drużynie , data dołączenia</h5>
+                </div>
+                <div class="card-footer text-muted">
+                    <a href="#" class="card-link bottom pull-left">Profile</a>
+                    <a href="#" class="card-link pull-right">Message</a>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card" style="height:215px;">
+                <br /><br /><br /><br />
+                @if (User.Identity.Name == Model.TeamLeader.ConnectedSummonerEmail || User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                {
+                    <div class="card-body center-block"><button class="btn btn-success" data-toggle="modal" data-target="#myModal">INVITE Player</button></div>
+                }
+                <br /><br /><br /><br />
+            </div>
+        </div>
+        <div class="col">
+            <div class="card" style="height:215px;">
+                <br /><br /><br /><br />
+                @if (User.Identity.Name == Model.TeamLeader.ConnectedSummonerEmail || User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                {
+                    <div class="card-body center-block"><button class="btn btn-success" data-toggle="modal" data-target="#myModal">INVITE Player</button></div>
+                }
+                <br /><br /><br /><br />
+            </div>
+        </div>
+        <div class="col">
+            <div class="card" style="height:215px;">
+                <br /><br /><br /><br />
+                @if (User.Identity.Name == Model.TeamLeader.ConnectedSummonerEmail || User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                {
+                    <div class="card-body center-block"><button class="btn btn-success" data-toggle="modal" data-target="#myModal">INVITE Player</button></div>
+                }
+                <br /><br /><br /><br />
+            </div>
+        </div>
+        <div class="col">
+            <div class="card" style="height:215px;">
+                <br /><br /><br /><br />
+                @if (User.Identity.Name == Model.TeamLeader.ConnectedSummonerEmail || User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                {
+                    <div class="card-body center-block"><button class="btn btn-success" data-toggle="modal" data-target="#myModal">INVITE Player</button></div>
+                }
+                <br /><br /><br /><br />
+            </div>
+        </div>
     </div>
+</div>
 <br />
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Invite Player to your Team</h4>
+                <button type = "button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="Admin" asp-action="Invite_Player_To_Team" asp-route-TeamId="TeamId" asp-route-PlayerData="PlayerData" method="get">
+                    <div class="form-group">
+                        <input type="hidden" name="TeamId" class="form-control" value="@Model.Id" />
+                    </div>
+                    <div class="form-group">
+                        <input type="search" name="PlayerData" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Wyślij zaproszenie." class="btn btn-success" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+}
+
 
 <!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 <div class="row">
 
     @if (User.Identity.Name == Model.TeamLeader.ConnectedSummonerEmail || User.IsInRole("Admin") || User.IsInRole("Moderator")) // tylko liderzy swoich druzyn moga dodac wynik meczu
-    {
-        <div class="col-md-6">
-            <form asp-action="EditTeam">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group hidden">
-                    <input asp-for="Id" class="form-control hidden" />
-                </div>
-                <div class="form-group">
-                    <label asp-for="Name" class="control-label"></label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Description" class="control-label"></label>
-                    <input asp-for="Description" class="form-control" />
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Zatwierdz zmiany" class="btn btn-success" />
-                </div>
-            </form>
-        </div>
-        <div class="col-md-3 text-center">
-            <form asp-controller="Team" asp-action="ChangeTeamLeader"
-                  asp-route-id="@Model.Id"
-                  asp-route-currentLeader="@Model.TeamLeader.Id"
-                  asp-route-newLeader="newLeader"
-                  method="post">
-                <div class="form-group">
-                    <label for="list">Wybierz nowego Lidera W.I.P</label>
-                    <select name="newLeader" id="list" class="form-control text-center" style="height:35px" size="1" required>
-                        <option value="">Select new Team Leader</option>
-                        @{
-                            foreach (var players in Model.Players)
-                            {
-                                <option value="@players.Id"> @players.ConectedSummoners.name </option>
-                            }
-                        }
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-warning"><b>[Ustąp z pozycji lidera]</b></button>
-            </form>
-        </div>
+        {
+    <div class="col-md-6">
+        <form asp-action="EditTeam">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group hidden">
+                <input asp-for="Id" class="form-control hidden" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Zatwierdz zmiany" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-3 text-center">
+        <form asp-controller="Team" asp-action="ChangeTeamLeader"
+              asp-route-id="@Model.Id"
+              asp-route-currentLeader="@Model.TeamLeader.Id"
+              asp-route-newLeader="newLeader"
+              method="post">
+            <div class="form-group">
+                <label for="list">Wybierz nowego Lidera W.I.P</label>
+                <select name="newLeader" id="list" class="form-control text-center" style="height:35px" size="1" required>
+                    <option value="">Select new Team Leader</option>
+                    @{
+                                                    foreach (var players in Model.Players)
+                                                    {
+                        <option value="@players.Id"> @players.ConectedSummoners.name </option>
+                                                    }
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-warning"><b>[Ustąp z pozycji lidera]</b></button>
+        </form>
+    </div>
 
-        <div class="col-md-3 text-center">
-            <form asp-controller="Team" asp-action="DeleteTeam"
-                  asp-route-id="@Model.Id"
-                  asp-route-check="checkspelling"
-                  method="post">
-                <div class="form-group">
-                    <label>Potwierdź usunięcie drużyny</label>
-                    <input name="checkspelling" placeholder="Potwierdź wprowadzając nazwę drużyny." class="form-control text-center" style="height:35px" required />
-                </div>
-                <button type="submit" class="btn btn-danger"><b>[Delete your Team!]</b></button>
-            </form>
-        </div>
+    <div class="col-md-3 text-center">
+        <form asp-controller="Team" asp-action="DeleteTeam"
+              asp-route-id="@Model.Id"
+              asp-route-check="checkspelling"
+              method="post">
+            <div class="form-group">
+                <label>Potwierdź usunięcie drużyny</label>
+                <input name="checkspelling" placeholder="Potwierdź wprowadzając nazwę drużyny." class="form-control text-center" style="height:35px" required />
+            </div>
+            <button type="submit" class="btn btn-danger"><b>[Delete your Team!]</b></button>
+        </form>
+    </div>
 
 
-    }
-    else
-    {
-        <div class="col-md-6">
-        </div>
+        }
+        else
+        {
+    <div class="col-md-6">
+    </div>
 
-        <div class="col-md-6">
-        </div>
-    }
+    <div class="col-md-6">
+    </div>
+        }
     <div class="col-md-4">
         <h3>Team Members:</h3>
         <ul class="h4">
             @foreach (var members in Model.Players)
-            {
-                var nickname = "";
-                foreach (var item in ViewBag.SummonerInfos)
-                {
-                    if (members.ConnectedSummonerEmail == item.ConectedAccount)
-                    {
-                        if (Model.TeamLeader.ConnectedSummonerEmail == item.ConectedAccount) { nickname = item.name + " ♔ "; } else { nickname = item.name; }
+                        {
+                            var nickname = "";
+                            foreach (var item in ViewBag.SummonerInfos)
+                            {
+                                if (members.ConnectedSummonerEmail == item.ConectedAccount)
+                                {
+                                    if (Model.TeamLeader.ConnectedSummonerEmail == item.ConectedAccount) { nickname = item.name + " ♔ "; } else { nickname = item.name; }
 
-                    }
-                }
-                <li>@nickname</li>
-            }
+                                }
+                            }
+            <li>@nickname</li>
+                        }
         </ul>
     </div>
 
@@ -233,7 +210,7 @@
     <div class="col-md-12">
         <h3>Team match History</h3>
         @{
-            int? tournamentid = null;
+                        int? tournamentid = null;
         }
         @await Component.InvokeAsync("RecentMatches", new { tournamentId = tournamentid, teamId = Model.Id })
     </div>

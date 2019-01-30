@@ -10,9 +10,9 @@
             background-color: #fee;
         }
     </style>
+
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-    @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">*@
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
@@ -27,6 +27,7 @@
     </environment>
 </head>
 <body>
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-fixed-top text-center" style="padding-top:0px; padding-bottom:0px;">
         <div class="container">
             <div class="navbar-header">
@@ -36,6 +37,11 @@
                 </button>
 
             </div>
+            <style>
+                .fade {
+                    opacity: unset;
+                }
+            </style>
             <div class="navbar-collapse collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav" style="font-size:medium;">
                     @if (User.IsInRole("Member"))
@@ -64,49 +70,64 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         @await Component.InvokeAsync("TeamPartial")
-                        <li class="nav-item"><a class="nav-link"style="padding-top:25px;" asp-area="" asp-controller="Inbox" asp-action="Index">INBOX <span class="badge badge-primary" id="messageCount"></span></a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" style="padding-top:19px;" asp-area="" asp-controller="Inbox" asp-action="Index">
+                                <span class="fa-layers fa-fw fa-2x">
+                                    <i class="fa fa-envelope"></i>
+                                    <span class="fa-layers-counter" id="messageCount" style="background:Tomato;font-size:50px;"></span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a  id="notificationPopover" class="nav-link" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?" data-placement="right" style="padding-top:19px;"  >
+                                <span class="fa-layers fa-fw fa-2x">
+                                    <i class="fa fa-bell"></i>
+                                    <span class="fa-layers-counter" id="notificationCount" style="background:Tomato;font-size:50px;"></span>
+                                </span>
+                            </a>
+                        </li>
                     }
+                    <!--
+
+                <button type="button" id="notificationPopover" class="btn btn-lg btn-danger" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover</button>
+
+
+                                    -->
                 </ul>
                 <ul class="navbar-nav navbar-right" style="font-size:medium;">
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <li class="nav-item"><a class="nav-link" style="padding-top:15px;" asp-area="" asp-controller="Team" asp-action="Index"> <span class="fa fa-bell fa-2x"></span>  </a></li>
-                    }
-
-
-                        @await Html.PartialAsync("_LoginPartial")
-                    </ul>
-</div>
+                    @await Html.PartialAsync("_LoginPartial")
+                </ul>
+            </div>
         </div>
     </nav>
     <div class="container body-content">
 
         @if (TempData["result"] != null)
-        {
+        {<br />
             <div class="alert alert-success mt-1">@TempData["result"]</div>
         }
         @if (TempData["message"] != null)
-        {
+        {<br />
             <div class="alert alert-success mt-1 text-center">@TempData["message"]</div>
         }
         @if (TempData["error"] != null)
-        {
+        {<br />
             <div class="alert alert-danger mt-1 text-center">@TempData["error"]</div>
         }
         @if (TempData["SummonnerIsAlreadyAssigned"] != null)
-        {
+        {<br />
             <div class="alert alert-danger mt-1 text-center">@TempData["SummonnerIsAlreadyAssigned"]</div>
         }
         @if (TempData["SummonerDontExists"] != null)
-        {
+        {<br />
             <div class="alert alert-success mt-1 text-center">@TempData["SummonerDontExists"]</div>
         }
         @if (TempData["joiningResult"] != null)
-        {
+        {<br />
             <div class="alert alert-info mt-1 text-center">@TempData["joiningResult"]</div>
         }
         @if (TempData["AlreadyTeamLeader"] != null)
-        {
+        {<br />
             <div class="alert alert-danger mt-1 text-center">@TempData["AlreadyTeamLeader"]</div>
         }
         @RenderBody()
@@ -138,11 +159,15 @@
     </environment>
 
 
-
-    <!-- reloading the value every 2 seconds -->
+    @if (User.Identity.IsAuthenticated)
+    {
+        <!-- reloading the value every 10 seconds -->
         <script>
-        $.get('/Inbox/MessageTotalCount', function (data) {
-            $('#messageCount').html(data);
+            $.get('/Inbox/MessageTotalCount', function (data) {
+                $('#messageCount').html(data);
+            });
+            $.get('/Admin/NewInviteCounter', function (data) {
+                $('#notificationCount').html(data);
             });
 
             $.get('/api/Admin/RegisteredUsersCount', function (data) {
@@ -159,24 +184,37 @@
             $.get('/api/Admin/TotalPointsDistibuted', function (data) {
                 $('#TotalPoints').html(data);
             });
-    </script>
-    <script>
-        setInterval(function () {
-            $('#messageCount').load('/Inbox/MessageTotalCount');
-            //$('#userCount').load('/api/Admin/RegisteredUsersCount');
-            //$('#TournamnetsCount').load('/api/Admin/TournamentsCount');
-            //$('#MatchesPlayed').load('/api/Admin/MatchesPlayedCount');
-            //$('#TotalPoints').load('/api/Admin/TotalPointsDistibuted');
+        </script>
+        <script>
+            setInterval(function () {
+                $('#messageCount').load('/Inbox/MessageTotalCount');
+                $('#notificationCount').load('/Admin/NewInviteCounter');
 
-        }, 5000);
-    </script>
+                //$('#userCount').load('/api/Admin/RegisteredUsersCount');
+                //$('#TournamnetsCount').load('/api/Admin/TournamentsCount');
+                //$('#MatchesPlayed').load('/api/Admin/MatchesPlayedCount');
+                //$('#TotalPoints').load('/api/Admin/TotalPointsDistibuted');
 
+            }, 10000);
+        </script>
 
+    }
     @RenderSection("scripts", required: false)
 
+
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+
+        $(function () {
+            $('#notificationPopover').popover()
+        })
+    </script>
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    @*<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>*@
     <script defer src="https://use.fontawesome.com/releases/v5.6.3/js/all.js" integrity="sha384-EIHISlAOj4zgYieurP0SdoiBYfGJKkgWedPHH4jCzpCXLmzVsw1ouK59MuUtP4a1" crossorigin="anonymous"></script>
 </body>
 </html>

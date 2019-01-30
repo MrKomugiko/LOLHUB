@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using LOLHUB.Data;
 using LOLHUB.Models;
 using LOLHUB.Models.AdminViewModels;
+using LOLHUB.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -17,15 +20,19 @@ namespace LOLHUB.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        private ITournamentRepository _repository;
-        private LOLHUBIdentityDbContext _identityContext;
-        private LOLHUBApplicationDbContext _context;
+        private readonly ITournamentRepository _repository;
+        private readonly LOLHUBIdentityDbContext _identityContext;
+        private readonly LOLHUBApplicationDbContext _context;
+        private readonly ITeamRepository _teamCtx;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AdminController(ITournamentRepository repository, LOLHUBIdentityDbContext identityContext, LOLHUBApplicationDbContext context)
+        public AdminController(ITournamentRepository repository, ITeamRepository teamCtx, LOLHUBIdentityDbContext identityContext, LOLHUBApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _repository = repository;
             _identityContext = identityContext;
             _context = context;
+            _teamCtx = teamCtx;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public ViewResult Index()
@@ -46,13 +53,13 @@ namespace LOLHUB.Controllers
                                       Rolename = r.Name
                                   })
                                   .Select(p => new UserAndRolesViewModel()
-                                   {
-                                       UserId = p.UserId,
-                                       Username = p.Username,
-                                       Email = p.Email,
-                                       RoleId = p.RoleId,
-                                       Rolename = p.Rolename
-                                   });
+                                  {
+                                      UserId = p.UserId,
+                                      Username = p.Username,
+                                      Email = p.Email,
+                                      RoleId = p.RoleId,
+                                      Rolename = p.Rolename
+                                  });
 
             return View(usersWithRoles);
         }
@@ -124,7 +131,7 @@ namespace LOLHUB.Controllers
         [HttpGet]
         [Route("api/Admin/ServerUsageData")]
         [Route("api/Admin/ServerUsageData/{start}/{end}")]
-        public IActionResult ServerUsageData(string start, string end )
+        public IActionResult ServerUsageData(string start, string end)
         {
             CultureInfo provider = CultureInfo.InvariantCulture;
             var DatabaseInfo = new List<DatabaseUsage>();
@@ -137,18 +144,18 @@ namespace LOLHUB.Controllers
                 string poczatek = "";
                 string koniec = "";
 
-                if (start!=null && end != null)
+                if (start != null && end != null)
                 {
-                    DateTime Poczatek = DateTime.ParseExact(start, "yyyyMMddHHmmss",provider);
+                    DateTime Poczatek = DateTime.ParseExact(start, "yyyyMMddHHmmss", provider);
                     DateTime Koniec = DateTime.ParseExact(end, "yyyyMMddHHmmss", provider);
-                    if(teraz < Koniec)
+                    if (teraz < Koniec)
                     {
-                        DateTime Poczatek2= Poczatek.AddHours(-2);
+                        DateTime Poczatek2 = Poczatek.AddHours(-2);
                         DateTime Koniec2 = Koniec.AddHours(-2);
 
                         poczatek = Poczatek2.Year.ToString() + "-" + Poczatek2.Month.ToString() + "-" + Poczatek2.Day.ToString() + " " + Poczatek2.ToLongTimeString();
                         koniec = Koniec2.Year.ToString() + "-" + Koniec2.Month.ToString() + "-" + Koniec2.Day.ToString() + " " + Koniec2.ToLongTimeString();
-                    }else
+                    } else
                     {
                         poczatek = Poczatek.Year.ToString() + "-" + Poczatek.Month.ToString() + "-" + Poczatek.Day.ToString() + " " + Poczatek.ToLongTimeString();
                         koniec = Koniec.Year.ToString() + "-" + Koniec.Month.ToString() + "-" + Koniec.Day.ToString() + " " + Koniec.ToLongTimeString();
@@ -156,7 +163,7 @@ namespace LOLHUB.Controllers
 
                     commandString = "SELECT * FROM sys.resource_stats WHERE(database_name = 'LOLHaven-Application') and(start_time between '" + poczatek + "' and '" + koniec + "') ORDER BY end_time DESC";
 
-                }else
+                } else
                     commandString = "SELECT TOP 1 * FROM sys.resource_stats WHERE(database_name = 'LOLHaven-Application') ORDER BY start_time DESC";
                 using (var command = new SqlCommand(commandString, sqlConnection))
                 {
@@ -183,8 +190,8 @@ namespace LOLHUB.Controllers
                 sqlConnection.Close();
             }
 
-            return Ok(DatabaseInfo.OrderBy(d=>d.start_time));
-    }
+            return Ok(DatabaseInfo.OrderBy(d => d.start_time));
+        }
 
         [AllowAnonymous]
         [HttpGet]
@@ -218,7 +225,7 @@ namespace LOLHUB.Controllers
         [Route("/api/Admin/TotalPointsDistibuted")]
         public int TotalPointsDistibuted()
         {
-            int Sum = _context.Teams.Sum(t=>t.Points).Value;
+            int Sum = _context.Teams.Sum(t => t.Points).Value;
 
             return Sum;
         }
@@ -227,13 +234,24 @@ namespace LOLHUB.Controllers
 
         #region Zapraszanie Gracza do drużyny
         [AllowAnonymous]
-            [HttpGet]
-            [Route("/api/Admin/Invite_Player_To_Team")]
-            [Route("/api/Admin/Invite_Player_To_Team/{TeamId}/{PlayerId}")]
-            //  [ PlayerId => ID gracza do którego wysyłane jest zaproszenie ]
-            //  [ TeamId => ID drużyny do której gracz zostaje zaproszony ]
-            public IActionResult Invite_Player_To_Team(int PlayerId,int TeamId)
+        [HttpGet]
+        [Route("/api/Admin/Invite_Player_To_Team")]
+        [Route("/api/Admin/Invite_Player_To_Team/{TeamId}/{PlayerId}")]
+        //  [ PlayerData => Nick lub Email gracza do którego wysyłane jest zaproszenie ]
+        //  [ TeamId => ID drużyny do której gracz zostaje zaproszony ]
+        public IActionResult Invite_Player_To_Team(int TeamId,string PlayerData)
+        {
+                int PlayerId = 0;
+                if (_context.Players.Where(p=>p.ConnectedSummonerEmail == PlayerData).Any() || _context.SummonerInfos.Where(s => s.name == PlayerData).Any())
+                {
+                    PlayerId = _context.Players.Include(p=>p.ConectedSummoners).Where(p => p.ConnectedSummonerEmail == PlayerData || p.ConectedSummoners.name == PlayerData).FirstOrDefault().Id;
+            }
+            else
             {
+                TempData["error"] = "Takie konto nie istnieje, lub gracz nie połączył nadal swojego konta LOL";
+                return RedirectToAction("Manage", "Team", new { teamId = TeamId });
+            }
+                
                 // Warunek sprawdzający czy gracz ma w swoich zaproszeniach juz id teamu a nadal nie oddał głosu (Answer == null)
                 List<ZaproszenieDoTeamu> zaproszeniaUZytkownikaDlaPodanejDruzyny = _context.Players
                     .Where(p=>p.Id==PlayerId)
@@ -244,7 +262,8 @@ namespace LOLHUB.Controllers
                 if (zaproszeniaUZytkownikaDlaPodanejDruzyny.Where(z => z.Answer == null).Count() >=1)
                 {
                 //dont send again same invite, jsut wait for respond from user side
-                return Ok("Zaproszenie zostało juz wcześniej wysłane, czeka za akceptacją.");
+                TempData["error"] = "Zaproszenie zostało juz wcześniej wysłane, czeka za akceptacją.";
+                return RedirectToAction("Manage", "Team", new { teamId = TeamId });
                 }
                 else
                 {
@@ -269,7 +288,8 @@ namespace LOLHUB.Controllers
                     _context.Update(Player);
                     _context.SaveChanges();
                 }
-                return Ok("Zaproszenie zostało wysłane poprawnie.");
+            TempData["message"] = "Zaproszenie zostało poprawnie wysłąne do gracza.";
+            return RedirectToAction("Manage","Team", new { teamId = TeamId });
             }
         #endregion
         #region Wyświetlanie posiadanych zaproszeń
@@ -278,7 +298,7 @@ namespace LOLHUB.Controllers
         [Route("/api/Admin/MyInvites")]
         [Route("/api/Admin/MyInvites/{PlayerId}")]
         //  [ PlayerId => ID gracza do którego zaproszenia zostaną zwrócone ]
-        public List<ZaproszenieDoTeamu> MyInvites(int PlayerId)
+        public IActionResult MyInvites(int PlayerId)
         {
             Player Player = _context.Players.Where(p => p.Id == PlayerId).Include(p=>p.Zaproszenia_Team).Single();
 
@@ -290,11 +310,63 @@ namespace LOLHUB.Controllers
                     Id = item.Id,
                     Answer = item.Answer,
                     TeamId = item.TeamId,
-                    Team = _context.Teams.Where(t => t.Id == item.TeamId).First()
+                    Team = _context.Teams.Where(t => t.Id == item.TeamId).Single()
                 }); 
             };
 
-            return Data;
+            return Ok(Data.Select(s=>s).ToList());
+        }
+
+        [Authorize(Roles = "Admin,Member,Moderator")]
+        [HttpGet]
+        //  [ PlayerId => ID gracza do którego zaproszenia zostaną zwrócone ]
+        public int NewInviteCounter()
+        {
+            Player Player = _context.Players.Where(p => p.ConnectedSummonerEmail == _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value).Include(p => p.Zaproszenia_Team).Single();
+
+            int notificationCount = Player.Zaproszenia_Team.Where(z => z.Answer == null).Count();
+
+            return notificationCount;
+        }
+        #endregion
+        #region Odpowiadanie na zaproszenie
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("/api/Admin/AnswerToInvite")] 
+        [Route("/api/Admin/AnswerToInvite/{PlayerId}/{ZaproszenieId}/{Odpowiedz}")]
+        //  [ PlayerId => ID gracza ktory odpowiada na zaproszenie ]
+        //  [ ZaproszenieId => ID zaprosznia na które wysyłana jest odpowiedz ]
+        //  [ Odpowiedz => wartosc odpowiedzi , true=> potwierdzenie, False=>odmowa ]
+        public IActionResult AnswerToInvite(int PlayerId, int ZaproszenieId, bool Odpowiedz)
+        {
+            Player Player = _context.Players
+                        .Include(p => p.Zaproszenia_Team)
+                        .Where(p => p.Id == PlayerId)
+                        .Single();
+
+            if (Odpowiedz) {
+                if (Player.Zaproszenia_Team.Where(z => z.Id == ZaproszenieId).First().Answer == null)
+                {
+                    int TeamId = Convert.ToInt32(Player.Zaproszenia_Team.Where(z => z.Id == ZaproszenieId).First().TeamId.ToString());
+                    // SPRAWDZENIE CZY UŻYTKOWNIK JUZ JEST W JAKIEJS DRUZYNIE
+                    if (_teamCtx.CheckIfUserAlreadyInTeam(PlayerId))
+                    {// TRUE => jest w jakiejs druzynie : OPUSZCZENIE DRUŻYNY JEZELI MOZE
+                        if (_teamCtx.LeaveTeam(TeamId, Player.ConnectedSummonerEmail.ToString()))
+                        {//Dołączanie do drużyny
+                            _teamCtx.JoinTeam(TeamId);
+                        }
+                    }// FALSE => nie ma druzyny
+                    _teamCtx.JoinTeam(TeamId);
+                }
+                Player.Zaproszenia_Team.Where(z => z.Id == ZaproszenieId).First().Answer = Odpowiedz;
+                _context.Players.Update(Player);
+                _context.SaveChanges();
+                return Ok("Poprawne wysłanie odpowiedzi.");
+            }
+            else
+            {
+                return Ok("Odpowiedź została już udzielona, nie można jej zmienić.");
+            }
         }
         #endregion
 

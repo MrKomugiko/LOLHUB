@@ -41,6 +41,10 @@
                 .fade {
                     opacity: unset;
                 }
+
+                .popover {
+                    max-width: 100%;
+                }
             </style>
             <div class="navbar-collapse collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav" style="font-size:medium;">
@@ -52,19 +56,20 @@
                     {
                         if (User.IsInRole("Admin"))
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" style="padding-top:25px;" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Administracja
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index">Dashboard</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="UserList">User List</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="RiotApi" asp-action="listOfSummonerInfos">Summoner List</a>
+                            <li class="nav-item">
+                                <div class="dropdown">
+                                    <a class="nav-link" style="padding-top:24px;" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Administracja
+                                    </a>
+                                    <div class="dropdown-menu p-4 text-muted" aria-labelledby="navbarDropdownMenuLink">
+                                        <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index">Dashboard</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="UserList">User List</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="RiotApi" asp-action="listOfSummonerInfos">Summoner List</a>
+                                    </div>
                                 </div>
                             </li>
                         }
                     }
-                    <!--    Tylko admin: Zakładka [Aministracja]    -->
                     <li class="nav-item"><a class="nav-link" style="padding-top:25px;" asp-area="" asp-controller="Tournament" asp-action="Index">Tournaments</a></li>
                     <li class="nav-item"><a class="nav-link" style="padding-top:25px;" asp-area="" asp-controller="Team" asp-action="Index">Teams</a></li>
                     @if (User.Identity.IsAuthenticated)
@@ -79,20 +84,28 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a  id="notificationPopover" class="nav-link" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?" data-placement="right" style="padding-top:19px;"  >
-                                <span class="fa-layers fa-fw fa-2x">
-                                    <i class="fa fa-bell"></i>
-                                    <span class="fa-layers-counter" id="notificationCount" style="background:Tomato;font-size:50px;"></span>
-                                </span>
-                            </a>
+                            <div class="dropdown">
+                                <a class="nav-link" id="NotificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding-top:19px;">
+                                    <span class="fa-layers fa-fw fa-2x">
+                                        <i class="fa fa-bell"></i>
+                                        <span class="fa-layers-counter" id="notificationCount" style="background:Tomato;font-size:50px;"></span>
+                                    </span>
+                                </a>
+                                <div class="dropdown-menu p-4 text-muted" style="width: 400px;" aria-labelledby="NotificationDropdown">
+                                    <p>
+                                        Fast Access notification list, take newest 5, and hide readed
+                                    </p>
+                                    <p class="mb-0">
+                                        list below with button to accept or refuse
+                                    </p>
+                                    <p class="mb-0" id="notificationData">
+                                        lista powiadomien TUTAJ
+                                    </p>
+
+                                </div>
+                            </div>
                         </li>
                     }
-                    <!--
-
-                <button type="button" id="notificationPopover" class="btn btn-lg btn-danger" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover</button>
-
-
-                                    -->
                 </ul>
                 <ul class="navbar-nav navbar-right" style="font-size:medium;">
                     @await Html.PartialAsync("_LoginPartial")
@@ -184,37 +197,33 @@
             $.get('/api/Admin/TotalPointsDistibuted', function (data) {
                 $('#TotalPoints').html(data);
             });
+            $.get('/api/Admin/MyInvites', function (data) {
+                $('#notificationData').html(data);
+            });
         </script>
         <script>
             setInterval(function () {
                 $('#messageCount').load('/Inbox/MessageTotalCount');
                 $('#notificationCount').load('/Admin/NewInviteCounter');
 
+                $.get('/api/Admin/MyInvites', function (data) {
+                    $('#notificationData').html(data);
+                });
+
                 //$('#userCount').load('/api/Admin/RegisteredUsersCount');
                 //$('#TournamnetsCount').load('/api/Admin/TournamentsCount');
                 //$('#MatchesPlayed').load('/api/Admin/MatchesPlayedCount');
                 //$('#TotalPoints').load('/api/Admin/TotalPointsDistibuted');
 
-            }, 10000);
+            }, 5000);
         </script>
 
     }
     @RenderSection("scripts", required: false)
 
-
-    <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-
-        $(function () {
-            $('#notificationPopover').popover()
-        })
-    </script>
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-    @*<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>*@
     <script defer src="https://use.fontawesome.com/releases/v5.6.3/js/all.js" integrity="sha384-EIHISlAOj4zgYieurP0SdoiBYfGJKkgWedPHH4jCzpCXLmzVsw1ouK59MuUtP4a1" crossorigin="anonymous"></script>
 </body>
 </html>

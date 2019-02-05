@@ -230,8 +230,6 @@ namespace LOLHUB.Controllers
             return Sum;
         }
 
-
-
         #region Zapraszanie Gracza do drużyny
         [AllowAnonymous]
         [HttpGet]
@@ -267,13 +265,16 @@ namespace LOLHUB.Controllers
                 }
                 else
                 {
-                    // user dont have yet your invitation, send it
-                    //create invitation
-                    ZaproszenieDoTeamu newInvite = new ZaproszenieDoTeamu
-                    {
-                        Answer = null,
-                        TeamId = TeamId,
-                        Team = _context.Teams.Where(t => t.Id == TeamId).First()
+                // user dont have yet your invitation, send it
+                //create invitation
+                ZaproszenieDoTeamu newInvite = new ZaproszenieDoTeamu
+                {
+                    Answer = null,
+                    TeamId = TeamId,
+                    Team = _context.Teams.Where(t => t.Id == TeamId).First(),
+                    DataWysłaniaZaproszenia = DateTime.Now,
+                    DataOdpowiedziNaZaproszenie = null
+                        
                     };
                     _context.ZaproszenieDoTeamu.Add(newInvite);
                     _context.SaveChanges();
@@ -300,24 +301,10 @@ namespace LOLHUB.Controllers
         //  [ PlayerId => ID gracza do którego zaproszenia zostaną zwrócone ]
         public IActionResult MyInvites(int PlayerId)
         {
-            Player Player = _context.Players.Where(p => p.Id == PlayerId).Include(p=>p.Zaproszenia_Team).Single();
-
-            List<ZaproszenieDoTeamu> Data = new List<ZaproszenieDoTeamu>();
-            foreach(ZaproszenieDoTeamu item in Player.Zaproszenia_Team)
-            {
-                Data.Add(new ZaproszenieDoTeamu
-                {
-                    Id = item.Id,
-                    Answer = item.Answer,
-                    TeamId = item.TeamId,
-                    Team = _context.Teams.Where(t => t.Id == item.TeamId).Single()
-                }); 
-            };
-
-            return Ok(Data.Select(s=>s).ToList());
+            return ViewComponent("Notifications");
         }
 
-        [Authorize(Roles = "Admin,Member,Moderator")]
+        [AllowAnonymous]
         [HttpGet]
         //  [ PlayerId => ID gracza do którego zaproszenia zostaną zwrócone ]
         public int NewInviteCounter()
@@ -333,23 +320,27 @@ namespace LOLHUB.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("/api/Admin/AnswerToInvite")] 
-        [Route("/api/Admin/AnswerToInvite/{PlayerId}/{ZaproszenieId}/{Odpowiedz}")]
-        //  [ PlayerId => ID gracza ktory odpowiada na zaproszenie ]
+        [Route("/api/Admin/AnswerToInvite/{ZaproszenieId}/{Odpowiedz}")]
         //  [ ZaproszenieId => ID zaprosznia na które wysyłana jest odpowiedz ]
         //  [ Odpowiedz => wartosc odpowiedzi , true=> potwierdzenie, False=>odmowa ]
-        public IActionResult AnswerToInvite(int PlayerId, int ZaproszenieId, bool Odpowiedz)
+        public IActionResult AnswerToInvite(int ZaproszenieId, bool Odpowiedz)
         {
+            ZaproszenieDoTeamu zapro = _context.ZaproszenieDoTeamu.Where(z => z.Id == ZaproszenieId).First();
+
+            string PlayerEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+
             Player Player = _context.Players
                         .Include(p => p.Zaproszenia_Team)
-                        .Where(p => p.Id == PlayerId)
+                        .Where(p => p.ConnectedSummonerEmail== PlayerEmail)
                         .Single();
+
+            int TeamId = Convert.ToInt32(Player.Zaproszenia_Team.Where(z => z.Id == ZaproszenieId).First().TeamId.ToString());
 
             if (Odpowiedz) {
                 if (Player.Zaproszenia_Team.Where(z => z.Id == ZaproszenieId).First().Answer == null)
                 {
-                    int TeamId = Convert.ToInt32(Player.Zaproszenia_Team.Where(z => z.Id == ZaproszenieId).First().TeamId.ToString());
                     // SPRAWDZENIE CZY UŻYTKOWNIK JUZ JEST W JAKIEJS DRUZYNIE
-                    if (_teamCtx.CheckIfUserAlreadyInTeam(PlayerId))
+                    if (_teamCtx.CheckIfUserAlreadyInTeam(Player.Id))
                     {// TRUE => jest w jakiejs druzynie : OPUSZCZENIE DRUŻYNY JEZELI MOZE
                         if (_teamCtx.LeaveTeam(TeamId, Player.ConnectedSummonerEmail.ToString()))
                         {//Dołączanie do drużyny
@@ -357,18 +348,29 @@ namespace LOLHUB.Controllers
                         }
                     }// FALSE => nie ma druzyny
                     _teamCtx.JoinTeam(TeamId);
+
+                    zapro.Answer = Odpowiedz;
+                    zapro.DataOdpowiedziNaZaproszenie = DateTime.Now;
+                    _context.ZaproszenieDoTeamu.Update(zapro);
+                    _context.SaveChanges();
+
+                    TempData["message"] = "Dołączyłeś do Drużyny !";
+                    return RedirectToAction("Manage", "Team",new { TeamId });
                 }
-                Player.Zaproszenia_Team.Where(z => z.Id == ZaproszenieId).First().Answer = Odpowiedz;
-                _context.Players.Update(Player);
-                _context.SaveChanges();
-                return Ok("Poprawne wysłanie odpowiedzi.");
+                TempData["joiningResult"] = "Odpowiedź została już udzielona, nie można jej zmienić.";
+                return RedirectToAction("Index", "Home");
             }
             else
             {
-                return Ok("Odpowiedź została już udzielona, nie można jej zmienić.");
+                zapro.Answer = Odpowiedz;
+                zapro.DataOdpowiedziNaZaproszenie = DateTime.Now;
+                _context.ZaproszenieDoTeamu.Update(zapro);
+                _context.SaveChanges();
+
+                TempData["error"] = "Zaproszenie zostało odrzucone";
+                return RedirectToAction("Index", "Home");
             }
         }
         #endregion
-
     }
 }

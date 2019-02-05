@@ -122,6 +122,9 @@ namespace LOLHUB.Controllers
             Team model = _teamRepository.Teams.Include(t => t.TeamLeader).Where(t => t.Id == teamId).Include(t => t.Players).First();
             List<SummonerInfoModel> nickList = _context.SummonerInfos.Select(s => s).ToList();
             ViewBag.SummonerInfos = nickList;
+
+            List<PlaysHistory> histories = _context.Histories.ToList();
+            ViewBag.HistoriesList = histories;
             return View(model);
         }
 

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<LOLHUB.Models.ZaproszenieDoTeamu>
+@{
+    Layout = "";
+}
+@using Microsoft.AspNetCore.Http.Extensions
+
+<table style="height: 100%; font-size:small; width:370px; border:solid">
+    <tbody>
+        @foreach (var item in Model)
+        {
+            string AcceptID = "Accept" + item.Id;
+            string RefuseID = "Refuse" + item.Id;
+            string TableRowID = "Row" + item.Id;
+
+        <tr id="@TableRowID" style="border:solid; height:40px;">
+            <td class="align-middle" style="width:auto; border:solid;">
+                @Html.DisplayFor(modelItem => item.Team.Name)
+            </td>
+            <td class="align-middle" style="width:75px; border:solid">
+                <form id="AcceptID" asp-controller="Admin" asp-action="AnswerToInvite" asp-route-ZaproszenieId="@item.Id" asp-route-Odpowiedz="true" method="get">
+                    <button type="submit" class="btn btn-success center-block"><b>Accept</b></button>
+                </form>
+            </td>
+            <td class="align-middle " style="width:75px; border:solid;">
+                <form id="RefuseID" asp-controller="Admin" asp-action="AnswerToInvite" asp-route-ZaproszenieId="@item.Id" asp-route-Odpowiedz="false" method="get">
+                    <button type="submit" class="btn btn-danger center-block"><b>Refuse</b></button>
+                </form>
+            </td>
+        </tr>
+
+        }
+    </tbody>
+</table>

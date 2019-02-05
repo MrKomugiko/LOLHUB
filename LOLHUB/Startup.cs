@@ -128,15 +128,16 @@ namespace LOLHUB
                 app.UseXfo(option => option.Deny());
 
                 app.UseCsp(opts => opts
-                .BlockAllMixedContent()  // blokowanie ładowania strony po http jezeli jest https
-                ////.StyleSources(s => s.Self())
-                //.FontSources(s => s.Self())
+                .BlockAllMixedContent()             // blokowanie ładowania strony po http jezeli jest https
+                .StyleSources(s => s.Self())
+                    .StyleSources(s => s.CustomSources("*.bootstrapcdn.com"))
+                .FontSources(s => s.Self())
                 .FormActions(s => s.Self())
-                .FormActions(s => s.CustomSources("https://www.facebook.com/")) // wywoływanie forumalrzy innych dostawców ( logowanie przez fb)
-                 //.FrameAncestors(s => s.Self())
-                 //.ImageSources(s => s.Self()) // dozwolone obrazy z serwera aplikacji
-                .ScriptSources(s => s.Self()) // dozwolone jest korzystanie ze skryptow znajdujacych sie na serwerze apliakcji
-                .ScriptSources(s => s.UnsafeInline()) // kod javascript w kodzie html a nie w osobnym pliku
+                    .FormActions(s => s.CustomSources("https://www.facebook.com/")) // wywoływanie forumalrzy innych dostawców ( logowanie przez fb)
+                .FrameAncestors(s => s.Self())
+                .ImageSources(s => s.Self())            // dozwolone obrazy z serwera aplikacji
+                .ScriptSources(s => s.Self())           // dozwolone jest korzystanie ze skryptow znajdujacych sie na serwerze apliakcji
+                .ScriptSources(s => s.UnsafeInline())   // kod javascript w kodzie html a nie w osobnym ( do celów testowych )
                 .ScriptSources(s => s.CustomSources("*.jquery.com", "*.bootstrapcdn.com", "*.cloudflare.com")) // skrypty z stron 3cich o takich domenach sa dozwolone
                 );
             }

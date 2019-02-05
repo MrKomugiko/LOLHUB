@@ -1,4 +1,5 @@
 ﻿using LOLHUB.Models;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace LOLHUB.Models
@@ -10,5 +11,8 @@ namespace LOLHUB.Models
         public bool? Answer { get; set; }        // True = Akceptacja, False = Odrzucenie
         public int? TeamId { get; set; }         // FK Teamu do ktorego jesteśmy zapraszanie
         public virtual Team Team { get; set; }
+
+        public DateTime DataWysłaniaZaproszenia { get; set; }
+        public DateTime? DataOdpowiedziNaZaproszenie { get; set; }
     }
 }
